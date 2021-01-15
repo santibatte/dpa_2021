@@ -2,7 +2,11 @@
 DPA-ITAM, 2021.
 
 Team Members:
-* José Roberto Pérez-173013
-* Santiago Battezzati- 197727
-* Mariana Lugo-118626
-* Carlos-
+
+| CU     | Name               | GitHub user  |
+| ------ | ------------------ | ------------ |
+| 173013 | José Roberto Pérez | Roberto919   |
+| 118626 | Mariana Lugo       | codeMariana  |
+| 197727 | Santiago Battezzati| santibatte
+|        | Carlos             |              |
+
