@@ -15,4 +15,4 @@ __pycache__
 
 
 ## Rob's files
-#_robdir/
+_robdir/*.csv
