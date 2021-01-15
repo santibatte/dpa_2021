@@ -1,0 +1,14 @@
+## MacOS
+DS_Store
+
+
+## Sensible info
+conf/
+
+
+## Jupyter notebook
+.ipynb_checkpoints
+
+
+## Python
+__pycache__
