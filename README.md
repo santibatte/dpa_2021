@@ -18,6 +18,7 @@ The dataset contains information from inspections of restaurants and other food 
 The dataset was last downloaded on January 15th, 2021. It contains 17 columns and 215,067 observations.
 
 The 17 elements are: 
+
 • Inspection ID: unique identifier.
 
 • DBA: ‘Doing business as.’ This is legal name of the establishment.
