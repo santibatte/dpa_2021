@@ -50,14 +50,16 @@ based inspection); task-force inspection, when an inspection of a bar or tavern 
 
 • Violations: An establishment can receive one or more of 45 distinct violations (violation numbers 1-44 and 70). For each violation number listed for a given establishment, the requirement the establishment must meet in order for it to NOT receive a violation is noted, followed by a specific description of the findings that caused the violation to be issued.    
 
-• Latitude: Georeference
+• Latitude: (Georeference) Latitude of the facility.
 
-• Longitude: Georeference
+• Longitude: (Georeference) Logitude of the facility.
 
-• Location: Longitude and Latitude
+• Location: Longitude and Latitude.
 
 Data Owner: Chicago Department of Public Health 
+
 Time Period: 2010 - Present 
+
 Frequency: This database is updated with information from new inspections daily. The data product arquitecture project will be updated weekly.
 
 
