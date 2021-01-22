@@ -50,11 +50,11 @@ based inspection); task-force inspection, when an inspection of a bar or tavern 
 
 • Violations: An establishment can receive one or more of 45 distinct violations (violation numbers 1-44 and 70). For each violation number listed for a given establishment, the requirement the establishment must meet in order for it to NOT receive a violation is noted, followed by a specific description of the findings that caused the violation to be issued.    
 
-• Latitude 
+• Latitude: Georeference
 
-• Longitude
+• Longitude: Georeference
 
-• Location
+• Location: Longitude and Latitude
 
 Data Owner: Chicago Department of Public Health 
 Time Period: 2010 - Present 
@@ -62,5 +62,6 @@ Frequency: This database is updated with information from new inspections daily.
 
 
 
-
 Disclaimer: Attempts have been made to minimize any and all duplicate inspection reports. However, the dataset may still contain such duplicates and the appropriate precautions should be exercised when viewing or analyzing these data. The result of the inspections (pass, pass with conditions or fail) as well as the violations noted are based on the findings identified and reported by the inspector at the time of the inspection, and may not reflect the findings noted at other times. 
+
+Source: https://data.cityofchicago.org/Health-Human-Services/Food-Inspections/4ijn-s7e5 
