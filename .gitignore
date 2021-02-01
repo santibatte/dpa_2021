@@ -12,3 +12,7 @@ conf/
 
 ## Python
 __pycache__
+
+
+## Data (csv files)
+data/
