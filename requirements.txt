@@ -1,5 +1,6 @@
 aequitas==0.42.0
 altair==4.1.0
+appnope==0.1.2
 argon2-cffi==20.1.0
 async-generator==1.10
 attrs==20.3.0
@@ -28,7 +29,7 @@ ipython==7.19.0
 ipython-genutils==0.2.0
 ipywidgets==7.6.3
 itsdangerous==1.1.0
-jedi==0.18.0
+jedi==0.17.2
 Jinja2==2.11.2
 joblib==1.0.0
 jsonschema==3.2.0
@@ -59,7 +60,7 @@ packaging==20.8
 pandas==1.2.0
 pandas-profiling==2.10.0
 pandocfilters==1.4.3
-parso==0.8.1
+parso==0.7.1
 pexpect==4.8.0
 phik==0.11.0
 pickleshare==0.7.5
