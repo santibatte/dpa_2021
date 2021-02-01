@@ -11,23 +11,39 @@
 ## Imports ##
 #############
 
-## Python libraries
+## Standard library imports
+import re
+
+import unicodedata
+
+import sys
+
+
+## Third party imports
 import pandas as pd
+from pandas_profiling import ProfileReport
 pd.set_option('display.max_columns', 100)
 
-import re
-import unicodedata
 import plotly.express as px
+
 import numpy as np
+
 import seaborn as sns
+
 import probscale
+
 from scipy import stats
-import sys
-from pandas_profiling import ProfileReport
+
 import plotly.graph_objects as go
 import plotly.express as px
-import matplotlib.pyplot as plt
 import plotly.figure_factory as ff
+
+import matplotlib.pyplot as plt
+
+
+## Local application imports
+
+
 
 
 
