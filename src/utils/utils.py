@@ -393,6 +393,21 @@ def data_profiling_categ(data, cat_vars):
 
 
 
+## Cleaning columns with text
+def clean_txt(txt):
+    """
+    """
+
+    ## Setting everything to lowercase and substituting special characters with "-"
+    txt = re.sub('[^a-zA-Z0-9 \n\.]', '-', txt.lower())
+
+    ## Changing spaces with "_"
+    txt = re.sub(" ", "_", txt)
+
+
+    return txt
+
+
 
 
 "------------------------------------------------------------------------------"
