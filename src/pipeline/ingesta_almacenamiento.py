@@ -31,6 +31,13 @@ import pandas as pd
 
 ## Local application imports
 
+# sys.path.append("../")
+
+from src.utils.general import (
+	read_yaml_file,
+	get_s3_credentials
+)
+
 
 
 
@@ -63,41 +70,9 @@ today_info = date.today().strftime('%Y-%m-%d')
 
 
 "------------------------------------------------------------------------------"
-#########################
-## Ancillary functions ##
-#########################
-
-
-##
-def read_yaml_file(yaml_file):
-    """ load yaml cofigurations """
-
-    config = None
-    try:
-        with open (yaml_file, 'r') as f:
-            config = yaml.safe_load(f)
-    except:
-        raise FileNotFoundError('Couldnt load the file')
-
-    return config
-
-
-
-##
-def get_s3_credentials(credentials_file):
-    credentials = read_yaml_file(credentials_file)
-    s3_creds = credentials['s3']
-
-    return s3_creds
-
-
-
-
-
-"------------------------------------------------------------------------------"
-####################
-## Main functions ##
-####################
+###############
+## Functions ##
+###############
 
 
 ##
@@ -128,7 +103,7 @@ def get_s3_resource():
 			s3 (aws client session): s3 resource
 	"""
 
-	s3_creds = get_s3_credentials("../conf/local/credentials.yaml")
+	s3_creds = get_s3_credentials("conf/local/credentials.yaml")
 
 	session = boto3.Session(
 	    aws_access_key_id=s3_creds['aws_access_key_id'],
@@ -161,11 +136,11 @@ def guardar_ingesta(bucket_name, bucket_path):
 
 	## Downloading data and storing it temporaly in local machine prior upload to s3
 	if "initial" in bucket_path:
-		pkl_temp_local_path = "../data/" + hist_ingest_path + hist_dat_prefix + today_info + ".pkl"
+		pkl_temp_local_path = "data/" + hist_ingest_path + hist_dat_prefix + today_info + ".pkl"
 		pd.DataFrame(ingesta_inicial(client)).to_pickle(pkl_temp_local_path)
 
 	elif "consecutive" in bucket_path:
-		pkl_temp_local_path = "../data/" + cont_ingest_path + cont_dat_prefix + today_info + ".pkl"
+		pkl_temp_local_path = "data/" + cont_ingest_path + cont_dat_prefix + today_info + ".pkl"
 		pd.DataFrame(ingesta_consecutiva(client)).to_pickle(pkl_temp_local_path)
 
 	else:
