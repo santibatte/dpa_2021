@@ -12,3 +12,7 @@ conf/local/
 
 ## Python
 __pycache__
+
+
+## Data
+data/
