@@ -3,7 +3,7 @@ DS_Store
 
 
 ## Sensible info
-conf/
+conf/local/
 
 
 ## Jupyter notebook
@@ -12,3 +12,7 @@ conf/
 
 ## Python
 __pycache__
+
+
+## Data
+data/
