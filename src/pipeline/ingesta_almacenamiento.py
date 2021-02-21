@@ -17,9 +17,8 @@ import sys
 
 import yaml
 
-import os
+import pickle
 
-## issue 27
 
 
 ## Third party imports
@@ -136,26 +135,20 @@ def guardar_ingesta(bucket_name, bucket_path):
 	## Downloading data and storing it temporaly in local machine prior upload to s3
 	if "initial" in bucket_path:
 		pkl_temp_local_path = "data/" + hist_ingest_path + hist_dat_prefix + today_info + ".pkl"
-		pd.DataFrame(ingesta_inicial(client)).to_pickle(pkl_temp_local_path)
+		ingesta=pickle.dumps(ingesta_inicial(client))
+		file_name = hist_dat_prefix + today_info + ".pkl"
+
 
 	elif "consecutive" in bucket_path:
 		pkl_temp_local_path = "data/" + cont_ingest_path + cont_dat_prefix + today_info + ".pkl"
-		pd.DataFrame(ingesta_consecutiva(client)).to_pickle(pkl_temp_local_path)
+		ingesta=pickle.dumps(ingesta_consecutiva(client))
+		file_name = cont_dat_prefix + today_info + ".pkl"
 
 	else:
 		raise NameError('Unknown bucket path')
 
-
 	## Uploading data to s3
-	file_name = pkl_temp_local_path.split(sep='/')[-1]
-	s3.upload_file(pkl_temp_local_path, bucket_name, bucket_path + file_name)
-
-
-	## Deleting temporal local pickle
-	os.remove(pkl_temp_local_path)
-
-
-	return
+	return s3.put_object(Bucket= bucket_name, Key=bucket_path + file_name, Body=ingesta)
 
 
 
