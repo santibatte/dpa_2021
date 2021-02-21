@@ -53,7 +53,7 @@ def get_s3_credentials(credentials_file):
 ## Get API TOKEN
 def get_api_token(credentials_file):
     """
-    Get api token 
+    Get api token
     """
-    token=read_yaml(credentials_file)['food_inspections']
+    token=read_yaml_file(credentials_file)['food_inspections']
     return token
