@@ -56,5 +56,5 @@ def get_api_token(credentials_file):
     Get api token
     """
     credentials=read_yaml_file(credentials_file)
-    token= credentials['food_inspections']
+    token= credentials['food_inspections'] ['api_token']
     return token
