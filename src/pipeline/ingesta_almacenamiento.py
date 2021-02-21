@@ -35,7 +35,8 @@ import pandas as pd
 
 from src.utils.general import (
 	read_yaml_file,
-	get_s3_credentials
+	get_s3_credentials,
+	get_api_token
 )
 
 
@@ -57,11 +58,6 @@ hist_dat_prefix = "historic-inspections-"
 cont_ingest_path = "ingestion/consecutive/"
 cont_dat_prefix = "consecutive-inspections-"
 
-
-## Token for API
-token = "5HfsId12lhMMzSlYANoAq451w"
-
-
 ## Naming files
 today_info = date.today().strftime('%Y-%m-%d')
 
@@ -78,7 +74,6 @@ today_info = date.today().strftime('%Y-%m-%d')
 ##
 def get_client(token):
 	return Socrata("data.cityofchicago.org", token)
-
 
 
 ##
@@ -129,6 +124,8 @@ def guardar_ingesta(bucket_name, bucket_path):
 	## Getting s3 resource to store data in s3.
 	s3 = get_s3_resource()
 
+	#Read token from credentials file 
+	token = get_api_token("conf/local/credentials.yaml")
 
 	## Getting client to download data with API
 	client = get_client(token)
