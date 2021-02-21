@@ -19,6 +19,8 @@ import yaml
 
 import os
 
+## issue 27
+
 
 ## Third party imports
 
@@ -124,7 +126,7 @@ def guardar_ingesta(bucket_name, bucket_path):
 	## Getting s3 resource to store data in s3.
 	s3 = get_s3_resource()
 
-	#Read token from credentials file 
+	#Read token from credentials file
 	token = get_api_token("conf/local/credentials.yaml")
 
 	## Getting client to download data with API
