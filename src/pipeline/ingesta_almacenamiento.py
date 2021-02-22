@@ -77,6 +77,7 @@ def get_client(token):
 	return Socrata("data.cityofchicago.org", token)
 
 
+
 ##
 def ingesta_inicial(client, limit=300000):
 	return client.get("4ijn-s7e5", limit=limit)
@@ -135,7 +136,7 @@ def guardar_ingesta(bucket_name, bucket_path):
 	## Downloading data and storing it temporaly in local machine prior upload to s3
 	if "initial" in bucket_path:
 		# pkl_temp_local_path = "data/" + hist_ingest_path + hist_dat_prefix + today_info + ".pkl"
-		ingesta=pickle.dumps(ingesta_inicial(client))
+		ingesta = pickle.dumps(ingesta_inicial(client))
 		file_name = hist_dat_prefix + today_info + ".pkl"
 
 
