@@ -134,21 +134,21 @@ def guardar_ingesta(bucket_name, bucket_path):
 
 	## Downloading data and storing it temporaly in local machine prior upload to s3
 	if "initial" in bucket_path:
-		pkl_temp_local_path = "data/" + hist_ingest_path + hist_dat_prefix + today_info + ".pkl"
+		# pkl_temp_local_path = "data/" + hist_ingest_path + hist_dat_prefix + today_info + ".pkl"
 		ingesta=pickle.dumps(ingesta_inicial(client))
 		file_name = hist_dat_prefix + today_info + ".pkl"
 
 
 	elif "consecutive" in bucket_path:
-		pkl_temp_local_path = "data/" + cont_ingest_path + cont_dat_prefix + today_info + ".pkl"
-		ingesta=pickle.dumps(ingesta_consecutiva(client))
+		# pkl_temp_local_path = "data/" + cont_ingest_path + cont_dat_prefix + today_info + ".pkl"
+		ingesta = pickle.dumps(ingesta_consecutiva(client))
 		file_name = cont_dat_prefix + today_info + ".pkl"
 
 	else:
 		raise NameError('Unknown bucket path')
 
 	## Uploading data to s3
-	return s3.put_object(Bucket= bucket_name, Key=bucket_path + file_name, Body=ingesta)
+	return s3.put_object(Bucket=bucket_name, Key=bucket_path + file_name, Body=ingesta)
 
 
 
