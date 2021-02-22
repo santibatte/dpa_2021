@@ -17,7 +17,8 @@ import sys
 
 import yaml
 
-import os
+import pickle
+
 
 
 ## Third party imports
@@ -35,7 +36,8 @@ import pandas as pd
 
 from src.utils.general import (
 	read_yaml_file,
-	get_s3_credentials
+	get_s3_credentials,
+	get_api_token
 )
 
 
@@ -57,11 +59,6 @@ hist_dat_prefix = "historic-inspections-"
 cont_ingest_path = "ingestion/consecutive/"
 cont_dat_prefix = "consecutive-inspections-"
 
-
-## Token for API
-token = "5HfsId12lhMMzSlYANoAq451w"
-
-
 ## Naming files
 today_info = date.today().strftime('%Y-%m-%d')
 
@@ -78,7 +75,6 @@ today_info = date.today().strftime('%Y-%m-%d')
 ##
 def get_client(token):
 	return Socrata("data.cityofchicago.org", token)
-
 
 
 ##
@@ -129,6 +125,8 @@ def guardar_ingesta(bucket_name, bucket_path):
 	## Getting s3 resource to store data in s3.
 	s3 = get_s3_resource()
 
+	#Read token from credentials file
+	token = get_api_token("conf/local/credentials.yaml")
 
 	## Getting client to download data with API
 	client = get_client(token)
@@ -136,27 +134,21 @@ def guardar_ingesta(bucket_name, bucket_path):
 
 	## Downloading data and storing it temporaly in local machine prior upload to s3
 	if "initial" in bucket_path:
-		pkl_temp_local_path = "data/" + hist_ingest_path + hist_dat_prefix + today_info + ".pkl"
-		pd.DataFrame(ingesta_inicial(client)).to_pickle(pkl_temp_local_path)
+		# pkl_temp_local_path = "data/" + hist_ingest_path + hist_dat_prefix + today_info + ".pkl"
+		ingesta=pickle.dumps(ingesta_inicial(client))
+		file_name = hist_dat_prefix + today_info + ".pkl"
+
 
 	elif "consecutive" in bucket_path:
-		pkl_temp_local_path = "data/" + cont_ingest_path + cont_dat_prefix + today_info + ".pkl"
-		pd.DataFrame(ingesta_consecutiva(client)).to_pickle(pkl_temp_local_path)
+		# pkl_temp_local_path = "data/" + cont_ingest_path + cont_dat_prefix + today_info + ".pkl"
+		ingesta = pickle.dumps(ingesta_consecutiva(client))
+		file_name = cont_dat_prefix + today_info + ".pkl"
 
 	else:
 		raise NameError('Unknown bucket path')
 
-
 	## Uploading data to s3
-	file_name = pkl_temp_local_path.split(sep='/')[-1]
-	s3.upload_file(pkl_temp_local_path, bucket_name, bucket_path + file_name)
-
-
-	## Deleting temporal local pickle
-	os.remove(pkl_temp_local_path)
-
-
-	return
+	return s3.put_object(Bucket=bucket_name, Key=bucket_path + file_name, Body=ingesta)
 
 
 
