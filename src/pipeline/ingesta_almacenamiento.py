@@ -99,7 +99,7 @@ def get_s3_resource():
 			s3 (aws client session): s3 resource
 	"""
 
-	s3_creds = get_s3_credentials("conf/local/credentials.yaml")
+	s3_creds = get_s3_credentials("../conf/local/credentials.yaml")
 
 	session = boto3.Session(
 	    aws_access_key_id=s3_creds['aws_access_key_id'],
@@ -135,7 +135,7 @@ def guardar_ingesta(bucket_name, bucket_path):
 	## Downloading data and storing it temporaly in local machine prior upload to s3
 	if "initial" in bucket_path:
 		# pkl_temp_local_path = "data/" + hist_ingest_path + hist_dat_prefix + today_info + ".pkl"
-		ingesta=pickle.dumps(ingesta_inicial(client))
+		ingesta = pickle.dumps(ingesta_inicial(client))
 		file_name = hist_dat_prefix + today_info + ".pkl"
 
 
