@@ -2,7 +2,7 @@
 DPA-ITAM, 2021.
 
 
-###Team Members:
+### Team Members:
 
 | CU     | Name               | GitHub user  |
 | ------ | ------------------ | ------------ |
@@ -12,7 +12,7 @@ DPA-ITAM, 2021.
 | 197614 | Carlos Geovany Pérez| carlosgeovany|
 
 
-##Introduction
+## Introduction
 
 The objective of the project is to develop a data product architecture. The dataset that will be used in the project contains information from inspections of restaurants and other food establishments in Chicago from January 1, 2010 to the present. 
 
