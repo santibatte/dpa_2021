@@ -53,7 +53,7 @@ from src.utils.general import (
 
 
 ## AWS parameters
-bucket_name = "data-product-architecture-equipo-super"
+bucket_name = "data-product-architecture-equipo-9"
 
 hist_ingest_path = "ingestion/initial/"
 hist_dat_prefix = "historic-inspections-"
