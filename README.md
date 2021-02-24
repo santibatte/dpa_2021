@@ -24,13 +24,16 @@ The objective of the project is to develop a data product architecture. The data
 #### Basic Project Structure
 * The Exploratory Data Analysis (EDA) can be found in `notebooks/EDA.ipynb`. 
 
+
 #### Pipeline
 **Ingestion process**
-* First, in `src/utils/general.py` you will find the functions and credentials needed to connect with s3 of AWS. Furthermore, it contains the API token need for downloading the Chicago Food Inspections data.
-* Once you have the credentials and token, in `src/pipeline/ingesta_almacenamiento.py` you will find the functions that call the API of the Chicago Food Inspections:
+* First, add the `credentials.yaml` file to `conf/local`. This file contains the credentials (`aws_access_key_id` and `aws_secret_access_key`) and token needed.
+* Second, have an active s3 bucket with the name `data-product-architecture-equipo-9`.
+* Third,`src/utils/general.py` you will find the functions to connect with s3 of AWS through the given credentials and API token needed for downloading the Chicago Food Inspections data.
+* Next, in `src/pipeline/ingesta_almacenamiento.py` you will find the functions that call the API of the Chicago Food Inspections:
     1. The `get_client` function connects to the Chicago Food Inspections API through the given token.
     2. The `ingesta_inicial` function returns a list of the information given by the API, once the client and observations' limit are established.
-    3. The `get_s3_resource` function gives a s3 resource to interact with AWS s3 based on .yaml file in order to save the data in the bucket.
+    3. The `get_s3_resource` function gives a s3 resource to interact with AWS s3 based on `.yaml` file in order to save the data in the bucket.
     4. The `ingesta_consecutiva` function allows to set the desired date of the new data, according to it, the client and the observations' limit.
     5. The `guardar_ingesta` function downloads the data and stores it temporarily in local machine prior to the upload to s3. When it is a consecutive ingestion (not the initial), it finds the most recent date in the consecutive existing pickles. Then, it builds a query to download the data of interest. Last, it uploads the data to s3. 
 
