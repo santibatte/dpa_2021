@@ -1,13 +1,14 @@
 aequitas==0.42.0
 altair==4.1.0
+appnope==0.1.2
 argon2-cffi==20.1.0
 async-generator==1.10
 attrs==20.3.0
-awscli==1.19.10
+awscli==1.19.2
 backcall==0.2.0
 bleach==3.2.1
-boto3==1.17.8
-botocore==1.20.10
+boto3==1.17.6
+botocore==1.20.6
 certifi==2020.12.5
 cffi==1.14.4
 chardet==4.0.0
@@ -33,7 +34,7 @@ ipython==7.19.0
 ipython-genutils==0.2.0
 ipywidgets==7.6.3
 itsdangerous==1.1.0
-jedi==0.18.0
+jedi==0.17.2
 Jinja2==2.11.2
 jmespath==0.10.0
 joblib==1.0.0
@@ -65,11 +66,10 @@ packaging==20.8
 pandas==1.2.0
 pandas-profiling==2.10.0
 pandocfilters==1.4.3
-parso==0.8.1
+parso==0.7.1
 pexpect==4.8.0
 phik==0.11.0
 pickleshare==0.7.5
-pickle-mixin==1.0.2 ## agregue esta libreria para tener pickle, es correcto ?
 Pillow==8.1.0
 plotly==4.14.3
 probscale==0.2.4

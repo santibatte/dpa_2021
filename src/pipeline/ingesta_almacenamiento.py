@@ -11,13 +11,15 @@
 
 ## Standard library imports
 
-from datetime import date
+from datetime import (date, datetime)
 
 import sys
 
 import yaml
 
 import pickle
+
+import re
 
 
 
@@ -51,7 +53,7 @@ from src.utils.general import (
 
 
 ## AWS parameters
-bucket_name = "data-product-architecture-equipo-super"
+bucket_name = "data-product-architecture-equipo-9"
 
 hist_ingest_path = "ingestion/initial/"
 hist_dat_prefix = "historic-inspections-"
@@ -77,6 +79,7 @@ def get_client(token):
 	return Socrata("data.cityofchicago.org", token)
 
 
+
 ##
 def ingesta_inicial(client, limit=300000):
 	return client.get("4ijn-s7e5", limit=limit)
@@ -84,8 +87,8 @@ def ingesta_inicial(client, limit=300000):
 
 
 ##
-def ingesta_consecutiva(client, limit=1000):
-	return client.get("4ijn-s7e5", limit=limit)
+def ingesta_consecutiva(client, soql_query):
+	return client.get("4ijn-s7e5", where=soql_query)
 
 
 
@@ -134,23 +137,40 @@ def guardar_ingesta(bucket_name, bucket_path):
 
 	## Downloading data and storing it temporaly in local machine prior upload to s3
 	if "initial" in bucket_path:
-		# pkl_temp_local_path = "data/" + hist_ingest_path + hist_dat_prefix + today_info + ".pkl"
 		ingesta = pickle.dumps(ingesta_inicial(client))
 		file_name = hist_dat_prefix + today_info + ".pkl"
 
 
 	elif "consecutive" in bucket_path:
-		# pkl_temp_local_path = "data/" + cont_ingest_path + cont_dat_prefix + today_info + ".pkl"
-		ingesta = pickle.dumps(ingesta_consecutiva(client))
+
+		## Finding most recent date in consecutive pickles
+
+		#### Getting list with pickles stored in s3 consecutive
+		objects = s3.list_objects_v2(Bucket=bucket_name, Prefix=cont_ingest_path)['Contents']
+
+		#### Regular expression to isolate date in string
+		regex = str(cont_dat_prefix) + "(.*).pkl"
+
+		#### List of all dates in consecutive pickles
+		pkl_dates = [datetime.strptime(re.search(regex, obj["Key"]).group(1), '%Y-%m-%d') for obj in objects if cont_dat_prefix in obj["Key"]]
+
+		#### Consecutive pickle most recent date
+		pkl_mrd = datetime.strftime(max(pkl_dates), '%Y-%m-%d')
+
+
+		## Building query to download data of interest
+		soql_query = "inspection_date >= '{}'".format(pkl_mrd)
+
+		ingesta = pickle.dumps(ingesta_consecutiva(client, soql_query))
 		file_name = cont_dat_prefix + today_info + ".pkl"
+
 
 	else:
 		raise NameError('Unknown bucket path')
 
+
 	## Uploading data to s3
 	return s3.put_object(Bucket=bucket_name, Key=bucket_path + file_name, Body=ingesta)
-
-
 
 
 
