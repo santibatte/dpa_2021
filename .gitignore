@@ -1,5 +1,5 @@
 ## MacOS
-DS_Store
+.DS_Store
 
 
 ## Sensible info
@@ -16,3 +16,7 @@ __pycache__
 
 ## Data
 data/
+
+
+## Pycharm
+.idea/
