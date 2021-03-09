@@ -43,6 +43,13 @@ import matplotlib.pyplot as plt
 
 ## Local application imports
 
+from src.utils.params_gen import (
+    regex_violations,
+    serious_viols
+)
+# regex_violations = '\| (.+?). '
+# serious_viols = [str(num) for num in list(range(1, 44 + 1)) + [70]]
+
 
 
 
@@ -106,6 +113,64 @@ def clean_txt(txt):
 
 
     return txt
+
+
+
+## Identify if any serious violations were committed if
+def mark_serious_violations(row):
+    """
+    Identify if any serious violations were committed if
+
+    :param row: dataframe row where violations codes to be evaluated are present.
+
+    :return:
+    """
+    try:
+
+        v_nums = re.findall(r'\| (.+?). ', row)
+
+        if len(set(serious_viols) - set(v_nums)) == len(set(serious_viols)):
+            res = "no_serious_violations"
+
+        else:
+            res = "serious_violations"
+
+    except:
+        res = "no_result"
+
+    return res
+
+
+
+## Initial function to clean the dataset
+def initial_cleaning(data):
+    """
+    Initial function to clean the dataset
+
+    :param data: raw dataframe that will be go through the initial cleaning process
+
+    :return dfx: resulting dataframe after initial cleaning
+    """
+
+    ## Creating copy of initial dataframe
+    dfx = data.copy()
+
+
+    ## Cleaning names of columns
+    clean_col_names(dfx)
+
+
+    ## Creating column identifying if entry has serious violations
+
+    #### Adding specific string to beggining of `violations`
+    dfx["violations"] = "| " + dfx["violations"]
+
+    #### Creating new column with label regarding presence of serious violations
+    dfx["serious_violations"] = dfx["violations"].apply(lambda x: mark_serious_violations(x))
+
+
+    return dfx
+
 
 
 
