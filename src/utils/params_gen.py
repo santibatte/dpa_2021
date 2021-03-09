@@ -10,6 +10,15 @@
 ################
 
 
+## Serious violations
+
+#### Regex pattern to find violation numbers
+regex_violations = '\| (.+?). '
+
+#### List of violations considered serious
+serious_viols = [str(num) for num in list(range(1, 44 + 1)) + [70]]
+
+
 
 
 
