@@ -1,9 +1,9 @@
 ## MacOS
-DS_Store
+.DS_Store
 
 
 ## Sensible info
-conf/
+conf/local/
 
 
 ## Jupyter notebook
@@ -14,5 +14,9 @@ conf/
 __pycache__
 
 
-## Data (csv files)
+## Data
 data/
+
+
+## Pycharm
+.idea/
