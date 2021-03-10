@@ -21,6 +21,8 @@ import pickle
 
 import re
 
+import unicodedata
+
 
 
 ## Third party imports
@@ -34,10 +36,21 @@ import pandas as pd
 
 ## Local application imports
 
+
 from src.utils.general import (
 	read_yaml_file,
 	get_s3_credentials,
 	get_api_token
+)
+
+from src.utils.params_gen import (
+    regex_violations,
+    serious_viols,
+)
+
+from src.utils.utils import (
+    save_df,
+    load_df
 )
 
 
@@ -189,6 +202,20 @@ def ingest_local_csv(data_path):
 
 
 
+## Saving dataframe as pickle object in specified location.
+def save_ingestion(df, path):
+    """
+    Saving dataframe as pickle object in specified location.
+        args:
+            df (dataframe): df that will be converted and saved as pickle.
+            path (string): location where the pickle will be stored.
+    """
+
+    ## Converting and saving dataframe.
+    save_df(df, path)
+
+
+
 
 
 "------------------------------------------------------------------------------"
@@ -208,9 +235,10 @@ def clean_col_names(dataframe):
     """
 
     ## Definition of cleaning funcitons that will be applied to the columns' names
-    fun1 = lambda x: x.lower() ## convert to lowercase
-    fun2 = lambda x: re.sub("( |¡|!|¿|\?|\.|,|;|:)", "_", x) ## eliminate spaces and punctuation signs for underscore
-    fun3 = lambda x: unicodedata.normalize("NFD", x).encode("ascii", "ignore").decode("utf-8") ## substitute accents for normal letters
+    fun1 = lambda x: re.sub('[^a-zA-Z0-9 \n\.]', '-', x.lower()) ## change special characters for "-"
+    fun2 = lambda x: unicodedata.normalize("NFD", x).encode("ascii", "ignore").decode("utf-8") ## substitute accents for normal letters
+    fun3 = lambda x: re.sub(' ', '_', x.lower()) ## change spaces for "_"
+
     funcs = [fun1, fun2, fun3]
 
     ## Applying the defined functions to the columns' names
@@ -279,10 +307,10 @@ def mark_serious_violations(row):
 
 
 
-## Initial function to clean the dataset
+## Master cleaning function: initial function to clean the dataset. This function uses the functions above.
 def initial_cleaning(data):
     """
-    Initial function to clean the dataset
+    Master cleaning function: initial function to clean the dataset. This function uses the functions above.
 
     :param data: raw dataframe that will be go through the initial cleaning process
 
@@ -330,11 +358,10 @@ def ingest(data_path, ingestion_pickle_loc):
     """
 
     ## Executing ingestion functions
-    df = ingest_file(data_path)
-    df = set_index(df)
-    df = drop_cols(df)
-    df = generate_label(df)
-    save_ingestion(df, ingestion_pickle_loc)
+    df = ingest_local_csv(data_path) ## Temporal function
+    # guardar_ingesta(bucket_name, bucket_path)
+    df = initial_cleaning(df)
+    save_ingestion(df, ingestion_pickle_loc) ## Temporal function
     print("\n** Ingestion module successfully executed **\n")
 
 
