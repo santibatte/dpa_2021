@@ -11,31 +11,174 @@
 ## Imports ##
 #############
 
-## Python libraries
+## Standard library imports
+import re
+
+import unicodedata
+
+import sys
+
+
+## Third party imports
 import pandas as pd
+from pandas_profiling import ProfileReport
 pd.set_option('display.max_columns', 100)
 
-import re
-import unicodedata
 import plotly.express as px
+
 import numpy as np
+
 import seaborn as sns
+
 import probscale
+
 from scipy import stats
-import sys
-from pandas_profiling import ProfileReport
+
 import plotly.graph_objects as go
 import plotly.express as px
-import matplotlib.pyplot as plt
 import plotly.figure_factory as ff
+
+import matplotlib.pyplot as plt
+
+
+## Local application imports
+
+from src.utils.params_gen import (
+    regex_violations,
+    serious_viols
+)
+# regex_violations = '\| (.+?). '
+# serious_viols = [str(num) for num in list(range(1, 44 + 1)) + [70]]
+
+
 
 
 
 "------------------------------------------------------------------------------"
-###############
-## Functions ##
-###############
+##############################
+## Data wrangling functions ##
+##############################
 
+
+## Transform columns' names to standard format
+def clean_col_names(dataframe):
+    """
+    Transform columns' names to standard format (lowercase, no spaces, no points)
+        args:
+            dataframe (dataframe): df whose columns will be formatted.
+        returns:
+            dataframe (dataframe): df with columns cleaned.
+    """
+
+    ## Definition of cleaning funcitons that will be applied to the columns' names
+    fun1 = lambda x: x.lower() ## convert to lowercase
+    fun2 = lambda x: re.sub("( |¡|!|¿|\?|\.|,|;|:)", "_", x) ## eliminate spaces and punctuation signs for underscore
+    fun3 = lambda x: unicodedata.normalize("NFD", x).encode("ascii", "ignore").decode("utf-8") ## substitute accents for normal letters
+    funcs = [fun1, fun2, fun3]
+
+    ## Applying the defined functions to the columns' names
+    for fun in funcs:
+        dataframe.columns = [fun(col) for col in dataframe.columns]
+
+    return dataframe
+
+
+
+## Converting observatios for selected columns into lowercase
+def convert_lower(data, vars_lower):
+    """
+     Converting observatios for selected columns into lowercase
+        args:
+            data (dataframe): data that is being analyzed.
+            vars_lower (list): list of the columns' names in the dataframe that will be changed to lowercase.
+        returns:
+            data(dataframe): dataframe that is being analyzed with the observations (of the selected columns) in lowercase.
+    """
+    for x in vars_lower:
+        data[x]=data[x].str.lower()
+    return data
+
+
+
+## Cleaning columns with text
+def clean_txt(txt):
+    """
+    """
+
+    ## Setting everything to lowercase and substituting special characters with "-"
+    txt = re.sub('[^a-zA-Z0-9 \n\.]', '-', txt.lower())
+
+    ## Changing spaces with "_"clean_col_names
+    txt = re.sub(" ", "_", txt)
+
+
+    return txt
+
+
+
+## Identify if any serious violations were committed if
+def mark_serious_violations(row):
+    """
+    Identify if any serious violations were committed if
+
+    :param row: dataframe row where violations codes to be evaluated are present.
+
+    :return:
+    """
+    try:
+
+        v_nums = re.findall(r'\| (.+?). ', row)
+
+        if len(set(serious_viols) - set(v_nums)) == len(set(serious_viols)):
+            res = "no_serious_violations"
+
+        else:
+            res = "serious_violations"
+
+    except:
+        res = "no_result"
+
+    return res
+
+
+
+## Initial function to clean the dataset
+def initial_cleaning(data):
+    """
+    Initial function to clean the dataset
+
+    :param data: raw dataframe that will be go through the initial cleaning process
+
+    :return dfx: resulting dataframe after initial cleaning
+    """
+
+    ## Creating copy of initial dataframe
+    dfx = data.copy()
+
+
+    ## Cleaning names of columns
+    clean_col_names(dfx)
+
+
+    ## Creating column identifying if entry has serious violations
+
+    #### Adding specific string to beggining of `violations`
+    dfx["violations"] = "| " + dfx["violations"]
+
+    #### Creating new column with label regarding presence of serious violations
+    dfx["serious_violations"] = dfx["violations"].apply(lambda x: mark_serious_violations(x))
+
+
+    return dfx
+
+
+
+
+
+"------------------------------------------------------------------------------"
+###################
+## EDA functions ##
+###################
 
 
 ## Counting number of variables in data (¿Cuántas variables tenemos?)
@@ -84,103 +227,6 @@ def count_unique_obs(data):
         (series): number of unique observations for all variables
     """
     return data.nunique()
-
-
-
-def geo_transformation(data, variable_latlong, variable_drop):
-    """
-    Get the Latitude and Longitude columns from a specific column,
-    then transform both columns to floats and finally remove the original column
-        args:
-            data (geodataframe): Original data with Geo Point column
-            variable (string): Name of column with longitude and latitude data
-            variable_drop (string): name of columns that will be dropped.
-        returns:
-            Geodataframe with columns longitude and latitude
-    """
-
-    data[['latitud','longitud']] = data.loc[:, variable_latlong].str.split(",", expand = True)
-    data[['latitud','longitud']] = data[['latitud','longitud']].astype('float')
-    data = data.drop(columns = [variable_latlong, variable_drop])
-
-    return data
-
-
-
-## Function to print the number of decimals that each of the geo columns have
-def geo_vars_precision(data, geo_vars):
-    """
-    Function to print the number of decimals that each of the geo columns have
-        args:
-            data (dataframe): dataset that contains the geospatial columns (e.g. "latitud" & "longitud")
-            geo_vars (list - strings): list with the names of the geospatial columns (e.g. ["latitud", "longitud"])
-        returns:
-            -
-    """
-
-    ## List where the resulting dataframes will be stored for join
-    list_dfs_res = []
-
-    ## Looop to create precision dataframes and append to list
-    for col in geo_vars:
-        df_geo_decs = data[col].astype("str").str.split(pat=".", expand=True).loc[:, 1].str.len().value_counts().to_frame()
-        df_geo_decs.columns = ["No. of entries - " + col]
-        list_dfs_res.append(df_geo_decs)
-
-    ## Joining precision dataframes and printing result
-    dfres = list_dfs_res[0].join(list_dfs_res[1])
-    dfres.index.name = "No. of decimals"
-    print(display(dfres))
-
-    return
-
-
-
-def count_type_vars(vars_sel, type_var):
-    """
-    Counting number of (numerical / categorical / text)  variables
-        args:
-            vars_sel (list): selection of columns that comply with the data type
-            type_var (string): type of variable that is being counted
-        returns:
-            -
-    """
-
-    ## Creating dataframe to print selected variables
-    vars_dict = {i:vars_sel[i-1] for i in range(1, len(vars_sel) + 1)}
-    df_print_vars = pd.DataFrame.from_dict(vars_dict, orient="index")
-    df_print_vars.columns = ["Variable(s)"]
-
-    print("Número de variables de tipo {} --> {}".format(type_var, len(vars_sel)))
-    # print("- Las variables de tipo {} son: \n".format(type_var, vars_sel))
-    print(display(df_print_vars))
-
-
-    return
-
-
-
-## Transform columns' names to standard format
-def clean_col_names(dataframe):
-    """
-    Transform columns' names to standard format (lowercase, no spaces, no points)
-        args:
-            dataframe (dataframe): df whose columns will be formatted.
-        returns:
-            dataframe (dataframe): df with columns cleaned.
-    """
-
-    ## Definition of cleaning funcitons that will be applied to the columns' names
-    fun1 = lambda x: x.lower() ## convert to lowercase
-    fun2 = lambda x: re.sub("( |¡|!|¿|\?|\.|,|;|:)", "_", x) ## eliminate spaces and punctuation signs for underscore
-    fun3 = lambda x: unicodedata.normalize("NFD", x).encode("ascii", "ignore").decode("utf-8") ## substitute accents for normal letters
-    funcs = [fun1, fun2, fun3]
-
-    ## Applying the defined functions to the columns' names
-    for fun in funcs:
-        dataframe.columns = [fun(col) for col in dataframe.columns]
-
-    return dataframe
 
 
 
@@ -271,60 +317,7 @@ def data_profiling_numeric(data, num_vars):
 
 
 
-def convert_lower(data, vars_lower):
-    """
-     Converting observatios for selected columns into lowercase.
-        args:
-            data (dataframe): data that is being analyzed.
-            vars_lower (list): list of the columns' names in the dataframe that will be changed to lowercase.
-        returns:
-            data(dataframe): dataframe that is being analyzed with the observations (of the selected columns) in lowercase.
-    """
-    for x in vars_lower:
-        data[x]=data[x].str.lower()
-    return data
-
-
-
-## Function to correct selected entries in dataframe
-def correct_selected_entries(data, correction_dict):
-    """
-    Function to correct selected entries in dataframe
-        args:
-            data (dataframe): dataset that contains entries that need to be corrected
-        returns:
-            correction_dict (dictionary): reference to correct bad entries
-                dictionary format:
-                    > keys --> name of the column that has bad entries
-                    > values --> dictionary that contains bad word and required word (e.g. {catt: cat})
-    """
-
-    ## Loop to apply corrections
-    for corr_col in correction_dict:
-        for bad_ent in correction_dict[corr_col]:
-            data[corr_col] = data[corr_col].replace(bad_ent, correction_dict[corr_col][bad_ent])
-
-    return data
-
-
-
-def proporcion(listaVar,n):
-    """
-    Calculate the data proportion of categorical variables.
-        args:
-            listaVar (Serie): Serie with unique values of categorical variables
-                               to get use value_counts() into a Serie
-            n (int): value of total observation of data set.
-        returns:
-           newList(list): List with name, count and proportion of each category.
-    """
-    newList = []
-    for lis in listaVar.iteritems():
-        newList.append([lis[0],lis[1],"{}%".format(round(100*(lis[1]/n),1))])
-    return newList
-
-
-
+## Data profiling for categorical variables
 def data_profiling_categ(data, cat_vars):
     """
     Create the data profiling of categorical variables.
@@ -374,6 +367,24 @@ def data_profiling_categ(data, cat_vars):
         print(display(dfProp))
         print("\n\n".format())
     return
+
+
+
+## Calculate the data proportion of categorical variables
+def proporcion(listaVar, n):
+    """
+    Calculate the data proportion of categorical variables
+        args:
+            listaVar (Serie): Serie with unique values of categorical variables
+                               to get use value_counts() into a Serie
+            n (int): value of total observation of data set.
+        returns:
+           newList(list): List with name, count and proportion of each category.
+    """
+    newList = []
+    for lis in listaVar.iteritems():
+        newList.append([lis[0],lis[1],"{}%".format(round(100*(lis[1]/n),1))])
+    return newList
 
 
 
@@ -882,22 +893,6 @@ def heatmaps(data,choose_year,axis,yes,ylabel):
     heat.set_yticklabels(heat.get_yticklabels(), rotation = 0)
     heat.set_xticklabels(heat.get_xticklabels())#, rotation = 90, fontsize = 8)
     return heat
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
