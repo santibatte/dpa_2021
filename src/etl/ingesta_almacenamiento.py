@@ -21,6 +21,8 @@ import pickle
 
 import re
 
+import unicodedata
+
 
 
 ## Third party imports
@@ -34,12 +36,21 @@ import pandas as pd
 
 ## Local application imports
 
-# sys.path.append("../")
 
 from src.utils.general import (
 	read_yaml_file,
 	get_s3_credentials,
 	get_api_token
+)
+
+from src.utils.params_gen import (
+    regex_violations,
+    serious_viols,
+)
+
+from src.utils.utils import (
+    save_df,
+    load_df
 )
 
 
@@ -69,9 +80,9 @@ today_info = date.today().strftime('%Y-%m-%d')
 
 
 "------------------------------------------------------------------------------"
-###############
-## Functions ##
-###############
+#######################################
+## Data loading and saving functions ##
+#######################################
 
 
 ##
@@ -171,6 +182,187 @@ def guardar_ingesta(bucket_name, bucket_path):
 
 	## Uploading data to s3
 	return s3.put_object(Bucket=bucket_name, Key=bucket_path + file_name, Body=ingesta)
+
+
+
+## (test function) Converting data into pandas dataframe by providing the data's location.
+def ingest_local_csv(data_path):
+    """
+    (test function) Converting data into pandas dataframe by providing the data's location.
+        args:
+            filename (string): path relative to the repo's root where the data (.csv file) is located
+        returns:
+            df_c5 (dataframe): .csv file converted to pandas dataframe
+    """
+
+    ## Reading file in specified path
+    df = pd.read_csv(data_path)
+
+    return df
+
+
+
+## Saving dataframe as pickle object in specified location.
+def save_ingestion(df, path):
+    """
+    Saving dataframe as pickle object in specified location.
+        args:
+            df (dataframe): df that will be converted and saved as pickle.
+            path (string): location where the pickle will be stored.
+    """
+
+    ## Converting and saving dataframe.
+    save_df(df, path)
+
+
+
+
+
+"------------------------------------------------------------------------------"
+#############################
+## Data cleaning functions ##
+#############################
+
+
+## Transform columns' names to standard format
+def clean_col_names(dataframe):
+    """
+    Transform columns' names to standard format (lowercase, no spaces, no points)
+        args:
+            dataframe (dataframe): df whose columns will be formatted.
+        returns:
+            dataframe (dataframe): df with columns cleaned.
+    """
+
+    ## Definition of cleaning funcitons that will be applied to the columns' names
+    fun1 = lambda x: re.sub('[^a-zA-Z0-9 \n\.]', '-', x.lower()) ## change special characters for "-"
+    fun2 = lambda x: unicodedata.normalize("NFD", x).encode("ascii", "ignore").decode("utf-8") ## substitute accents for normal letters
+    fun3 = lambda x: re.sub(' ', '_', x.lower()) ## change spaces for "_"
+
+    funcs = [fun1, fun2, fun3]
+
+    ## Applying the defined functions to the columns' names
+    for fun in funcs:
+        dataframe.columns = [fun(col) for col in dataframe.columns]
+
+    return dataframe
+
+
+
+## Converting observatios for selected columns into lowercase
+def convert_lower(data, vars_lower):
+    """
+     Converting observatios for selected columns into lowercase
+        args:
+            data (dataframe): data that is being analyzed.
+            vars_lower (list): list of the columns' names in the dataframe that will be changed to lowercase.
+        returns:
+            data(dataframe): dataframe that is being analyzed with the observations (of the selected columns) in lowercase.
+    """
+    for x in vars_lower:
+        data[x]=data[x].str.lower()
+    return data
+
+
+
+## Cleaning columns with text
+def clean_txt(txt):
+    """
+    """
+
+    ## Setting everything to lowercase and substituting special characters with "-"
+    txt = re.sub('[^a-zA-Z0-9 \n\.]', '-', txt.lower())
+
+    ## Changing spaces with "_"clean_col_names
+    txt = re.sub(" ", "_", txt)
+
+
+    return txt
+
+
+
+## Identify if any serious violations were committed if
+def mark_serious_violations(row):
+    """
+    Identify if any serious violations were committed if
+
+    :param row: dataframe row where violations codes to be evaluated are present.
+
+    :return:
+    """
+    try:
+
+        v_nums = re.findall(r'\| (.+?). ', row)
+
+        if len(set(serious_viols) - set(v_nums)) == len(set(serious_viols)):
+            res = "no_serious_violations"
+
+        else:
+            res = "serious_violations"
+
+    except:
+        res = "no_result"
+
+    return res
+
+
+
+## Master cleaning function: initial function to clean the dataset. This function uses the functions above.
+def initial_cleaning(data):
+    """
+    Master cleaning function: initial function to clean the dataset. This function uses the functions above.
+
+    :param data: raw dataframe that will be go through the initial cleaning process
+
+    :return dfx: resulting dataframe after initial cleaning
+    """
+
+    ## Creating copy of initial dataframe
+    dfx = data.copy()
+
+
+    ## Cleaning names of columns
+    clean_col_names(dfx)
+
+
+    ## Creating column identifying if entry has serious violations
+
+    #### Adding specific string to beggining of `violations`
+    dfx["violations"] = "| " + dfx["violations"]
+
+    #### Creating new column with label regarding presence of serious violations
+    dfx["serious_violations"] = dfx["violations"].apply(lambda x: mark_serious_violations(x))
+
+
+    return dfx
+
+
+
+
+
+"------------------------------------------------------------------------------"
+###############################
+## Ingestion master function ##
+###############################
+
+
+## Function desigend to execute all ingestion functions.
+def ingest(data_path, ingestion_pickle_loc):
+    """
+    Function desigend to execute all ingestion functions.
+        args:
+            path (string): path where the project's data is stored.
+            ingestion_save (string): location where the resulting pickle object will be stored.
+        returns:
+            -
+    """
+
+    ## Executing ingestion functions
+    df = ingest_local_csv(data_path) ## Temporal function
+    # guardar_ingesta(bucket_name, bucket_path)
+    df = initial_cleaning(df)
+    save_ingestion(df, ingestion_pickle_loc) ## Temporal function
+    print("\n** Ingestion module successfully executed **\n")
 
 
 

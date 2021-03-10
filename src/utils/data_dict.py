@@ -11,96 +11,96 @@
 
 
 data_dict = {
-    "folio": {
+    "inspection_id": {
         "relevant": False,
         "data_type": "categoric",
         "model_relevant": False,
         "id_feature": True
     },
-    "fecha_creacion": {
-        "relevant": True,
-        "data_type": "date_and_time",
-        "model_relevant": False
-    },
-    "hora_creacion": {
-        "relevant": True,
-        "data_type": "date_and_time",
-        "model_relevant": False
-    },
-    "dia_semana": {
-        "relevant": True,
-        "data_type": "categoric",
-        "model_relevant": True
-    },
-    "codigo_cierre": { ## This feature will only be used to obtain labels and then its dropped.
-        "relevant": True,
-        "data_type": "categoric",
-        "model_relevant": False
-    },
-    "fecha_cierre": {
-        "relevant": False,
-        "data_type": "date_and_time",
-        "model_relevant": False
-    },
-    "año_cierre": {
-        "relevant": False,
-        "data_type": "date_and_time",
-        "model_relevant": False
-    },
-    "mes_cierre": {
-        "relevant": False,
-        "data_type": "date_and_time",
-        "model_relevant": False
-    },
-    "hora_cierre": {
-        "relevant": False,
-        "data_type": "date_and_time",
-        "model_relevant": False
-    },
-    "delegacion_inicio": {
+    "dba_name": {
         "relevant": False,
         "data_type": "categoric",
         "model_relevant": False
     },
-    "incidente_c4": {
+    "aka_name": {
+        "relevant": False,
+        "data_type": "categoric",
+        "model_relevant": False
+    },
+    "license_-": {
+        "relevant": False,
+        "data_type": "categoric",
+        "model_relevant": False
+    },
+    "facility_type": {
         "relevant": True,
         "data_type": "categoric",
         "model_relevant": True
     },
-    "latitud": {
-        "relevant": False,
-        "data_type": "coordenate",
-        "model_relevant": False
-    },
-    "longitud": {
-        "relevant": False,
-        "data_type": "coordenate",
-        "model_relevant": False
-    },
-    "clas_con_f_alarma": {
-        "relevant": False,
-        "data_type": "categoric",
-        "model_relevant": False
-    },
-    "tipo_entrada": {
+    "risk": {
         "relevant": True,
         "data_type": "categoric",
         "model_relevant": True
     },
-    "delegacion_cierre": {
+    "address": {
         "relevant": False,
         "data_type": "categoric",
         "model_relevant": False
     },
-    "geopoint": {
+    "city": {
+        "relevant": True,
+        "data_type": "categoric",
+        "model_relevant": True
+    },
+    "state": {
         "relevant": False,
-        "data_type": "coordenate",
+        "data_type": "categoric",
         "model_relevant": False
     },
-    "mes": {
+    "zip": {
         "relevant": False,
-        "data_type": "date_and_time",
+        "data_type": "categoric",
         "model_relevant": False
+    },
+    "inspection_date": {
+        "relevant": False,
+        "data_type": "categoric",
+        "model_relevant": False
+    },
+    "inspection_type": {
+        "relevant": True,
+        "data_type": "categoric",
+        "model_relevant": True
+    },
+    "results": {
+        "relevant": False,
+        "data_type": "categoric",
+        "model_relevant": False
+    },
+    "violations": {
+        "relevant": False,
+        "data_type": "categoric",
+        "model_relevant": False
+    },
+    "latitude": {
+        "relevant": False,
+        "data_type": "categoric",
+        "model_relevant": False
+    },
+    "longitude": {
+        "relevant": False,
+        "data_type": "categoric",
+        "model_relevant": False
+    },
+    "location": {
+        "relevant": False,
+        "data_type": "categoric",
+        "model_relevant": False
+    },
+    "serious_violations": {
+        "relevant": True,
+        "data_type": "categoric",
+        "model_relevant": True
     }
 }
 
