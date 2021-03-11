@@ -76,7 +76,7 @@ def json_dump_dict(dictionary):
 
 
 ## Function to create entries that will populate the data_created_dict.
-def update_data_created_dict(var, relevant=True, data_type="not_specified", model_relevant=False):
+def update_created_dict(var, relevant=True, feature_type="not_specified", model_relevant=False):
     """
     Function to create entries that will populate the data_created_dict.
         args:
@@ -92,13 +92,12 @@ def update_data_created_dict(var, relevant=True, data_type="not_specified", mode
     entry = {
         var: {
             "relevant": relevant,
-            "data_type": data_type,
+            "feature_type": feature_type,
             "model_relevant": model_relevant
         }
     }
 
     data_created_dict.update(entry)
-
 
     return
 
@@ -154,35 +153,6 @@ def json_dump_dict(dictionary):
     """
 
     print(json.dumps(dictionary, indent=4, ensure_ascii=False).encode("utf8").decode())
-
-    return
-
-
-
-## Function to create entries that will populate the data_created_dict.
-def update_data_created_dict(var, relevant=True, data_type="not_specified", model_relevant=False):
-    """
-    Function to create entries that will populate the data_created_dict.
-        args:
-            var (string): name of entry.
-            relevant (boolean): option to specify whether the entry is relevant or not (maybe this is an usless tag).
-            data_type (string): type of data related to the entry (e.g. categoric, numeric).
-            model_relevant (boolean): option to specify whether the entry will be fed to the model.
-        returns:
-            # entry (dictionary): dictionary with information about the entry.
-            -
-    """
-
-    entry = {
-        var: {
-            "relevant": relevant,
-            "data_type": data_type,
-            "model_relevant": model_relevant
-        }
-    }
-
-    data_created_dict.update(entry)
-
 
     return
 

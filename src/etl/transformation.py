@@ -16,6 +16,8 @@ import pickle
 
 import sys
 
+import re
+
 
 ## Third party imports
 
@@ -32,14 +34,17 @@ from src.utils.data_dict import (
 )
 
 from src.utils.utils import (
-    update_data_created_dict,
+    update_created_dict,
     load_df,
     save_df
 )
 
 from src.utils.params_gen import (
     ingestion_pickle_loc,
-    transformation_pickle_loc
+    transformation_pickle_loc,
+
+    regex_violations,
+    serious_viols,
 )
 
 
@@ -167,8 +172,8 @@ def cyclic_trasformation(df, col):
 
 
     ## Updating data creation dictionary to include cyclical features.
-    update_data_created_dict(col + "_sin", relevant=True, feature_type="numeric", model_relevant=True)
-    update_data_created_dict(col + "_cos", relevant=True, feature_type="numeric", model_relevant=True)
+    update_created_dict(col + "_sin", relevant=True, feature_type="numeric", model_relevant=True)
+    update_created_dict(col + "_cos", relevant=True, feature_type="numeric", model_relevant=True)
 
 
 
@@ -185,18 +190,16 @@ def mark_serious_violations(row):
 
     :return:
     """
-    try:
 
-        v_nums = re.findall(r'\| (.+?). ', row)
+    res = "no_result"
 
-        if len(set(serious_viols) - set(v_nums)) == len(set(serious_viols)):
-            res = "no_serious_violations"
+    v_nums = re.findall(regex_violations, row)
 
-        else:
-            res = "serious_violations"
+    if (len(set(serious_viols) - set(v_nums)) == len(set(serious_viols))) & (len(v_nums) != 0):
+        res = "no_serious_violations"
 
-    except:
-        res = "no_result"
+    elif len(set(serious_viols) - set(v_nums)) != len(set(serious_viols)):
+        res = "serious_violations"
 
     return res
 
@@ -207,19 +210,19 @@ def serious_viols_col(df):
     """
     Create new column with info regarding serious violations
 
-    :param data: raw dataframe that will be go through the initial cleaning process
+    :param df: raw dataframe that will be go through the initial cleaning process
 
     :return dfx: resulting dataframe after initial cleaning
     """
 
     ## Adding specific string to beggining of `violations`
-    df["violations"] = "| " + df["violations"]
+    df["violations"] = "-_" + df["violations"]
 
     ## Creating new column with label regarding presence of serious violations
     df["serious_violations"] = df["violations"].apply(lambda x: mark_serious_violations(x))
 
     ## Updating data creation dictionary to new column
-    update_data_created_dict("serious_violations", relevant=True, feature_type="categoric", model_relevant=True)
+    update_created_dict("serious_violations", relevant=True, feature_type="categoric", model_relevant=True)
 
     return df
 

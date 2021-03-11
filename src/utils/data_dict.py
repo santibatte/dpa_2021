@@ -92,7 +92,7 @@ data_dict = {
         "predict_label": True
     },
     "violations": {
-        "relevant": False,
+        "relevant": True,
         "feature_type": "categoric",
         "data_type": "string",
         "model_relevant": False
