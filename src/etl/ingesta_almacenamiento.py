@@ -53,6 +53,8 @@ from src.utils.utils import (
     load_df
 )
 
+from src.utils.data_dict import data_dict
+
 
 
 
@@ -281,6 +283,29 @@ def clean_txt(txt):
 
 
 
+## Create new column on working dataframe to discriminate false from true calls.
+def generate_label(df):
+    """
+    Create new column on working dataframe to discriminate false from true calls.
+        args:
+            df (dataframe): df where the new column will be added.
+        returns:
+            -
+    """
+
+    ## Identifying feature that will serve as predictive label
+    predict_label = [key for key in data_dict if "predict_label" in data_dict[key]][0]
+
+    ## Crating new label column,
+    df["label"] = df[predict_label].apply(lambda x: 1 if
+                                          ("Pass" in x) |
+                                          ("pass" in x)
+                                          else 0
+                                         )
+
+
+    return df
+
 
 
 ## Master cleaning function: initial function to clean the dataset. This function uses the functions above.
@@ -298,6 +323,9 @@ def initial_cleaning(data):
 
     ## Cleaning names of columns
     clean_col_names(dfx)
+
+    ## Adding column with predictive label
+    dfx = generate_label(dfx)
 
     return dfx
 

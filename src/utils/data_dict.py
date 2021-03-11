@@ -73,9 +73,10 @@ data_dict = {
         "model_relevant": True
     },
     "results": {
-        "relevant": False,
+        "relevant": True,
         "data_type": "categoric",
-        "model_relevant": False
+        "model_relevant": False,
+        "predict_label": True
     },
     "violations": {
         "relevant": False,
