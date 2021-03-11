@@ -10,9 +10,12 @@
 #############
 
 
-## Python libraries
+## Standard library imports
 
 import sys
+
+
+## Third party imports
 
 from sklearn.model_selection import (
     GridSearchCV,
@@ -24,11 +27,15 @@ from sklearn.model_selection import (
 )
 from sklearn.compose import ColumnTransformer
 
+import pandas as pd
+pd.set_option("display.max_columns", 10)
 
-## Ancillary modules
+
+## Local application imports
 
 from src.utils.data_dict import (
-    data_dict
+    data_dict,
+    data_created_dict
 )
 
 from src.utils.utils import (
@@ -37,25 +44,21 @@ from src.utils.utils import (
     save_df
 )
 
-from src.utils.params import (
+from src.utils.params_gen import (
+    transformation_pickle_loc,
+    fe_pickle_loc_imp_features,
+    fe_pickle_loc_feature_labs,
+)
+
+from src.utils.params_ml import (
     categoric_pipeline,
     numeric_pipeline,
     models_dict,
     time_series_splits,
     evaluation_metric,
     feature_importance_theshold,
-    tag_non_relevant_cats,
-    transformation_pickle_loc,
-    fe_pickle_loc_imp_features,
-    fe_pickle_loc_feature_labs,
+    tag_non_relevant_cats
 )
-
-from src.pipelines.transformation import (
-    data_created_dict
-)
-
-import pandas as pd
-pd.set_option("display.max_columns", 10)
 
 
 
@@ -142,16 +145,16 @@ def feature_cleaning_dict(feature_importance, ohe_dict):
 
         if imp_f in ohe_dict:
             fe_cln_dict[imp_f] = {
-                "data_type": "categoric",
+                "feature_type": "categoric",
                 "important_categories": list(feature_importance.loc[(m1 & m2), "Feature"])
             }
         else:
             if imp_f in data_dict:
                 fe_cln_dict[imp_f] = {
-                    "data_type": data_dict[imp_f]["data_type"]
+                    "feature_type": data_dict[imp_f]["feature_type"]
                 }
             elif imp_f in data_created_dict:
-                fe_cln_dict[imp_f] = {"data_type": data_created_dict[imp_f]["data_type"]}
+                fe_cln_dict[imp_f] = {"feature_type": data_created_dict[imp_f]["feature_type"]}
             else:
                 raise NameError("Rob_error: the important feature is not in any data dictionary")
 
@@ -176,7 +179,7 @@ def apply_feature_selection(fe_cln_dict, df):
     df.drop(nr_f, axis=1, inplace=True)
 
     ## Grouping all the non relevant categories of a relevant feature in specified tag.
-    for cat_key in [key for key in fe_cln_dict if fe_cln_dict[key]["data_type"] == "categoric"]:
+    for cat_key in [key for key in fe_cln_dict if fe_cln_dict[key]["feature_type"] == "categoric"]:
         m1 = ~df[cat_key].isin(fe_cln_dict[cat_key]["important_categories"])
         df.loc[m1, [cat_key]] = tag_non_relevant_cats
 
@@ -211,9 +214,9 @@ def feature_generation(df):
 
     ## Cleaning features to leave only those relevant for the model.
     nr_features_cols = [key for key in data_dict if
-                (data_dict[key]['relevant']==True) &
-                (data_dict[key]['model_relevant']==False)
-              ]
+                        (data_dict[key]['relevant'] == True) & ## To avoid deleting columns already deleted
+                        (data_dict[key]['model_relevant'] == False) ## To filter relevant features for model
+                       ]
     df_features.drop(nr_features_cols, axis=1, inplace=True)
     features_cols = list(df_features.columns)
     print("\n++ Complete list of features ({}) that will be fed to the model:".format(len(features_cols)))
@@ -226,18 +229,19 @@ def feature_generation(df):
     #### Creating list of the features that will processed through the pipeline (categoric).
     cat_features_orig = [key for key in data_dict if
                     (data_dict[key]['model_relevant']==True) &
-                    (data_dict[key]['data_type']=='categoric')
+                    (data_dict[key]['feature_type']=='categoric')
                    ]
 
     cat_features_add = [key for key in data_created_dict if
                     (data_created_dict[key]['model_relevant']==True) &
-                    (data_created_dict[key]['data_type']=='categoric')
+                    (data_created_dict[key]['feature_type']=='categoric')
                    ]
     cat_features = cat_features_orig + cat_features_add
 
     print("\n++ List of categorical features ({}) that will be processed through the categoric pipeline are:".format(len(cat_features)))
     ohe_dict = {}
     for cat in cat_features:
+        print(cat)
         print("    {}. {}".format(cat_features.index(cat) + 1, cat))
         cat_list = list(df[cat].unique())
         cat_list.sort()
@@ -246,11 +250,11 @@ def feature_generation(df):
     #### Creating list of the features that will processed through the pipeline (numeric).
     num_features_orig = [key for key in data_dict if
                     (data_dict[key]['model_relevant']==True) &
-                    (data_dict[key]['data_type']=='numeric')
+                    (data_dict[key]['feature_type']=='numeric')
                    ]
     num_features_add = [key for key in data_created_dict if
                     (data_created_dict[key]['model_relevant']==True) &
-                    (data_created_dict[key]['data_type']=='numeric')
+                    (data_created_dict[key]['feature_type']=='numeric')
                    ]
     num_features = num_features_orig + num_features_add
 
@@ -352,8 +356,8 @@ def feature_selection(df, df_features_prc, df_labels, df_features_prc_cols, ohe_
 
 
     ## Processing selected features through pipeline
-    cat_imp_features = [key for key in fe_cln_dict if fe_cln_dict[key]["data_type"] == "categoric"]
-    num_imp_features = [key for key in fe_cln_dict if fe_cln_dict[key]["data_type"] == "numeric"]
+    cat_imp_features = [key for key in fe_cln_dict if fe_cln_dict[key]["feature_type"] == "categoric"]
+    num_imp_features = [key for key in fe_cln_dict if fe_cln_dict[key]["feature_type"] == "numeric"]
     pipeline = ColumnTransformer([
         ('categoric', categoric_pipeline, cat_imp_features),
         ('numeric', numeric_pipeline, num_imp_features)

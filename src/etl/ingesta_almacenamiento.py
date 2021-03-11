@@ -268,16 +268,28 @@ def convert_lower(data, vars_lower):
 
 
 ## Cleaning columns with text
-def clean_txt(txt):
+def clean_strings(txt):
     """
+    Cleaning columns with text
+
+    :param txt: text entry that wiil be cleaned
+    :type txt: string
+
+    :return txt: cleaned text entry
+    :type txt: string
     """
+
+    ## Eliminating unnecessary whitespace
+    txt = txt.strip()
+
+    ## Substitute accents for normal letters
+    txt = unicodedata.normalize("NFD", txt).encode("ascii", "ignore").decode("utf-8")
 
     ## Setting everything to lowercase and substituting special characters with "-"
     txt = re.sub('[^a-zA-Z0-9 \n\.]', '-', txt.lower())
 
     ## Changing spaces with "_"clean_col_names
     txt = re.sub(" ", "_", txt)
-
 
     return txt
 
@@ -297,11 +309,28 @@ def generate_label(df):
     predict_label = [key for key in data_dict if "predict_label" in data_dict[key]][0]
 
     ## Crating new label column,
-    df["label"] = df[predict_label].apply(lambda x: 1 if
-                                          ("Pass" in x) |
-                                          ("pass" in x)
-                                          else 0
-                                         )
+    df["label"] = df[predict_label].apply(lambda x: 1 if "pass" in x else 0)
+
+
+    return df
+
+
+
+## Eliminating unused columns from dataframe.
+def drop_cols(df):
+    """
+    Eliminating unused columns from dataframe.
+        args:
+            df (dataframe): df that will be cleaned.
+        returns:
+            -
+    """
+
+    ## Obtainig list of columns that are relevant
+    nrel_col = [col for col in data_dict if data_dict[col]["relevant"] == False]
+
+    ## Dropping non relevant columns
+    df.drop(nrel_col, inplace=True, axis=1)
 
 
     return df
@@ -323,6 +352,17 @@ def initial_cleaning(data):
 
     ## Cleaning names of columns
     clean_col_names(dfx)
+
+    ## Eliminating unused columns
+    dfx = drop_cols(dfx)
+
+    ## Cleaning string columns
+    #### Selecting only columns that are relevant and that have strings
+    str_cols = [feat for feat in data_dict if (data_dict[feat]["relevant"] == True) & (data_dict[feat]["data_type"] == "string")]
+    #### Making sure that these columns are strings and cleaning the strings in the column
+    for str_col in str_cols:
+        dfx[str_col] = dfx[str_col].astype("str")
+        dfx[str_col] = dfx[str_col].apply(lambda x: clean_strings(x))
 
     ## Adding column with predictive label
     dfx = generate_label(dfx)
