@@ -10,18 +10,21 @@
 #############
 
 
-## Python libraries
+## Standard library imports
 
 import pickle
 
 import sys
+
+
+## Third party imports
 
 import pandas as pd
 
 import numpy as np
 
 
-## Ancillary modules
+## Local application imports
 
 from src.utils.data_dict import (
     data_created_dict,
@@ -34,7 +37,7 @@ from src.utils.utils import (
     save_df
 )
 
-from src.utils.params import (
+from src.utils.params_gen import (
     ingestion_pickle_loc,
     transformation_pickle_loc
 )
@@ -154,7 +157,7 @@ def cyclic_trasformation(df, col):
     if "hora" in col:
         div=24
     elif "dia" in col:
-        div= 30.4
+        div=30.4
     elif "mes" in col:
         div=12
 
@@ -173,34 +176,50 @@ def cyclic_trasformation(df, col):
 
 
 
-## Conduct relevant transformations to numeric variables.
-def numeric_tranformation(col, df):
+## Identify if any serious violations were committed if
+def mark_serious_violations(row):
     """
-    Conduct relevant transformations to numeric variables.
-        args:
-            col (string): name of numeric column that will be transformed.
-            df (dataframe): df that will be transformed.
-        returns:
-            df (dataframe): resulting df with cleaned numeric column.
+    Identify if any serious violations were committed if
+
+    :param row: dataframe row where violations codes to be evaluated are present.
+
+    :return:
+    """
+    try:
+
+        v_nums = re.findall(r'\| (.+?). ', row)
+
+        if len(set(serious_viols) - set(v_nums)) == len(set(serious_viols)):
+            res = "no_serious_violations"
+
+        else:
+            res = "serious_violations"
+
+    except:
+        res = "no_result"
+
+    return res
+
+
+
+## Create new column with info regarding serious violations
+def serious_viols_col(df):
+    """
+    Create new column with info regarding serious violations
+
+    :param data: raw dataframe that will be go through the initial cleaning process
+
+    :return dfx: resulting dataframe after initial cleaning
     """
 
-    pass
+    ## Adding specific string to beggining of `violations`
+    df["violations"] = "| " + df["violations"]
 
+    ## Creating new column with label regarding presence of serious violations
+    df["serious_violations"] = df["violations"].apply(lambda x: mark_serious_violations(x))
 
-
-## Conduct relevant transformations to categoric variables.
-def categoric_trasformation(col, df):
-    """
-    Conduct relevant transformations to categoric variables.
-        args:
-            col (string): name of categoric column that will be transformed.
-            df (dataframe): df that will be transformed.
-        returns:
-            df (dataframe): resulting df with cleaned categoric column.
-    """
-
-    df[col] = df[col].replace(['LLAMADA DEL 911'],'LLAMADA_911_066')
-    df[col] = df[col].replace(['LLAMADA DEL 066'],'LLAMADA_911_066')
+    ## Updating data creation dictionary to new column
+    update_data_created_dict("serious_violations", relevant=True, data_type="categoric", model_relevant=True)
 
     return df
 
@@ -227,10 +246,9 @@ def transform(ingestion_pickle_loc, transformation_pickle_loc):
 
     ## Executing transformation functions
     df = load_ingestion(ingestion_pickle_loc)
-    df = date_transformation("fecha_creacion", df)
-    df = hour_transformation("hora_creacion", df)
-    # df = numeric_tranformation(col, df)
-    df = categoric_trasformation("tipo_entrada", df)
+    df = serious_viols_col(df)
+    # df = date_transformation("fecha_creacion", df)
+    # df = hour_transformation("hora_creacion", df)
     # print(data_created_dict)
     save_transformation(df, transformation_pickle_loc)
     print("\n** Tranformation module successfully executed **\n")

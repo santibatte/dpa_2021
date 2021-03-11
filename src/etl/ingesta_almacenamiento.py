@@ -38,9 +38,9 @@ import pandas as pd
 
 
 from src.utils.general import (
-	read_yaml_file,
-	get_s3_credentials,
-	get_api_token
+    read_yaml_file,
+    get_s3_credentials,
+    get_api_token
 )
 
 from src.utils.params_gen import (
@@ -87,101 +87,101 @@ today_info = date.today().strftime('%Y-%m-%d')
 
 ##
 def get_client(token):
-	return Socrata("data.cityofchicago.org", token)
+    return Socrata("data.cityofchicago.org", token)
 
 
 
 ##
 def ingesta_inicial(client, limit=300000):
-	return client.get("4ijn-s7e5", limit=limit)
+    return client.get("4ijn-s7e5", limit=limit)
 
 
 
 ##
 def ingesta_consecutiva(client, soql_query):
-	return client.get("4ijn-s7e5", where=soql_query)
+    return client.get("4ijn-s7e5", where=soql_query)
 
 
 
 ## Getting an s3 resource to interact with AWS s3 based on .yaml file
 def get_s3_resource():
-	"""
-	Getting an s3 resource to interact with AWS s3 based on .yaml file
-		args:
-			-
-		returns:
-			s3 (aws client session): s3 resource
-	"""
+    """
+    Getting an s3 resource to interact with AWS s3 based on .yaml file
+        args:
+            -
+        returns:
+            s3 (aws client session): s3 resource
+    """
 
-	s3_creds = get_s3_credentials("conf/local/credentials.yaml")
+    s3_creds = get_s3_credentials("conf/local/credentials.yaml")
 
-	session = boto3.Session(
-	    aws_access_key_id=s3_creds['aws_access_key_id'],
-	    aws_secret_access_key=s3_creds['aws_secret_access_key']
-	)
+    session = boto3.Session(
+        aws_access_key_id=s3_creds['aws_access_key_id'],
+        aws_secret_access_key=s3_creds['aws_secret_access_key']
+    )
 
-	s3 = session.client('s3')
+    s3 = session.client('s3')
 
-	return s3
+    return s3
 
 
 
 ## Saving data donwloaded with Chicago's API
 def guardar_ingesta(bucket_name, bucket_path):
-	"""
-	Saving data donwloaded with Chicago's API
-		args:
-			- bucket_name (string): name of bucket where data will be stored.
-			- bucket_path (string): path within the bucket to store data.
-			- pkl_path (string): string with location of temporal pkl stored in local machine.
-	"""
+    """
+    Saving data donwloaded with Chicago's API
+        args:
+            - bucket_name (string): name of bucket where data will be stored.
+            - bucket_path (string): path within the bucket to store data.
+            - pkl_path (string): string with location of temporal pkl stored in local machine.
+    """
 
-	## Getting s3 resource to store data in s3.
-	s3 = get_s3_resource()
+    ## Getting s3 resource to store data in s3.
+    s3 = get_s3_resource()
 
-	#Read token from credentials file
-	token = get_api_token("conf/local/credentials.yaml")
+    ## Read token from credentials file
+    token = get_api_token("conf/local/credentials.yaml")
 
-	## Getting client to download data with API
-	client = get_client(token)
-
-
-	## Downloading data and storing it temporaly in local machine prior upload to s3
-	if "initial" in bucket_path:
-		ingesta = pickle.dumps(ingesta_inicial(client))
-		file_name = hist_dat_prefix + today_info + ".pkl"
+    ## Getting client to download data with API
+    client = get_client(token)
 
 
-	elif "consecutive" in bucket_path:
-
-		## Finding most recent date in consecutive pickles
-
-		#### Getting list with pickles stored in s3 consecutive
-		objects = s3.list_objects_v2(Bucket=bucket_name, Prefix=cont_ingest_path)['Contents']
-
-		#### Regular expression to isolate date in string
-		regex = str(cont_dat_prefix) + "(.*).pkl"
-
-		#### List of all dates in consecutive pickles
-		pkl_dates = [datetime.strptime(re.search(regex, obj["Key"]).group(1), '%Y-%m-%d') for obj in objects if cont_dat_prefix in obj["Key"]]
-
-		#### Consecutive pickle most recent date
-		pkl_mrd = datetime.strftime(max(pkl_dates), '%Y-%m-%d')
+    ## Downloading data and storing it temporaly in local machine prior upload to s3
+    if "initial" in bucket_path:
+        ingesta = pickle.dumps(ingesta_inicial(client))
+        file_name = hist_dat_prefix + today_info + ".pkl"
 
 
-		## Building query to download data of interest
-		soql_query = "inspection_date >= '{}'".format(pkl_mrd)
+    elif "consecutive" in bucket_path:
 
-		ingesta = pickle.dumps(ingesta_consecutiva(client, soql_query))
-		file_name = cont_dat_prefix + today_info + ".pkl"
+        ## Finding most recent date in consecutive pickles
+
+        #### Getting list with pickles stored in s3 consecutive
+        objects = s3.list_objects_v2(Bucket=bucket_name, Prefix=cont_ingest_path)['Contents']
+
+        #### Regular expression to isolate date in string
+        regex = str(cont_dat_prefix) + "(.*).pkl"
+
+        #### List of all dates in consecutive pickles
+        pkl_dates = [datetime.strptime(re.search(regex, obj["Key"]).group(1), '%Y-%m-%d') for obj in objects if cont_dat_prefix in obj["Key"]]
+
+        #### Consecutive pickle most recent date
+        pkl_mrd = datetime.strftime(max(pkl_dates), '%Y-%m-%d')
 
 
-	else:
-		raise NameError('Unknown bucket path')
+        ## Building query to download data of interest
+        soql_query = "inspection_date >= '{}'".format(pkl_mrd)
+
+        ingesta = pickle.dumps(ingesta_consecutiva(client, soql_query))
+        file_name = cont_dat_prefix + today_info + ".pkl"
 
 
-	## Uploading data to s3
-	return s3.put_object(Bucket=bucket_name, Key=bucket_path + file_name, Body=ingesta)
+    else:
+        raise NameError('Unknown bucket path')
+
+
+    ## Uploading data to s3
+    return s3.put_object(Bucket=bucket_name, Key=bucket_path + file_name, Body=ingesta)
 
 
 
@@ -281,30 +281,6 @@ def clean_txt(txt):
 
 
 
-## Identify if any serious violations were committed if
-def mark_serious_violations(row):
-    """
-    Identify if any serious violations were committed if
-
-    :param row: dataframe row where violations codes to be evaluated are present.
-
-    :return:
-    """
-    try:
-
-        v_nums = re.findall(r'\| (.+?). ', row)
-
-        if len(set(serious_viols) - set(v_nums)) == len(set(serious_viols)):
-            res = "no_serious_violations"
-
-        else:
-            res = "serious_violations"
-
-    except:
-        res = "no_result"
-
-    return res
-
 
 
 ## Master cleaning function: initial function to clean the dataset. This function uses the functions above.
@@ -320,19 +296,8 @@ def initial_cleaning(data):
     ## Creating copy of initial dataframe
     dfx = data.copy()
 
-
     ## Cleaning names of columns
     clean_col_names(dfx)
-
-
-    ## Creating column identifying if entry has serious violations
-
-    #### Adding specific string to beggining of `violations`
-    dfx["violations"] = "| " + dfx["violations"]
-
-    #### Creating new column with label regarding presence of serious violations
-    dfx["serious_violations"] = dfx["violations"].apply(lambda x: mark_serious_violations(x))
-
 
     return dfx
 
