@@ -15,7 +15,9 @@ __pycache__
 
 
 ## Data
-data/
+data/ingestion/
+data/raw/
+*.pkl
 
 
 ## Pycharm
