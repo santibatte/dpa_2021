@@ -10,7 +10,10 @@
 #############
 
 
-## Python libraries.
+## Standard library imports
+
+
+## Third party imports
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import (
@@ -18,6 +21,9 @@ from sklearn.preprocessing import (
     StandardScaler
 )
 from sklearn.pipeline import Pipeline
+
+
+## Local application imports
 
 
 
@@ -43,16 +49,16 @@ models_dict = {
 
     "random_forest": {
         "model": RandomForestClassifier(
-            max_features=6,
-            n_estimators=10,
-            max_leaf_nodes=10,
+            max_features=1,
+            n_estimators=1,
+            max_leaf_nodes=1,
             oob_score=True,
             n_jobs=-1,
             random_state=1111
         ),
         "param_grid": {
-            "n_estimators": [100, 300, 500, 800],
-            "min_samples_leaf": [3, 5, 7],
+            "n_estimators": [2],
+            "min_samples_leaf": [3],
             "criterion": ['gini']
         }
     },
@@ -62,8 +68,8 @@ models_dict = {
             random_state=2222
             ),
         "param_grid": {
-            'max_depth': [5, 10, 15, None],
-            'min_samples_leaf': [3, 5, 7]
+            'max_depth': [1],
+            'min_samples_leaf': [3]
         }
     },
 
