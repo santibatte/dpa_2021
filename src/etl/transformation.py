@@ -115,7 +115,7 @@ def date_transformation(col, df):
 
     df.drop(['dia_inicio','mes_inicio'], axis=1, inplace=True)
 
-    update_data_created_dict("anio_inicio", relevant=True, data_type="categoric", model_relevant=True)
+    update_data_created_dict("anio_inicio", relevant=True, feature_type="categoric", model_relevant=True)
 
     return df
 
@@ -167,8 +167,8 @@ def cyclic_trasformation(df, col):
 
 
     ## Updating data creation dictionary to include cyclical features.
-    update_data_created_dict(col + "_sin", relevant=True, data_type="numeric", model_relevant=True)
-    update_data_created_dict(col + "_cos", relevant=True, data_type="numeric", model_relevant=True)
+    update_data_created_dict(col + "_sin", relevant=True, feature_type="numeric", model_relevant=True)
+    update_data_created_dict(col + "_cos", relevant=True, feature_type="numeric", model_relevant=True)
 
 
 
@@ -219,7 +219,7 @@ def serious_viols_col(df):
     df["serious_violations"] = df["violations"].apply(lambda x: mark_serious_violations(x))
 
     ## Updating data creation dictionary to new column
-    update_data_created_dict("serious_violations", relevant=True, data_type="categoric", model_relevant=True)
+    update_data_created_dict("serious_violations", relevant=True, feature_type="categoric", model_relevant=True)
 
     return df
 
