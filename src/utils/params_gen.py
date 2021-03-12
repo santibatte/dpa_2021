@@ -53,6 +53,72 @@ regex_violations = r'-_(\d+?)\._'
 serious_viols = [str(num) for num in list(range(1, 44 + 1)) + [70]]
 
 
+## Parameters for category reduction
+
+#### Dictionary with references to make substitution
+cat_reduction_ref = {
+    "facility_type": {
+        "cat_1": {
+            "key_words": [
+                "resta",
+                "bar",
+                "food"
+            ],
+            "substitution": "restaurant_bar"
+        },
+        "cat_2": {
+            "key_words": [
+                "daycare",
+                "children",
+                "day_care"
+            ],
+            "substitution": "daycare"
+        },
+    },
+    "city": {
+        "cat_1": {
+            "key_words": [
+                "chica"
+            ],
+            "substitution": "chicago"
+        },
+    },
+    "inspection_type": {
+        "cat_1": {
+            "key_words": [
+                "re-inspec",
+                "reinspec",
+            ],
+            "substitution": "re_inspec"
+        },
+        "cat_2": {
+            "key_words": [
+                "complaint",
+            ],
+            "substitution": "complaint"
+        },
+        "cat_3": {
+            "key_words": [
+                "inspecti",
+            ],
+            "substitution": "inspection"
+        },
+        "cat_4": {
+            "key_words": [
+                "canvas",
+            ],
+            "substitution": "canvass"
+        },
+        "cat_5": {
+            "key_words": [
+                "licen",
+            ],
+            "substitution": "license"
+        },
+    },
+}
+
+
 
 
 

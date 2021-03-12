@@ -91,3 +91,941 @@ Wed Mar 10 14:14:16 CST 2021
 
 
 
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Mar 10 19:03:15 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+------------------------------------------------
+Wed Mar 10 19:03:21 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Mar 10 19:03:51 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+------------------------------------------------
+Wed Mar 10 19:03:57 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Mar 10 19:04:57 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+------------------------------------------------
+Wed Mar 10 19:05:04 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Mar 10 19:05:23 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+------------------------------------------------
+Wed Mar 10 19:05:30 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Mar 10 19:10:08 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+------------------------------------------------
+Wed Mar 10 19:10:14 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Mar 10 19:11:22 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+------------------------------------------------
+Wed Mar 10 19:11:28 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Mar 10 19:52:39 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+------------------------------------------------
+Wed Mar 10 19:52:46 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Mar 10 19:53:33 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (17) that will be fed to the model:
+    1. inspection_id
+    2. dba_name
+    3. aka_name
+    4. license_-
+    5. facility_type
+    6. risk
+    7. address
+    8. city
+    9. state
+    10. zip
+    11. inspection_date
+    12. inspection_type
+    13. violations
+    14. latitude
+    15. longitude
+    16. location
+    17. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+    1. facility_type
+
+------------------------------------------------
+Wed Mar 10 19:53:44 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Mar 10 19:54:50 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (17) that will be fed to the model:
+    1. inspection_id
+    2. dba_name
+    3. aka_name
+    4. license_-
+    5. facility_type
+    6. risk
+    7. address
+    8. city
+    9. state
+    10. zip
+    11. inspection_date
+    12. inspection_type
+    13. violations
+    14. latitude
+    15. longitude
+    16. location
+    17. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+facility_type
+    1. facility_type
+
+------------------------------------------------
+Wed Mar 10 19:54:57 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Mar 10 19:59:39 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+------------------------------------------------
+Wed Mar 10 19:59:44 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Mar 10 19:59:57 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+------------------------------------------------
+Wed Mar 10 20:00:03 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Mar 10 20:02:59 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+facility_type
+    1. facility_type
+
+------------------------------------------------
+Wed Mar 10 20:03:06 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Mar 11 10:04:12 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+------------------------------------------------
+Thu Mar 11 10:04:21 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Mar 11 10:06:11 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+------------------------------------------------
+Thu Mar 11 10:06:28 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Mar 11 10:07:55 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+------------------------------------------------
+Thu Mar 11 10:08:12 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Mar 11 10:09:48 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+------------------------------------------------
+Thu Mar 11 10:10:06 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Mar 11 10:11:22 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+facility_type
+    1. facility_type
+risk
+    2. risk
+city
+    3. city
+inspection_type
+    4. inspection_type
+serious_violations
+    5. serious_violations
+
+++ List of numeric features (0) that will be processed through the numeric pipeline are:
+
+++ Dimensions of matrix after going through pipeline: (215067, 619)
+
+
+++ The model that will be used is: RandomForestClassifier(max_features=1, max_leaf_nodes=1, n_estimators=1,
+                       n_jobs=-1, oob_score=True, random_state=1111)
+
+
+------------------------------------------------
+Thu Mar 11 10:11:43 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Mar 11 10:16:42 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+facility_type
+    1. facility_type
+risk
+    2. risk
+city
+    3. city
+inspection_type
+    4. inspection_type
+serious_violations
+    5. serious_violations
+
+++ List of numeric features (0) that will be processed through the numeric pipeline are:
+
+++ Dimensions of matrix after going through pipeline: (215067, 619)
+
+
+++ The model that will be used is: RandomForestClassifier(max_features=1, max_leaf_nodes=1, n_estimators=1,
+                       n_jobs=-1, oob_score=True, random_state=1111)
+
+
+------------------------------------------------
+Thu Mar 11 10:17:04 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Mar 11 10:18:12 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+facility_type
+    1. facility_type
+risk
+    2. risk
+city
+    3. city
+inspection_type
+    4. inspection_type
+serious_violations
+    5. serious_violations
+
+++ List of numeric features (0) that will be processed through the numeric pipeline are:
+
+++ Dimensions of matrix after going through pipeline: (215067, 619)
+
+
+++ The model that will be used is: RandomForestClassifier(max_features=1, max_leaf_nodes=1, n_estimators=1,
+                       n_jobs=-1, oob_score=True, random_state=1111)
+
+
+------------------------------------------------
+Thu Mar 11 10:18:32 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Mar 11 10:33:11 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+facility_type
+    1. facility_type
+risk
+    2. risk
+city
+    3. city
+inspection_type
+    4. inspection_type
+serious_violations
+    5. serious_violations
+
+++ List of numeric features (0) that will be processed through the numeric pipeline are:
+
+++ Dimensions of matrix after going through pipeline: (215067, 619)
+
+
+++ The model that will be used is: RandomForestClassifier(max_features=1, max_leaf_nodes=1, n_estimators=1,
+                       n_jobs=-1, oob_score=True, random_state=1111)
+
+
+------------------------------------------------
+Thu Mar 11 10:33:32 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Mar 11 10:36:11 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+facility_type
+    1. facility_type
+risk
+    2. risk
+city
+    3. city
+inspection_type
+    4. inspection_type
+serious_violations
+    5. serious_violations
+
+++ List of numeric features (0) that will be processed through the numeric pipeline are:
+
+++ Dimensions of matrix after going through pipeline: (215067, 619)
+
+
+++ The model that will be used is: RandomForestClassifier(max_features=1, max_leaf_nodes=1, n_estimators=1,
+                       n_jobs=-1, oob_score=True, random_state=1111)
+
+
+------------------------------------------------
+Thu Mar 11 10:36:33 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Mar 11 10:38:47 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+------------------------------------------------
+Thu Mar 11 10:38:52 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Mar 11 10:39:00 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of numeric features (0) that will be processed through the numeric pipeline are:
+
+++ Dimensions of matrix after going through pipeline: (215067, 619)
+
+
+++ The model that will be used is: RandomForestClassifier(max_features=1, max_leaf_nodes=1, n_estimators=1,
+                       n_jobs=-1, oob_score=True, random_state=1111)
+
+
+------------------------------------------------
+Thu Mar 11 10:39:23 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Mar 11 10:42:32 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+------------------------------------------------
+Thu Mar 11 10:42:49 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Mar 11 10:44:00 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of numeric features (0) that will be processed through the numeric pipeline are:
+
+++ Dimensions of matrix after going through pipeline: (215067, 620)
+
+
+++ The model that will be used is: RandomForestClassifier(max_features=1, max_leaf_nodes=1, n_estimators=1,
+                       n_jobs=-1, oob_score=True, random_state=1111)
+
+
+------------------------------------------------
+Thu Mar 11 10:44:24 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Mar 11 10:45:43 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of numeric features (0) that will be processed through the numeric pipeline are:
+
+++ Dimensions of matrix after going through pipeline: (215067, 621)
+
+
+++ The model that will be used is: RandomForestClassifier(max_features=1, max_leaf_nodes=1, n_estimators=1,
+                       n_jobs=-1, oob_score=True, random_state=1111)
+
+
+------------------------------------------------
+Thu Mar 11 10:46:07 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Fri Mar 12 12:38:54 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of numeric features (0) that will be processed through the numeric pipeline are:
+
+++ Dimensions of matrix after going through pipeline: (215067, 18)
+
+
+++ The model that will be used is: RandomForestClassifier(max_features=1, max_leaf_nodes=1, n_estimators=1,
+                       n_jobs=-1, oob_score=True, random_state=1111)
+
+
+------------------------------------------------
+Fri Mar 12 12:39:26 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Fri Mar 12 12:41:24 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of numeric features (0) that will be processed through the numeric pipeline are:
+
+++ Dimensions of matrix after going through pipeline: (215067, 18)
+
+
+++ The model that will be used is: RandomForestClassifier(max_features=1, max_leaf_nodes=1, n_estimators=1,
+                       n_jobs=-1, oob_score=True, random_state=1111)
+
+
+------------------------------------------------
+Fri Mar 12 12:41:58 CST 2021
+------------------------------------------------
+
+
+
+

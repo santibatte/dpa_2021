@@ -42,6 +42,7 @@ from src.utils.utils import (
 from src.utils.params_gen import (
     ingestion_pickle_loc,
     transformation_pickle_loc,
+    cat_reduction_ref,
 
     regex_violations,
     serious_viols,
@@ -85,6 +86,58 @@ def save_transformation(df, path):
     """
 
     save_df(df, path)
+
+
+
+## Identify if any serious violations were committed if
+def mark_serious_violations(row):
+    """
+    Identify if any serious violations were committed if
+
+    :param row: dataframe row where violations codes to be evaluated are present.
+
+    :return:
+    """
+
+    res = "no_result"
+
+    v_nums = re.findall(regex_violations, row)
+
+    if (len(set(serious_viols) - set(v_nums)) == len(set(serious_viols))) & (len(v_nums) != 0):
+        res = "no_serious_violations"
+
+    elif len(set(serious_viols) - set(v_nums)) != len(set(serious_viols)):
+        res = "serious_violations"
+
+    return res
+
+
+
+## Function to reduce categories of selected column
+def cat_red(row, dfcol):
+    """
+    Function to reduce categories of selected column
+
+    :param row: row in dataframe that contains the category that will be evaluated
+    :type row: string
+
+    :param dfcol: name of the column processed
+    :type dfcol: string
+
+    :return res: string from row simplified in predefined category
+    :type res: string
+    """
+    res = str(dfcol) + "_other"
+
+    for cat in cat_reduction_ref[dfcol]:
+
+        for key_word in cat_reduction_ref[dfcol][cat]["key_words"]:
+
+            if key_word in row:
+                res = cat_reduction_ref[dfcol][cat]["substitution"]
+                break
+
+    return res
 
 
 
@@ -181,30 +234,6 @@ def cyclic_trasformation(df, col):
 
 
 
-## Identify if any serious violations were committed if
-def mark_serious_violations(row):
-    """
-    Identify if any serious violations were committed if
-
-    :param row: dataframe row where violations codes to be evaluated are present.
-
-    :return:
-    """
-
-    res = "no_result"
-
-    v_nums = re.findall(regex_violations, row)
-
-    if (len(set(serious_viols) - set(v_nums)) == len(set(serious_viols))) & (len(v_nums) != 0):
-        res = "no_serious_violations"
-
-    elif len(set(serious_viols) - set(v_nums)) != len(set(serious_viols)):
-        res = "serious_violations"
-
-    return res
-
-
-
 ## Create new column with info regarding serious violations
 def serious_viols_col(df):
     """
@@ -223,6 +252,25 @@ def serious_viols_col(df):
 
     ## Updating data creation dictionary to new column
     update_created_dict("serious_violations", relevant=True, feature_type="categoric", model_relevant=True)
+
+    return df
+
+
+
+## Reducing the number of categories in selected columns
+def category_reductions(df):
+    """
+    Reducing the number of categories in selected columns
+
+    :param df: dataframe whose categoric columns will be processed
+    :type df: dataframe
+
+    :return df: processed dataframe
+    :type df: dataframe
+    """
+    
+    for dfcol in cat_reduction_ref:
+        df[dfcol] = df[dfcol].apply(lambda x: cat_red(x, dfcol))
 
     return df
 
@@ -248,12 +296,19 @@ def transform(ingestion_pickle_loc, transformation_pickle_loc):
     """
 
     ## Executing transformation functions
+
     df = load_ingestion(ingestion_pickle_loc)
+
     df = serious_viols_col(df)
+
     # df = date_transformation("fecha_creacion", df)
+
     # df = hour_transformation("hora_creacion", df)
-    # print(data_created_dict)
+
+    df = category_reductions(df)
+
     save_transformation(df, transformation_pickle_loc)
+
     print("\n** Tranformation module successfully executed **\n")
 
 
