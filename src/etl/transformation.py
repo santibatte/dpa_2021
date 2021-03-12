@@ -10,18 +10,23 @@
 #############
 
 
-## Python libraries
+## Standard library imports
 
 import pickle
 
 import sys
+
+import re
+
+
+## Third party imports
 
 import pandas as pd
 
 import numpy as np
 
 
-## Ancillary modules
+## Local application imports
 
 from src.utils.data_dict import (
     data_created_dict,
@@ -29,14 +34,18 @@ from src.utils.data_dict import (
 )
 
 from src.utils.utils import (
-    update_data_created_dict,
+    update_created_dict,
     load_df,
     save_df
 )
 
-from src.utils.params import (
+from src.utils.params_gen import (
     ingestion_pickle_loc,
-    transformation_pickle_loc
+    transformation_pickle_loc,
+    cat_reduction_ref,
+
+    regex_violations,
+    serious_viols,
 )
 
 
@@ -80,6 +89,58 @@ def save_transformation(df, path):
 
 
 
+## Identify if any serious violations were committed if
+def mark_serious_violations(row):
+    """
+    Identify if any serious violations were committed if
+
+    :param row: dataframe row where violations codes to be evaluated are present.
+
+    :return:
+    """
+
+    res = "no_result"
+
+    v_nums = re.findall(regex_violations, row)
+
+    if (len(set(serious_viols) - set(v_nums)) == len(set(serious_viols))) & (len(v_nums) != 0):
+        res = "no_serious_violations"
+
+    elif len(set(serious_viols) - set(v_nums)) != len(set(serious_viols)):
+        res = "serious_violations"
+
+    return res
+
+
+
+## Function to reduce categories of selected column
+def cat_red(row, dfcol):
+    """
+    Function to reduce categories of selected column
+
+    :param row: row in dataframe that contains the category that will be evaluated
+    :type row: string
+
+    :param dfcol: name of the column processed
+    :type dfcol: string
+
+    :return res: string from row simplified in predefined category
+    :type res: string
+    """
+    res = str(dfcol) + "_other"
+
+    for cat in cat_reduction_ref[dfcol]:
+
+        for key_word in cat_reduction_ref[dfcol][cat]["key_words"]:
+
+            if key_word in row:
+                res = cat_reduction_ref[dfcol][cat]["substitution"]
+                break
+
+    return res
+
+
+
 
 
 "------------------------------------------------------------------------------"
@@ -112,7 +173,7 @@ def date_transformation(col, df):
 
     df.drop(['dia_inicio','mes_inicio'], axis=1, inplace=True)
 
-    update_data_created_dict("anio_inicio", relevant=True, data_type="categoric", model_relevant=True)
+    update_data_created_dict("anio_inicio", relevant=True, feature_type="categoric", model_relevant=True)
 
     return df
 
@@ -154,7 +215,7 @@ def cyclic_trasformation(df, col):
     if "hora" in col:
         div=24
     elif "dia" in col:
-        div= 30.4
+        div=30.4
     elif "mes" in col:
         div=12
 
@@ -164,8 +225,8 @@ def cyclic_trasformation(df, col):
 
 
     ## Updating data creation dictionary to include cyclical features.
-    update_data_created_dict(col + "_sin", relevant=True, data_type="numeric", model_relevant=True)
-    update_data_created_dict(col + "_cos", relevant=True, data_type="numeric", model_relevant=True)
+    update_created_dict(col + "_sin", relevant=True, feature_type="numeric", model_relevant=True)
+    update_created_dict(col + "_cos", relevant=True, feature_type="numeric", model_relevant=True)
 
 
 
@@ -173,34 +234,43 @@ def cyclic_trasformation(df, col):
 
 
 
-## Conduct relevant transformations to numeric variables.
-def numeric_tranformation(col, df):
+## Create new column with info regarding serious violations
+def serious_viols_col(df):
     """
-    Conduct relevant transformations to numeric variables.
-        args:
-            col (string): name of numeric column that will be transformed.
-            df (dataframe): df that will be transformed.
-        returns:
-            df (dataframe): resulting df with cleaned numeric column.
-    """
+    Create new column with info regarding serious violations
 
-    pass
+    :param df: raw dataframe that will be go through the initial cleaning process
 
-
-
-## Conduct relevant transformations to categoric variables.
-def categoric_trasformation(col, df):
-    """
-    Conduct relevant transformations to categoric variables.
-        args:
-            col (string): name of categoric column that will be transformed.
-            df (dataframe): df that will be transformed.
-        returns:
-            df (dataframe): resulting df with cleaned categoric column.
+    :return dfx: resulting dataframe after initial cleaning
     """
 
-    df[col] = df[col].replace(['LLAMADA DEL 911'],'LLAMADA_911_066')
-    df[col] = df[col].replace(['LLAMADA DEL 066'],'LLAMADA_911_066')
+    ## Adding specific string to beggining of `violations`
+    df["violations"] = "-_" + df["violations"]
+
+    ## Creating new column with label regarding presence of serious violations
+    df["serious_violations"] = df["violations"].apply(lambda x: mark_serious_violations(x))
+
+    ## Updating data creation dictionary to new column
+    update_created_dict("serious_violations", relevant=True, feature_type="categoric", model_relevant=True)
+
+    return df
+
+
+
+## Reducing the number of categories in selected columns
+def category_reductions(df):
+    """
+    Reducing the number of categories in selected columns
+
+    :param df: dataframe whose categoric columns will be processed
+    :type df: dataframe
+
+    :return df: processed dataframe
+    :type df: dataframe
+    """
+    
+    for dfcol in cat_reduction_ref:
+        df[dfcol] = df[dfcol].apply(lambda x: cat_red(x, dfcol))
 
     return df
 
@@ -226,13 +296,19 @@ def transform(ingestion_pickle_loc, transformation_pickle_loc):
     """
 
     ## Executing transformation functions
+
     df = load_ingestion(ingestion_pickle_loc)
-    df = date_transformation("fecha_creacion", df)
-    df = hour_transformation("hora_creacion", df)
-    # df = numeric_tranformation(col, df)
-    df = categoric_trasformation("tipo_entrada", df)
-    # print(data_created_dict)
+
+    df = serious_viols_col(df)
+
+    # df = date_transformation("fecha_creacion", df)
+
+    # df = hour_transformation("hora_creacion", df)
+
+    df = category_reductions(df)
+
     save_transformation(df, transformation_pickle_loc)
+
     print("\n** Tranformation module successfully executed **\n")
 
 

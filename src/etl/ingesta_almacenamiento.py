@@ -38,9 +38,9 @@ import pandas as pd
 
 
 from src.utils.general import (
-	read_yaml_file,
-	get_s3_credentials,
-	get_api_token
+    read_yaml_file,
+    get_s3_credentials,
+    get_api_token
 )
 
 from src.utils.params_gen import (
@@ -52,6 +52,8 @@ from src.utils.utils import (
     save_df,
     load_df
 )
+
+from src.utils.data_dict import data_dict
 
 
 
@@ -87,101 +89,101 @@ today_info = date.today().strftime('%Y-%m-%d')
 
 ##
 def get_client(token):
-	return Socrata("data.cityofchicago.org", token)
+    return Socrata("data.cityofchicago.org", token)
 
 
 
 ##
 def ingesta_inicial(client, limit=300000):
-	return client.get("4ijn-s7e5", limit=limit)
+    return client.get("4ijn-s7e5", limit=limit)
 
 
 
 ##
 def ingesta_consecutiva(client, soql_query):
-	return client.get("4ijn-s7e5", where=soql_query)
+    return client.get("4ijn-s7e5", where=soql_query)
 
 
 
 ## Getting an s3 resource to interact with AWS s3 based on .yaml file
 def get_s3_resource():
-	"""
-	Getting an s3 resource to interact with AWS s3 based on .yaml file
-		args:
-			-
-		returns:
-			s3 (aws client session): s3 resource
-	"""
+    """
+    Getting an s3 resource to interact with AWS s3 based on .yaml file
+        args:
+            -
+        returns:
+            s3 (aws client session): s3 resource
+    """
 
-	s3_creds = get_s3_credentials("conf/local/credentials.yaml")
+    s3_creds = get_s3_credentials("conf/local/credentials.yaml")
 
-	session = boto3.Session(
-	    aws_access_key_id=s3_creds['aws_access_key_id'],
-	    aws_secret_access_key=s3_creds['aws_secret_access_key']
-	)
+    session = boto3.Session(
+        aws_access_key_id=s3_creds['aws_access_key_id'],
+        aws_secret_access_key=s3_creds['aws_secret_access_key']
+    )
 
-	s3 = session.client('s3')
+    s3 = session.client('s3')
 
-	return s3
+    return s3
 
 
 
 ## Saving data donwloaded with Chicago's API
 def guardar_ingesta(bucket_name, bucket_path):
-	"""
-	Saving data donwloaded with Chicago's API
-		args:
-			- bucket_name (string): name of bucket where data will be stored.
-			- bucket_path (string): path within the bucket to store data.
-			- pkl_path (string): string with location of temporal pkl stored in local machine.
-	"""
+    """
+    Saving data donwloaded with Chicago's API
+        args:
+            - bucket_name (string): name of bucket where data will be stored.
+            - bucket_path (string): path within the bucket to store data.
+            - pkl_path (string): string with location of temporal pkl stored in local machine.
+    """
 
-	## Getting s3 resource to store data in s3.
-	s3 = get_s3_resource()
+    ## Getting s3 resource to store data in s3.
+    s3 = get_s3_resource()
 
-	#Read token from credentials file
-	token = get_api_token("conf/local/credentials.yaml")
+    ## Read token from credentials file
+    token = get_api_token("conf/local/credentials.yaml")
 
-	## Getting client to download data with API
-	client = get_client(token)
-
-
-	## Downloading data and storing it temporaly in local machine prior upload to s3
-	if "initial" in bucket_path:
-		ingesta = pickle.dumps(ingesta_inicial(client))
-		file_name = hist_dat_prefix + today_info + ".pkl"
+    ## Getting client to download data with API
+    client = get_client(token)
 
 
-	elif "consecutive" in bucket_path:
-
-		## Finding most recent date in consecutive pickles
-
-		#### Getting list with pickles stored in s3 consecutive
-		objects = s3.list_objects_v2(Bucket=bucket_name, Prefix=cont_ingest_path)['Contents']
-
-		#### Regular expression to isolate date in string
-		regex = str(cont_dat_prefix) + "(.*).pkl"
-
-		#### List of all dates in consecutive pickles
-		pkl_dates = [datetime.strptime(re.search(regex, obj["Key"]).group(1), '%Y-%m-%d') for obj in objects if cont_dat_prefix in obj["Key"]]
-
-		#### Consecutive pickle most recent date
-		pkl_mrd = datetime.strftime(max(pkl_dates), '%Y-%m-%d')
+    ## Downloading data and storing it temporaly in local machine prior upload to s3
+    if "initial" in bucket_path:
+        ingesta = pickle.dumps(ingesta_inicial(client))
+        file_name = hist_dat_prefix + today_info + ".pkl"
 
 
-		## Building query to download data of interest
-		soql_query = "inspection_date >= '{}'".format(pkl_mrd)
+    elif "consecutive" in bucket_path:
 
-		ingesta = pickle.dumps(ingesta_consecutiva(client, soql_query))
-		file_name = cont_dat_prefix + today_info + ".pkl"
+        ## Finding most recent date in consecutive pickles
+
+        #### Getting list with pickles stored in s3 consecutive
+        objects = s3.list_objects_v2(Bucket=bucket_name, Prefix=cont_ingest_path)['Contents']
+
+        #### Regular expression to isolate date in string
+        regex = str(cont_dat_prefix) + "(.*).pkl"
+
+        #### List of all dates in consecutive pickles
+        pkl_dates = [datetime.strptime(re.search(regex, obj["Key"]).group(1), '%Y-%m-%d') for obj in objects if cont_dat_prefix in obj["Key"]]
+
+        #### Consecutive pickle most recent date
+        pkl_mrd = datetime.strftime(max(pkl_dates), '%Y-%m-%d')
 
 
-	else:
-		raise NameError('Unknown bucket path')
+        ## Building query to download data of interest
+        soql_query = "inspection_date >= '{}'".format(pkl_mrd)
+
+        ingesta = pickle.dumps(ingesta_consecutiva(client, soql_query))
+        file_name = cont_dat_prefix + today_info + ".pkl"
 
 
-	## Uploading data to s3
-	return s3.put_object(Bucket=bucket_name, Key=bucket_path + file_name, Body=ingesta)
+    else:
+        raise NameError('Unknown bucket path')
+
+
+    ## Uploading data to s3
+    return s3.put_object(Bucket=bucket_name, Key=bucket_path + file_name, Body=ingesta)
 
 
 
@@ -266,9 +268,22 @@ def convert_lower(data, vars_lower):
 
 
 ## Cleaning columns with text
-def clean_txt(txt):
+def clean_strings(txt):
     """
+    Cleaning columns with text
+
+    :param txt: text entry that wiil be cleaned
+    :type txt: string
+
+    :return txt: cleaned text entry
+    :type txt: string
     """
+
+    ## Eliminating unnecessary whitespace
+    txt = txt.strip()
+
+    ## Substitute accents for normal letters
+    txt = unicodedata.normalize("NFD", txt).encode("ascii", "ignore").decode("utf-8")
 
     ## Setting everything to lowercase and substituting special characters with "-"
     txt = re.sub('[^a-zA-Z0-9 \n\.]', '-', txt.lower())
@@ -276,34 +291,49 @@ def clean_txt(txt):
     ## Changing spaces with "_"clean_col_names
     txt = re.sub(" ", "_", txt)
 
-
     return txt
 
 
 
-## Identify if any serious violations were committed if
-def mark_serious_violations(row):
+## Create new column on working dataframe to discriminate false from true calls.
+def generate_label(df):
     """
-    Identify if any serious violations were committed if
-
-    :param row: dataframe row where violations codes to be evaluated are present.
-
-    :return:
+    Create new column on working dataframe to discriminate false from true calls.
+        args:
+            df (dataframe): df where the new column will be added.
+        returns:
+            -
     """
-    try:
 
-        v_nums = re.findall(r'\| (.+?). ', row)
+    ## Identifying feature that will serve as predictive label
+    predict_label = [key for key in data_dict if "predict_label" in data_dict[key]][0]
 
-        if len(set(serious_viols) - set(v_nums)) == len(set(serious_viols)):
-            res = "no_serious_violations"
+    ## Crating new label column,
+    df["label"] = df[predict_label].apply(lambda x: 1 if "pass" in x else 0)
 
-        else:
-            res = "serious_violations"
 
-    except:
-        res = "no_result"
+    return df
 
-    return res
+
+
+## Eliminating unused columns from dataframe.
+def drop_cols(df):
+    """
+    Eliminating unused columns from dataframe.
+        args:
+            df (dataframe): df that will be cleaned.
+        returns:
+            -
+    """
+
+    ## Obtainig list of columns that are relevant
+    nrel_col = [col for col in data_dict if data_dict[col]["relevant"] == False]
+
+    ## Dropping non relevant columns
+    df.drop(nrel_col, inplace=True, axis=1)
+
+
+    return df
 
 
 
@@ -320,19 +350,22 @@ def initial_cleaning(data):
     ## Creating copy of initial dataframe
     dfx = data.copy()
 
-
     ## Cleaning names of columns
     clean_col_names(dfx)
 
+    ## Eliminating unused columns
+    dfx = drop_cols(dfx)
 
-    ## Creating column identifying if entry has serious violations
+    ## Cleaning string columns
+    #### Selecting only columns that are relevant and that have strings
+    str_cols = [feat for feat in data_dict if (data_dict[feat]["relevant"] == True) & (data_dict[feat]["data_type"] == "string")]
+    #### Making sure that these columns are strings and cleaning the strings in the column
+    for str_col in str_cols:
+        dfx[str_col] = dfx[str_col].astype("str")
+        dfx[str_col] = dfx[str_col].apply(lambda x: clean_strings(x))
 
-    #### Adding specific string to beggining of `violations`
-    dfx["violations"] = "| " + dfx["violations"]
-
-    #### Creating new column with label regarding presence of serious violations
-    dfx["serious_violations"] = dfx["violations"].apply(lambda x: mark_serious_violations(x))
-
+    ## Adding column with predictive label
+    dfx = generate_label(dfx)
 
     return dfx
 
