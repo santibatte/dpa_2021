@@ -85,9 +85,12 @@ class APIDataIngestion(luigi.Task):
         client = get_client(token)
 
         if self.ingest_type =='initial':
-            ingesta = pickle.dumps(ingesta_inicial(client))
+            ingesta = ingesta_inicial(client)
 
         elif self.ingest_type=='consecutive':
+
+			## Getting s3 resource to store data in s3.
+			#s3= get_s3_resource()
 
             ## Finding most recent date in consecutive pickles
 
@@ -108,5 +111,5 @@ class APIDataIngestion(luigi.Task):
 
             ingesta = pickle.dumps(ingesta_consecutiva(client, soql_query))
 
-        with self.output().open('w') as output_file:
-            pickle.dump(ingesta, output_file)
+        output_file= open(self.output().path, 'wb')
+        pickle.dump(ingesta, output_file)
