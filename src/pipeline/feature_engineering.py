@@ -241,7 +241,6 @@ def feature_generation(df):
     print("\n++ List of categorical features ({}) that will be processed through the categoric pipeline are:".format(len(cat_features)))
     ohe_dict = {}
     for cat in cat_features:
-        print(cat)
         print("    {}. {}".format(cat_features.index(cat) + 1, cat))
         cat_list = list(df[cat].unique())
         cat_list.sort()
