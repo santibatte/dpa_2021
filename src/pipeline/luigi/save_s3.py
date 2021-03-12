@@ -37,15 +37,14 @@ class S3Task(luigi.Task):
         #luigi.contrib.s3.S3Client.put(local_path='src/pipeline/luigi/luigi_tmp_files/ingesta_tmp.pkl',destination_s3_path=self.output().path)
 
     def output(self):
-        output_path = "s3://{}/{}/{}/YEAR={}/MONTH={}/ingesta.pkl".\
-        format(self.bucket,
-        self.root_path,
+        #output_path = "s3://{}/{}/{}/YEAR={}/MONTH={}/ingesta.pkl".\
+        output_path = "{}/{}/YEAR={}/MONTH={}/ingesta.pkl".\
+        format(self.root_path,
         self.ingest_type,
         #self.task_name,
         self.year,
         str(self.month))
 
-        #return luigi.contrib.s3.S3Target.put('src/pipeline/luigi/luigi_tmp_files/ingesta_tmp.pkl',output_path)
         return luigi.contrib.s3.S3Target(output_path)
 
         #return luigi.contrib.s3.S3Client()
