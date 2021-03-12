@@ -10,9 +10,7 @@ from src.pipeline.luigi.extract import APIDataIngestion
 from src.etl.ingesta_almacenamiento import get_s3_resource
 
 
-
 class S3Task(luigi.Task):
-
 
     bucket = luigi.Parameter()
     root_path = luigi.Parameter()
@@ -20,33 +18,19 @@ class S3Task(luigi.Task):
     year = luigi.Parameter()
     month = luigi.Parameter()
 
-    #bucket_name = "data-product-architecture-equipo-9"
-
     def requires(self):
         return APIDataIngestion(self)
-
-
-    #def input(self):
-    #    with open('src/pipeline/luigi/luigi_tmp_files/ingesta_tmp.pkl', 'rb') as pickle_file:
-    #        ingesta = pickle.load(pickle_file)
-    #    return ingesta
-    #    ingesta = pickle.load('src/pipeline/luigi/luigi_tmp_files/ingesta_tmp.pkl')
-    #    return ingesta
-
-
 
     def run(self):
 
         #read file
-        infile=open(self.input().path, 'rb')
-        ingesta = pickle.load(infile)
+
+        ingesta=pickle.load(open('src/pipeline/luigi/luigi_tmp_files/ingesta_tmp.pkl', 'rb'))
+        ingesta = pickle.dumps(ingesta)
+        #ingesta = pickle.load(infile)
 
         #read file
         s3 = get_s3_resource()
-
-        #output_file= open(self.output().path, 'wb')
-        #pickle.dump(ingesta, output_file)
-
 
         #with self.output().open('w') as output_file:
         s3.put_object(Bucket=self.bucket, Key=self.output().path, Body=ingesta)
