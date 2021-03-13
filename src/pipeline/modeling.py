@@ -10,7 +10,10 @@
 #############
 
 
-## Python libraries
+## Standard library imports
+
+
+## Third party imports
 
 from sklearn.model_selection import (
     GridSearchCV,
@@ -22,16 +25,18 @@ from sklearn.model_selection import (
 )
 
 
-## Ancillary modules
+## Local application imports
 
 from src.utils.utils import (
     load_df,
     save_df
 )
 
-from src.utils.params import (
+from src.utils.params_gen import (
+
     fe_pickle_loc_imp_features,
     fe_pickle_loc_feature_labs,
+
     models_pickle_loc,
     X_train_pickle_loc,
     y_train_pickle_loc,
@@ -39,6 +44,9 @@ from src.utils.params import (
     y_test_pickle_loc,
     test_predict_labs_pickle_loc,
     test_predict_scores_pickle_loc,
+)
+
+from src.utils.params_ml import (
     models_dict,
     time_series_splits,
     evaluation_metric,
@@ -85,7 +93,7 @@ def save_models(selected_model, path):
 
 
 
-##
+## Selecting model from magic loop with best estimator score
 def select_best_model(models_mloop):
     """
     """
@@ -188,17 +196,26 @@ def modeling(fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs):
             -
     """
 
-    ## Executing modeling functions
+    ## Loading feature engineering results
     df_imp_features_prc = load_features(fe_pickle_loc_imp_features)
     df_labels = load_features(fe_pickle_loc_feature_labs)
+
+    ## Implementing magic loop to select best model from `models_dict`
     sel_model, X_train, X_test, y_train, y_test = magic_loop(models_dict, df_imp_features_prc, df_labels)
+    test_predict_labs, test_predict_scores = best_model_predict_test(sel_model, X_test)
+
+    ## Saving modeling results
+
+    #### Best model
     save_models(sel_model, models_pickle_loc)
+
+    #### Data used to train the model
     save_models(X_train, X_train_pickle_loc)
     save_models(y_train, y_train_pickle_loc)
     save_models(X_test, X_test_pickle_loc)
     save_models(y_test, y_test_pickle_loc)
 
-    test_predict_labs, test_predict_scores = best_model_predict_test(sel_model, X_test)
+    #### Results from testing the model
     save_models(test_predict_labs, test_predict_labs_pickle_loc)
     save_models(test_predict_scores, test_predict_scores_pickle_loc)
 

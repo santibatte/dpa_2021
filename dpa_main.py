@@ -23,6 +23,8 @@ from src.utils.params_gen import (
     transformation_pickle_loc,
     fe_pickle_loc_imp_features,
     fe_pickle_loc_feature_labs,
+    fe_pickle_loc_imp_features,
+    fe_pickle_loc_feature_labs,
 )
 
 from src.etl.ingesta_almacenamiento import (
@@ -38,14 +40,16 @@ from src.etl.transformation import transform
 
 from src.pipeline.feature_engineering import feature_engineering
 
+from src.pipeline.modeling import modeling
+
 
 
 
 
 "------------------------------------------------------------------------------"
-###############
-## Functions ##
-###############
+#############################################
+## Function to coordinate pipeline modules ##
+#############################################
 
 
 ## Function to test project
@@ -67,6 +71,9 @@ def main_execution_function():
 
     ##
     feature_engineering(transformation_pickle_loc, fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
+
+    ##
+    modeling(fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
 
 
 
