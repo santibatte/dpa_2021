@@ -4,11 +4,17 @@ Correr Luigi:
 ``export PYTHONPATH=$PWD``
 
 2. Para correr el primer task ``APIDataIngestion``que guarda los datos de la api, correr el siguiente comando: 
+
+
 ``luigi --module src.pipeline.luigi.extract APIDataIngestion --ingest-type initial --local-scheduler``
+
+
 -La ingest-type puede ser ``ìnitial`` o ``consecutive``
 -La task no debería realizarse si ya existe un archivo .pkl en la carpeta ``luigi_tmp_files``
 
 3. Para correr el segundo task ``S3Task`` correr el siguiente comando:
+
+
 ``luigi --module src.pipeline.luigi.save_s3 S3Task --ingest-type initial --bucket data-product-architecture-equipo-9 --root-path ingestion --year 2021 --month 03 --local-scheduler``
 
 El ingest-type puede ser ``initial``o ``consecutive``
