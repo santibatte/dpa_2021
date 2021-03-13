@@ -73,23 +73,24 @@ class APIDataIngestion(luigi.Task):
     ingest_type = luigi.Parameter()
 
 
-
     def output(self):
         # guardamos en archivo local para que qeude registro de que se ejecuto el task
+
+		## generar if elif que cambie el nombre final del archivo de abajo: si es intital seria ingesta_initial_tmp y si es consecutive, sería ingesta_FECHA_tmp.pkl
         return luigi.local_target.LocalTarget('src/pipeline/luigi/luigi_tmp_files/ingesta_tmp.pkl')
 
     def run(self):
         ## Getting client to download data with API
-		token = get_api_token("conf/local/credentials.yaml")
+        token = get_api_token("conf/local/credentials.yaml")
         client = get_client(token)
 
         if self.ingest_type =='initial':
-			ingesta = ingesta_inicial(client)
+            ingesta = ingesta_inicial(client)
 
         elif self.ingest_type=='consecutive':
 
 			## Getting s3 resource to store data in s3.
-			s3= get_s3_resource()
+            s3= get_s3_resource()
 
             ## Finding most recent date in consecutive pickles
 
@@ -110,5 +111,5 @@ class APIDataIngestion(luigi.Task):
 
             ingesta = pickle.dumps(ingesta_consecutiva(client, soql_query))
 
-    	output_file= open(self.output().path, 'wb')
-    	pickle.dump(ingesta, output_file)
+        output_file= open(self.output().path, 'wb')
+        pickle.dump(ingesta, output_file)
