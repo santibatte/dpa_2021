@@ -1563,3 +1563,761 @@ Sat Mar 13 17:48:48 CST 2021
 
 
 
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Sat Mar 13 18:18:49 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of numeric features (0) that will be processed through the numeric pipeline are:
+
+++ Dimensions of matrix after going through pipeline: (215067, 18)
+
+
+++ The model that will be used is: RandomForestClassifier(max_features=10, max_leaf_nodes=50, n_estimators=10,
+                       n_jobs=-1, oob_score=True, random_state=1111)
+
+
+++ Grid search results:
+
+    ++++ Best parameters: {'criterion': 'gini', 'min_samples_leaf': 10, 'n_estimators': 5}
+    ++++ Best estimator: RandomForestClassifier(max_features=10, max_leaf_nodes=50, min_samples_leaf=10,
+                       n_estimators=5, n_jobs=-1, oob_score=True,
+                       random_state=1111)
+    ++++ Number of features in best estimator: 18 
+
+    ++++ Best estimator score: 0.7446643151790519
+
+    ++++ Best estimator oob score: 0.7027486615386659
+
+
+++ Threshold used to discriminate variables' importance: 0.001
+
+
+++ Report of processed features importance analysis: 
+    Importance                Feature      Mother_feature  Important
+0     0.305242                canvass     inspection_type       True
+1     0.224734              no_result  serious_violations       True
+2     0.191017     serious_violations  serious_violations       True
+3     0.108900                license     inspection_type       True
+4     0.049854           risk_3_-low-                risk       True
+5     0.025027              complaint     inspection_type       True
+6     0.024824  no_serious_violations  serious_violations       True
+7     0.017907             inspection     inspection_type       True
+8     0.016966         restaurant_bar       facility_type       True
+9     0.010532          risk_1_-high-                risk       True
+10    0.007940                daycare       facility_type       True
+11    0.006947        risk_2_-medium-                risk       True
+12    0.005083    facility_type_other       facility_type       True
+13    0.002307                    nan                risk       True
+14    0.001993  inspection_type_other     inspection_type       True
+15    0.000333                    all                risk      False
+16    0.000279             city_other                city      False
+17    0.000113                chicago                city      False
+
+
+++ Summary dictionary derived from feature importance analysis: 
+
+{
+    "inspection_type": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "canvass",
+            "license",
+            "complaint",
+            "inspection",
+            "inspection_type_other"
+        ]
+    },
+    "serious_violations": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "no_result",
+            "serious_violations",
+            "no_serious_violations"
+        ]
+    },
+    "risk": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "risk_3_-low-",
+            "risk_1_-high-",
+            "risk_2_-medium-",
+            "nan"
+        ]
+    },
+    "facility_type": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "restaurant_bar",
+            "daycare",
+            "facility_type_other"
+        ]
+    }
+}
+
+None
+
+
+++ Dimensions of matrix after going through pipeline: (215067, 16)
+
+
+** Feature engineering module successfully executed **
+
+
+++The model with the best performance is: decision_tree (score: 0.744111)
+
+** Modeling module successfully executed **
+
+
+------------------------------------------------
+Sat Mar 13 18:19:35 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Sat Mar 13 19:41:37 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of numeric features (0) that will be processed through the numeric pipeline are:
+
+++ Dimensions of matrix after going through pipeline: (215067, 18)
+
+
+++ The model that will be used is: RandomForestClassifier(max_features=10, max_leaf_nodes=50, n_estimators=10,
+                       n_jobs=-1, oob_score=True, random_state=1111)
+
+
+++ Grid search results:
+
+    ++++ Best parameters: {'criterion': 'gini', 'min_samples_leaf': 10, 'n_estimators': 5}
+    ++++ Best estimator: RandomForestClassifier(max_features=10, max_leaf_nodes=50, min_samples_leaf=10,
+                       n_estimators=5, n_jobs=-1, oob_score=True,
+                       random_state=1111)
+    ++++ Number of features in best estimator: 18 
+
+    ++++ Best estimator score: 0.7444774914808394
+
+    ++++ Best estimator oob score: 0.7028283713947896
+
+
+++ Threshold used to discriminate variables' importance: 0.001
+
+
+++ Report of processed features importance analysis: 
+    Importance                Feature      Mother_feature  Important
+0     0.311163                canvass     inspection_type       True
+1     0.222327              no_result  serious_violations       True
+2     0.200127     serious_violations  serious_violations       True
+3     0.078634                license     inspection_type       True
+4     0.055330           risk_3_-low-                risk       True
+5     0.033161  no_serious_violations  serious_violations       True
+6     0.023702              complaint     inspection_type       True
+7     0.019992             inspection     inspection_type       True
+8     0.011391         restaurant_bar       facility_type       True
+9     0.011129          risk_1_-high-                risk       True
+10    0.011126    facility_type_other       facility_type       True
+11    0.010097        risk_2_-medium-                risk       True
+12    0.007650                daycare       facility_type       True
+13    0.002429                    nan                risk       True
+14    0.001472  inspection_type_other     inspection_type       True
+15    0.000193             city_other                city      False
+16    0.000076                chicago                city      False
+17    0.000000                    all                risk      False
+
+
+++ Summary dictionary derived from feature importance analysis: 
+
+{
+    "inspection_type": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "canvass",
+            "license",
+            "complaint",
+            "inspection",
+            "inspection_type_other"
+        ]
+    },
+    "serious_violations": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "no_result",
+            "serious_violations",
+            "no_serious_violations"
+        ]
+    },
+    "risk": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "risk_3_-low-",
+            "risk_1_-high-",
+            "risk_2_-medium-",
+            "nan"
+        ]
+    },
+    "facility_type": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "restaurant_bar",
+            "facility_type_other",
+            "daycare"
+        ]
+    }
+}
+
+None
+
+
+++ Dimensions of matrix after going through pipeline: (215067, 16)
+
+
+** Feature engineering module successfully executed **
+
+
+++The model with the best performance is: random_forest (score: 0.744672)
+
+** Modeling module successfully executed **
+
+
+------------------------------------------------
+Sat Mar 13 19:42:13 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Sat Mar 13 19:43:29 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of numeric features (0) that will be processed through the numeric pipeline are:
+
+++ Dimensions of matrix after going through pipeline: (215067, 18)
+
+
+++ The model that will be used is: RandomForestClassifier(max_features=10, max_leaf_nodes=50, n_estimators=10,
+                       n_jobs=-1, oob_score=True, random_state=1111)
+
+
+++ Grid search results:
+
+    ++++ Best parameters: {'criterion': 'gini', 'min_samples_leaf': 10, 'n_estimators': 5}
+    ++++ Best estimator: RandomForestClassifier(max_features=10, max_leaf_nodes=50, min_samples_leaf=10,
+                       n_estimators=5, n_jobs=-1, oob_score=True,
+                       random_state=1111)
+    ++++ Number of features in best estimator: 18 
+
+    ++++ Best estimator score: 0.7454265558677586
+
+    ++++ Best estimator oob score: 0.7035723300519443
+
+
+++ Threshold used to discriminate variables' importance: 0.001
+
+
+++ Report of processed features importance analysis: 
+    Importance                Feature      Mother_feature  Important
+0     0.295054                canvass     inspection_type       True
+1     0.231962              no_result  serious_violations       True
+2     0.187993     serious_violations  serious_violations       True
+3     0.101900                license     inspection_type       True
+4     0.045927           risk_3_-low-                risk       True
+5     0.028137             inspection     inspection_type       True
+6     0.027432              complaint     inspection_type       True
+7     0.026748  no_serious_violations  serious_violations       True
+8     0.017382          risk_1_-high-                risk       True
+9     0.011413         restaurant_bar       facility_type       True
+10    0.010351    facility_type_other       facility_type       True
+11    0.008657                daycare       facility_type       True
+12    0.004196        risk_2_-medium-                risk       True
+13    0.002057                    nan                risk       True
+14    0.000593  inspection_type_other     inspection_type      False
+15    0.000140             city_other                city      False
+16    0.000057                chicago                city      False
+17    0.000000                    all                risk      False
+
+
+++ Summary dictionary derived from feature importance analysis: 
+
+{
+    "inspection_type": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "canvass",
+            "license",
+            "inspection",
+            "complaint"
+        ]
+    },
+    "serious_violations": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "no_result",
+            "serious_violations",
+            "no_serious_violations"
+        ]
+    },
+    "risk": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "risk_3_-low-",
+            "risk_1_-high-",
+            "risk_2_-medium-",
+            "nan"
+        ]
+    },
+    "facility_type": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "restaurant_bar",
+            "facility_type_other",
+            "daycare"
+        ]
+    }
+}
+
+None
+
+
+++ Dimensions of matrix after going through pipeline: (215067, 16)
+
+
+** Feature engineering module successfully executed **
+
+
+++The model with the best performance is: decision_tree (score: 0.744859)
+
+** Modeling module successfully executed **
+
+
+------------------------------------------------
+Sat Mar 13 19:44:05 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Sat Mar 13 19:44:49 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of numeric features (0) that will be processed through the numeric pipeline are:
+
+++ Dimensions of matrix after going through pipeline: (215067, 18)
+
+
+++ The model that will be used is: RandomForestClassifier(max_features=10, max_leaf_nodes=50, n_estimators=10,
+                       n_jobs=-1, oob_score=True, random_state=1111)
+
+
+++ Grid search results:
+
+    ++++ Best parameters: {'criterion': 'gini', 'min_samples_leaf': 10, 'n_estimators': 7}
+    ++++ Best estimator: RandomForestClassifier(max_features=10, max_leaf_nodes=50, min_samples_leaf=10,
+                       n_estimators=7, n_jobs=-1, oob_score=True,
+                       random_state=1111)
+    ++++ Number of features in best estimator: 18 
+
+    ++++ Best estimator score: 0.7440440605009864
+
+    ++++ Best estimator oob score: 0.7272860122487479
+
+
+++ Threshold used to discriminate variables' importance: 0.001
+
+
+++ Report of processed features importance analysis: 
+    Importance                Feature      Mother_feature  Important
+0     0.311364                canvass     inspection_type       True
+1     0.249911     serious_violations  serious_violations       True
+2     0.177724              no_result  serious_violations       True
+3     0.083988                license     inspection_type       True
+4     0.044609           risk_3_-low-                risk       True
+5     0.028137  no_serious_violations  serious_violations       True
+6     0.027053             inspection     inspection_type       True
+7     0.022735              complaint     inspection_type       True
+8     0.013664    facility_type_other       facility_type       True
+9     0.012838          risk_1_-high-                risk       True
+10    0.010483         restaurant_bar       facility_type       True
+11    0.009007                daycare       facility_type       True
+12    0.004722        risk_2_-medium-                risk       True
+13    0.001739  inspection_type_other     inspection_type       True
+14    0.001568                    nan                risk       True
+15    0.000213                chicago                city      False
+16    0.000159                    all                risk      False
+17    0.000085             city_other                city      False
+
+
+++ Summary dictionary derived from feature importance analysis: 
+
+{
+    "inspection_type": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "canvass",
+            "license",
+            "inspection",
+            "complaint",
+            "inspection_type_other"
+        ]
+    },
+    "serious_violations": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "serious_violations",
+            "no_result",
+            "no_serious_violations"
+        ]
+    },
+    "risk": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "risk_3_-low-",
+            "risk_1_-high-",
+            "risk_2_-medium-",
+            "nan"
+        ]
+    },
+    "facility_type": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "facility_type_other",
+            "restaurant_bar",
+            "daycare"
+        ]
+    }
+}
+
+None
+
+
+++ Dimensions of matrix after going through pipeline: (215067, 16)
+
+
+** Feature engineering module successfully executed **
+
+
+++The model with the best performance is: random_forest (score: 0.743439)
+
+** Modeling module successfully executed **
+
+
+++ Tabla de referencia: 
+Dato\Predicción    Etiqueta +           Etiqueta -
+-----------------  -------------------  -------------------
+Etiqueta +         True Positive (tp)   False Negative (fn)
+Etiqueta -         False Positive (fp)  True Negative (tn)
+
+++ Tabla de confusión 1: 
+Dato\Predicción      Etiqueta +    Etiqueta -
+-----------------  ------------  ------------
+Etiqueta +            0.0218534      0.302584
+Etiqueta -            0.0026038      0.672959
+
+++ Tabla de confusión 2: 
+Dato\Predicción      Etiqueta +    Etiqueta -
+-----------------  ------------  ------------
+Etiqueta +                 1410         19523
+Etiqueta -                  168         43420
+
+
+++ Score accuracy: 0.6948125416531052
+
+++ Tabla de confusión reajustada 1: 
+Dato\Predicción      Etiqueta +    Etiqueta -
+-----------------  ------------  ------------
+Etiqueta +             0.313076     0.0113606
+Etiqueta -             0.594675     0.0808884
+
+
+------------------------------------------------
+Sat Mar 13 19:45:22 CST 2021
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+Sat Mar 13 19:46:57 CST 2021
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+** Ingestion module successfully executed **
+
+
+** Tranformation module successfully executed **
+
+
+++ Complete list of features (5) that will be fed to the model:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of categorical features (5) that will be processed through the categoric pipeline are:
+    1. facility_type
+    2. risk
+    3. city
+    4. inspection_type
+    5. serious_violations
+
+++ List of numeric features (0) that will be processed through the numeric pipeline are:
+
+++ Dimensions of matrix after going through pipeline: (215067, 18)
+
+
+++ The model that will be used is: RandomForestClassifier(max_features=10, max_leaf_nodes=50, n_estimators=10,
+                       n_jobs=-1, oob_score=True, random_state=1111)
+
+
+++ Grid search results:
+
+    ++++ Best parameters: {'criterion': 'gini', 'min_samples_leaf': 10, 'n_estimators': 7}
+    ++++ Best estimator: RandomForestClassifier(max_features=10, max_leaf_nodes=50, min_samples_leaf=10,
+                       n_estimators=7, n_jobs=-1, oob_score=True,
+                       random_state=1111)
+    ++++ Number of features in best estimator: 18 
+
+    ++++ Best estimator score: 0.7453294075446881
+
+    ++++ Best estimator oob score: 0.7287340746349953
+
+
+++ Threshold used to discriminate variables' importance: 0.001
+
+
+++ Report of processed features importance analysis: 
+    Importance                Feature      Mother_feature  Important
+0     0.241262     serious_violations  serious_violations       True
+1     0.235999                canvass     inspection_type       True
+2     0.183901              no_result  serious_violations       True
+3     0.153565                license     inspection_type       True
+4     0.035664           risk_3_-low-                risk       True
+5     0.029298  no_serious_violations  serious_violations       True
+6     0.028738              complaint     inspection_type       True
+7     0.025879             inspection     inspection_type       True
+8     0.019627          risk_1_-high-                risk       True
+9     0.015880         restaurant_bar       facility_type       True
+10    0.011113    facility_type_other       facility_type       True
+11    0.008121                daycare       facility_type       True
+12    0.005743        risk_2_-medium-                risk       True
+13    0.002822  inspection_type_other     inspection_type       True
+14    0.001698                    nan                risk       True
+15    0.000379                    all                risk      False
+16    0.000159                chicago                city      False
+17    0.000154             city_other                city      False
+
+
+++ Summary dictionary derived from feature importance analysis: 
+
+{
+    "serious_violations": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "serious_violations",
+            "no_result",
+            "no_serious_violations"
+        ]
+    },
+    "inspection_type": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "canvass",
+            "license",
+            "complaint",
+            "inspection",
+            "inspection_type_other"
+        ]
+    },
+    "risk": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "risk_3_-low-",
+            "risk_1_-high-",
+            "risk_2_-medium-",
+            "nan"
+        ]
+    },
+    "facility_type": {
+        "feature_type": "categoric",
+        "important_categories": [
+            "restaurant_bar",
+            "facility_type_other",
+            "daycare"
+        ]
+    }
+}
+
+None
+
+
+++ Dimensions of matrix after going through pipeline: (215067, 16)
+
+
+** Feature engineering module successfully executed **
+
+
+++The model with the best performance is: decision_tree (score: 0.744291)
+
+** Modeling module successfully executed **
+
+
+++ Tabla de referencia: 
+Dato\Predicción    Etiqueta +           Etiqueta -
+-----------------  -------------------  -------------------
+Etiqueta +         True Positive (tp)   False Negative (fn)
+Etiqueta -         False Positive (fp)  True Negative (tn)
+
+++ Tabla de confusión 1: 
+Dato\Predicción      Etiqueta +    Etiqueta -
+-----------------  ------------  ------------
+Etiqueta +           0.0234497       0.304289
+Etiqueta -           0.00257281      0.669689
+
+++ Tabla de confusión 2: 
+Dato\Predicción      Etiqueta +    Etiqueta -
+-----------------  ------------  ------------
+Etiqueta +                 1513         19633
+Etiqueta -                  166         43209
+
+
+++ Score accuracy: 0.6931386680305637
+
+++ Tabla de confusión reajustada 1: 
+Dato\Predicción      Etiqueta +    Etiqueta -
+-----------------  ------------  ------------
+Etiqueta +             0.308287      0.019451
+Etiqueta -             0.550782      0.12148
+
+
+++ Precision @k: 0.9250517598343685
+
+++ Recall @k: 0.051504322766570604
+
+
+** Model evaluation module successfully executed **
+
+
+------------------------------------------------
+Sat Mar 13 19:47:32 CST 2021
+------------------------------------------------
+
+
+
+

@@ -119,6 +119,11 @@ cat_reduction_ref = {
 }
 
 
+## Classification threshold
+classif_theshold = 0.18
+reference_at_k = 20/551
+
+
 
 
 
