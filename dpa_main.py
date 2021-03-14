@@ -25,6 +25,8 @@ from src.utils.params_gen import (
     fe_pickle_loc_feature_labs,
     fe_pickle_loc_imp_features,
     fe_pickle_loc_feature_labs,
+    y_test_pickle_loc,
+    test_predict_scores_pickle_loc,
 )
 
 from src.etl.ingesta_almacenamiento import (
@@ -41,6 +43,8 @@ from src.etl.transformation import transform
 from src.pipeline.feature_engineering import feature_engineering
 
 from src.pipeline.modeling import modeling
+
+from src.pipeline.model_evaluation import model_evaluation
 
 
 
@@ -75,14 +79,17 @@ def main_execution_function():
     ##
     modeling(fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
 
+    ##
+    model_evaluation(y_test_pickle_loc, test_predict_scores_pickle_loc)
+
 
 
 
 
 "------------------------------------------------------------------------------"
-###############
-##
-###############
+################################
+## Execution of main function ##
+################################
 
 if __name__ == "__main__":
     main_execution_function()
