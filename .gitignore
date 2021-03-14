@@ -1,5 +1,5 @@
 ## MacOS
-DS_Store
+.DS_Store
 
 
 ## Sensible info
@@ -12,6 +12,16 @@ conf/local/
 
 ## Python
 __pycache__
+
+
+## Data
+data/ingestion/
+data/raw/
+*.pkl
+
+
+## Pycharm
+.idea/
 
 
 ## Rob's files
