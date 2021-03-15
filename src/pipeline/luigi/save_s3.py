@@ -25,7 +25,7 @@ class S3Task(luigi.Task):
     month = luigi.Parameter()
 
     def requires(self):
-        return APIDataIngestion(self)
+        return APIDataIngestion(self.ingest_type)
 
     def run(self):
 
@@ -55,5 +55,3 @@ class S3Task(luigi.Task):
         str(self.month))
 
         return luigi.contrib.s3.S3Target(output_path)
-
-        #return luigi.contrib.s3.S3Client()
