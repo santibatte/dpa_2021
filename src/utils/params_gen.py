@@ -13,9 +13,9 @@
 ## AWS
 bucket_name = "data-product-architecture-equipo-9"
 hist_ingest_path = "ingestion/initial/"
-hist_dat_prefix = "historic-inspections-"
+hist_dat_prefix = "historic_inspections_"
 cont_ingest_path = "ingestion/consecutive/"
-cont_dat_prefix = "consecutive-inspections-"
+cont_dat_prefix = "consecutive_inspections_"
 
 ## Ingestion
 data_path_csv = "data/raw/Food_Inspections.csv"

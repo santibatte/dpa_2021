@@ -31,9 +31,9 @@ import joblib
 ## Local application imports
 
 from src.utils.general import (
-	# read_yaml_file,
-	# get_s3_credentials,
-	get_api_token
+    # read_yaml_file,
+    # get_s3_credentials,
+    get_api_token
 )
 
 from src.utils.utils import (
@@ -85,18 +85,20 @@ class APIDataIngestion(luigi.Task):
     ## Run: download data from API depending on the ingestion type
     def run(self):
 
-        ## Getting client to download data with API
+        ## Getting client to request data from API
         token = get_api_token("conf/local/credentials.yaml")
         client = get_client(token)
 
-        if self.ingest_type =='initial':
+        ## Requesting all data from API
+        if self.ingest_type == 'initial':
             ingesta = ingesta_inicial(client)
 
 
-        elif self.ingest_type=='consecutive':
+        elif self.ingest_type == 'consecutive':
 
-			## Getting s3 resource to store data in s3.
-            s3= get_s3_resource()
+            ## Getting s3 resource to store data in s3.
+            s3 = get_s3_resource()
+
 
             ## Finding most recent date in consecutive pickles
 
@@ -117,16 +119,21 @@ class APIDataIngestion(luigi.Task):
 
             ingesta = pickle.dumps(ingesta_consecutiva(client, soql_query))
 
-        output_file= open(self.output().path, 'wb')
-        pickle.dump(ingesta, output_file)
+        ## Saving ingestion results
+        pickle.dump(ingesta, open(self.output().path, 'wb'))
 
 
     ## Output: storing downloaded information locally
     def output(self):
-        # guardamos en archivo local para que qeude registro de que se ejecuto el task
 
-		## generar if elif que cambie el nombre final del archivo de abajo: si es intital seria ingesta_initial_tmp y si es consecutive, sería ingesta_FECHA_tmp.pkl
-        return luigi.local_target.LocalTarget('src/pipeline/luigi/luigi_tmp_files/ingesta_tmp.pkl')
+        ## Saving temporal ingestion locally based on initial parameters
+        if self.ingest_type == 'initial':
+            pkl_name = hist_dat_prefix + today_info + ".pkl"
+            return luigi.local_target.LocalTarget('src/pipeline/luigi/ingestion_tmp/initial/' + pkl_name)
+
+        elif self.ingest_type == 'consecutive':
+            pkl_name = cont_dat_prefix + today_info + ".pkl"
+            return luigi.local_target.LocalTarget('src/pipeline/luigi/ingestion_tmp/consecutive/' + pkl_name)
 
 
 
