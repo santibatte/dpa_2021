@@ -44,10 +44,20 @@ import plotly.figure_factory as ff
 
 import matplotlib.pyplot as plt
 
+import boto3
+
+from sodapy import Socrata
+
 
 ## Local application imports
 
 from src.utils.data_dict import (data_created_dict)
+
+from src.utils.general import (
+	read_yaml_file,
+	get_s3_credentials,
+	get_api_token
+)
 
 
 
@@ -131,6 +141,47 @@ def save_df(df, path):
     """
 
     pickle.dump(df, open(path, "wb"))
+
+
+
+## Getting an s3 resource to interact with AWS s3 based on .yaml file
+def get_s3_resource():
+	"""
+	Getting an s3 resource to interact with AWS s3 based on .yaml file
+		args:
+			-
+		returns:
+			s3 (aws client session): s3 resource
+	"""
+
+	s3_creds = get_s3_credentials("conf/local/credentials.yaml")
+
+	session = boto3.Session(
+	    aws_access_key_id=s3_creds['aws_access_key_id'],
+	    aws_secret_access_key=s3_creds['aws_secret_access_key']
+	)
+
+	s3 = session.client('s3')
+
+	return s3
+
+
+
+## Get client to interact with AIP
+def get_client(token):
+    return Socrata("data.cityofchicago.org", token)
+
+
+
+## Request all data to API
+def ingesta_inicial(client, limit=3000000):
+    return client.get("4ijn-s7e5", limit=limit)
+
+
+
+## Request data to API based on query
+def ingesta_consecutiva(client, soql_query):
+    return client.get("4ijn-s7e5", where=soql_query)
 
 
 

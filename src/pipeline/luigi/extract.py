@@ -20,16 +20,10 @@ import re
 
 import yaml
 
-import sys
-
 
 ## Third party imports
 
 import luigi
-
-from sodapy import Socrata
-
-import boto3
 
 import joblib
 
@@ -37,9 +31,16 @@ import joblib
 ## Local application imports
 
 from src.utils.general import (
-	read_yaml_file,
-	get_s3_credentials,
+	# read_yaml_file,
+	# get_s3_credentials,
 	get_api_token
+)
+
+from src.utils.utils import (
+    get_s3_resource,
+    get_client,
+    ingesta_inicial,
+    ingesta_consecutiva,
 )
 
 
@@ -69,53 +70,6 @@ today_info = date.today().strftime('%Y-%m-%d')
 
 
 "----------------------------------------------------------------------------------------------------------------------"
-###############
-## Functions ##
-###############
-
-
-## deberia estar en UTILS:
-## Getting an s3 resource to interact with AWS s3 based on .yaml file
-def get_s3_resource():
-	"""
-	Getting an s3 resource to interact with AWS s3 based on .yaml file
-		args:
-			-
-		returns:
-			s3 (aws client session): s3 resource
-	"""
-
-	s3_creds = get_s3_credentials("conf/local/credentials.yaml")
-
-	session = boto3.Session(
-	    aws_access_key_id=s3_creds['aws_access_key_id'],
-	    aws_secret_access_key=s3_creds['aws_secret_access_key']
-	)
-
-	s3 = session.client('s3')
-
-	return s3
-
-
-
-def get_client(token):
-    return Socrata("data.cityofchicago.org", token)
-
-
-
-def ingesta_inicial(client, limit=300000):
-    return client.get("4ijn-s7e5", limit=limit)
-
-
-
-def ingesta_consecutiva(client, soql_query):
-    return client.get("4ijn-s7e5", where=soql_query)
-
-
-
-
-
-"----------------------------------------------------------------------------------------------------------------------"
 ################
 ## Luigi task ##
 ################
@@ -123,6 +77,7 @@ def ingesta_consecutiva(client, soql_query):
 
 ## Task aimed to download data from API
 class APIDataIngestion(luigi.Task):
+
 
     ## Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
