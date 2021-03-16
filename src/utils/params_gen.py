@@ -5,6 +5,24 @@
 
 
 "------------------------------------------------------------------------------"
+#############
+## Imports ##
+#############
+
+## Standard library imports
+
+from datetime import (date, datetime)
+
+## Third party imports
+
+
+## Local application imports
+
+
+
+
+
+"------------------------------------------------------------------------------"
 ####################
 ## Path locations ##
 ####################
@@ -18,6 +36,7 @@ cont_ingest_path = "ingestion/consecutive/"
 cont_dat_prefix = "consecutive_inspections_"
 
 ## Ingestion
+local_temp_ingestions = "src/pipeline/luigi/ingestion_tmp/"
 data_path_csv = "data/raw/Food_Inspections.csv"
 ingestion_pickle_loc = "data/pickles/ingest_df.pkl"
 
@@ -49,6 +68,10 @@ aequitas_df_pickle_loc = "data/pickles/aequitas_df.pkl"
 ########################
 ## General Parameters ##
 ########################
+
+
+## Date when the pipeline is executed
+today_info = date.today().strftime('%Y-%m-%d')
 
 
 ## Serious violations parameters

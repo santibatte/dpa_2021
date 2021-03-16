@@ -55,27 +55,15 @@ from src.utils.utils import (
 
 from src.utils.data_dict import data_dict
 
-
-
-
-
-"------------------------------------------------------------------------------"
-################
-## Parameters ##
-################
-
-
-## AWS parameters
-bucket_name = "data-product-architecture-equipo-9"
-
-hist_ingest_path = "ingestion/initial/"
-hist_dat_prefix = "historic-inspections-"
-
-cont_ingest_path = "ingestion/consecutive/"
-cont_dat_prefix = "consecutive-inspections-"
-
-## Naming files
-today_info = date.today().strftime('%Y-%m-%d')
+from src.utils.params_gen import (
+    bucket_name,
+    local_temp_ingestions,
+    hist_ingest_path,
+    hist_dat_prefix,
+    cont_ingest_path,
+    cont_dat_prefix,
+    today_info,
+)
 
 
 
@@ -129,13 +117,12 @@ def get_s3_resource():
 
 
 ## Saving data donwloaded with Chicago's API
-def guardar_ingesta(bucket_name, bucket_path):
+def guardar_ingesta(ingest_type, bucket_name):
     """
     Saving data donwloaded with Chicago's API
-        args:
-            - bucket_name (string): name of bucket where data will be stored.
-            - bucket_path (string): path within the bucket to store data.
-            - pkl_path (string): string with location of temporal pkl stored in local machine.
+    :param ingest_type:
+    :param bucket_name:
+    :return:
     """
 
     ## Getting s3 resource to store data in s3.
@@ -149,12 +136,13 @@ def guardar_ingesta(bucket_name, bucket_path):
 
 
     ## Downloading data and storing it temporaly in local machine prior upload to s3
-    if "initial" in bucket_path:
-        ingesta = pickle.dumps(ingesta_inicial(client))
-        file_name = hist_dat_prefix + today_info + ".pkl"
+    if ingest_type == "initial":
+
+        ## Requesting all data from API
+        ingesta = ingesta_inicial(client)
 
 
-    elif "consecutive" in bucket_path:
+    elif ingest_type == "consecutive":
 
         ## Finding most recent date in consecutive pickles
 
@@ -165,25 +153,24 @@ def guardar_ingesta(bucket_name, bucket_path):
         regex = str(cont_dat_prefix) + "(.*).pkl"
 
         #### List of all dates in consecutive pickles
-        pkl_dates = [datetime.strptime(re.search(regex, obj["Key"]).group(1), '%Y-%m-%d') for obj in objects if cont_dat_prefix in obj["Key"]]
+        pkl_dates = [datetime.strptime(re.search(regex, obj["Key"]).group(1), '%Y-%m-%d') for obj in objects if
+                     cont_dat_prefix in obj["Key"]]
 
         #### Consecutive pickle most recent date
         pkl_mrd = datetime.strftime(max(pkl_dates), '%Y-%m-%d')
-
 
         ## Building query to download data of interest
         soql_query = "inspection_date >= '{}'".format(pkl_mrd)
 
         ingesta = pickle.dumps(ingesta_consecutiva(client, soql_query))
-        file_name = cont_dat_prefix + today_info + ".pkl"
 
 
     else:
-        raise NameError('Unknown bucket path')
+        raise NameError('Invalid parameter')
 
 
     ## Uploading data to s3
-    return s3.put_object(Bucket=bucket_name, Key=bucket_path + file_name, Body=ingesta)
+    return ingesta
 
 
 
@@ -215,6 +202,20 @@ def save_ingestion(df, path):
 
     ## Converting and saving dataframe.
     save_df(df, path)
+
+
+
+## Saving ingestion locally
+def save_local_ingestion(ingest_type):
+
+    ## Saving temporal ingestion locally based on initial parameters
+    if ingest_type == 'initial':
+        return local_temp_ingestions + ingest_type + "/" + hist_dat_prefix + today_info + ".pkl"
+        # return luigi.local_target.LocalTarget('src/pipeline/luigi/ingestion_tmp/initial/' + pkl_name)
+
+    elif ingest_type == 'consecutive':
+        return local_temp_ingestions + ingest_type + "/" + cont_dat_prefix + today_info + ".pkl"
+        # return luigi.local_target.LocalTarget('src/pipeline/luigi/ingestion_tmp/consecutive/' + pkl_name)
 
 
 
