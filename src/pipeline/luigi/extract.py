@@ -43,6 +43,14 @@ from src.utils.utils import (
     ingesta_consecutiva,
 )
 
+from src.utils.params_gen import (
+    bucket_name,
+    hist_ingest_path,
+    hist_dat_prefix,
+    cont_ingest_path,
+    cont_dat_prefix,
+)
+
 
 
 
@@ -52,15 +60,6 @@ from src.utils.utils import (
 ## Parameters ##
 ################
 
-## Parameters
-## AWS parameters
-bucket_name = "data-product-architecture-equipo-9"
-
-hist_ingest_path = "ingestion/initial/"
-hist_dat_prefix = "historic-inspections-"
-
-cont_ingest_path = "ingestion/consecutive/"
-cont_dat_prefix = "consecutive-inspections-"
 
 ## Naming files
 today_info = date.today().strftime('%Y-%m-%d')
@@ -85,12 +84,14 @@ class APIDataIngestion(luigi.Task):
 
     ## Run: download data from API depending on the ingestion type
     def run(self):
+
         ## Getting client to download data with API
         token = get_api_token("conf/local/credentials.yaml")
         client = get_client(token)
 
         if self.ingest_type =='initial':
             ingesta = ingesta_inicial(client)
+
 
         elif self.ingest_type=='consecutive':
 
@@ -126,3 +127,13 @@ class APIDataIngestion(luigi.Task):
 
 		## generar if elif que cambie el nombre final del archivo de abajo: si es intital seria ingesta_initial_tmp y si es consecutive, sería ingesta_FECHA_tmp.pkl
         return luigi.local_target.LocalTarget('src/pipeline/luigi/luigi_tmp_files/ingesta_tmp.pkl')
+
+
+
+
+
+"----------------------------------------------------------------------------------------------------------------------"
+#################
+## END OF FILE ##
+#################
+"----------------------------------------------------------------------------------------------------------------------"
