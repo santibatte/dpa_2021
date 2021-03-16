@@ -37,6 +37,8 @@ cont_dat_prefix = "consecutive_inspections_"
 
 ## Ingestion
 local_temp_ingestions = "src/pipeline/luigi/ingestion_tmp/"
+year_dir = "YEAR="
+month_dir = "MONTH="
 data_path_csv = "data/raw/Food_Inspections.csv"
 ingestion_pickle_loc = "data/pickles/ingest_df.pkl"
 

@@ -23,6 +23,8 @@ import re
 
 import unicodedata
 
+import os
+
 
 
 ## Third party imports
@@ -58,6 +60,8 @@ from src.utils.data_dict import data_dict
 from src.utils.params_gen import (
     bucket_name,
     local_temp_ingestions,
+    year_dir,
+    month_dir,
     hist_ingest_path,
     hist_dat_prefix,
     cont_ingest_path,
@@ -169,7 +173,6 @@ def guardar_ingesta(ingest_type, bucket_name):
         raise NameError('Invalid parameter')
 
 
-    ## Uploading data to s3
     return ingesta
 
 
@@ -205,17 +208,59 @@ def save_ingestion(df, path):
 
 
 
+## Creating path to store ingestion
+def create_path_ingestion(ingest_type):
+    """
+    Creating path to store ingestion
+
+    :param ingest_type:
+    :return:
+    """
+
+    #### Variables
+    year_str = year_dir + today_info[:4]
+    month_str = month_dir + today_info[5:7]
+
+
+    #### Creating year directory
+    local_temp_ing_year = local_temp_ingestions + ingest_type + "/" + year_str + "/"
+    if year_str not in os.listdir(local_temp_ingestions + ingest_type):
+        os.mkdir(local_temp_ing_year)
+
+
+    #### Creating month directory
+    local_temp_ing_year_month = local_temp_ing_year + month_str + "/"
+    if month_str not in os.listdir(local_temp_ing_year):
+        os.mkdir(local_temp_ing_year_month)
+
+
+    return local_temp_ing_year_month
+
+
+
 ## Saving ingestion locally
 def save_local_ingestion(ingest_type):
+    """
+    Saving ingestion locally
+
+    :param ingest_type:
+    :return:
+    """
+
+    ## Create directories where data will be stored
+    local_temp_ing_year_month = create_path_ingestion(ingest_type)
 
     ## Saving temporal ingestion locally based on initial parameters
     if ingest_type == 'initial':
-        return local_temp_ingestions + ingest_type + "/" + hist_dat_prefix + today_info + ".pkl"
-        # return luigi.local_target.LocalTarget('src/pipeline/luigi/ingestion_tmp/initial/' + pkl_name)
+        local_save_loc = local_temp_ing_year_month + hist_dat_prefix + today_info + ".pkl"
 
     elif ingest_type == 'consecutive':
-        return local_temp_ingestions + ingest_type + "/" + cont_dat_prefix + today_info + ".pkl"
-        # return luigi.local_target.LocalTarget('src/pipeline/luigi/ingestion_tmp/consecutive/' + pkl_name)
+        local_save_loc = local_temp_ing_year_month + cont_dat_prefix + today_info + ".pkl"
+
+    else:
+        raise NameError('Invalid parameter')
+
+    return local_save_loc
 
 
 
