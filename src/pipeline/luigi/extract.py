@@ -1,22 +1,78 @@
+## MODULE TO EXTRACT DATA FROM API
+
+
+
+
+
+"----------------------------------------------------------------------------------------------------------------------"
+#############
+## Imports ##
+#############
+
+
+## Standard library imports
+
+from datetime import (date, datetime)
+
+import pickle
+
+import re
+
+import yaml
+
+import sys
+
+
+## Third party imports
 
 import luigi
-from datetime import (date, datetime)
-import pickle
-import re
+
 from sodapy import Socrata
+
 import boto3
-import yaml
-import sys
+
 import joblib
 
 
+## Local application imports
 
-## local imports
 from src.utils.general import (
 	read_yaml_file,
 	get_s3_credentials,
 	get_api_token
 )
+
+
+
+
+
+"----------------------------------------------------------------------------------------------------------------------"
+################
+## Parameters ##
+################
+
+## Parameters
+## AWS parameters
+bucket_name = "data-product-architecture-equipo-9"
+
+hist_ingest_path = "ingestion/initial/"
+hist_dat_prefix = "historic-inspections-"
+
+cont_ingest_path = "ingestion/consecutive/"
+cont_dat_prefix = "consecutive-inspections-"
+
+## Naming files
+today_info = date.today().strftime('%Y-%m-%d')
+
+
+
+
+
+"----------------------------------------------------------------------------------------------------------------------"
+###############
+## Functions ##
+###############
+
 
 ## deberia estar en UTILS:
 ## Getting an s3 resource to interact with AWS s3 based on .yaml file
@@ -45,40 +101,34 @@ def get_s3_resource():
 def get_client(token):
     return Socrata("data.cityofchicago.org", token)
 
+
+
 def ingesta_inicial(client, limit=300000):
     return client.get("4ijn-s7e5", limit=limit)
+
+
 
 def ingesta_consecutiva(client, soql_query):
     return client.get("4ijn-s7e5", where=soql_query)
 
 
-## Parameters
-## AWS parameters
-bucket_name = "data-product-architecture-equipo-9"
 
-hist_ingest_path = "ingestion/initial/"
-hist_dat_prefix = "historic-inspections-"
 
-cont_ingest_path = "ingestion/consecutive/"
-cont_dat_prefix = "consecutive-inspections-"
 
-## Naming files
-today_info = date.today().strftime('%Y-%m-%d')
+"----------------------------------------------------------------------------------------------------------------------"
+################
+## Luigi task ##
+################
 
-###########
 
+## Task aimed to download data from API
 class APIDataIngestion(luigi.Task):
 
-    ## luigi. parameter... /// se lo envia el task siguiente ... initial consecutive
+    ## Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
 
-    def output(self):
-        # guardamos en archivo local para que qeude registro de que se ejecuto el task
-
-		## generar if elif que cambie el nombre final del archivo de abajo: si es intital seria ingesta_initial_tmp y si es consecutive, sería ingesta_FECHA_tmp.pkl
-        return luigi.local_target.LocalTarget('src/pipeline/luigi/luigi_tmp_files/ingesta_tmp.pkl')
-
+    ## Run: download data from API depending on the ingestion type
     def run(self):
         ## Getting client to download data with API
         token = get_api_token("conf/local/credentials.yaml")
@@ -113,3 +163,11 @@ class APIDataIngestion(luigi.Task):
 
         output_file= open(self.output().path, 'wb')
         pickle.dump(ingesta, output_file)
+
+
+    ## Output: storing downloaded information locally
+    def output(self):
+        # guardamos en archivo local para que qeude registro de que se ejecuto el task
+
+		## generar if elif que cambie el nombre final del archivo de abajo: si es intital seria ingesta_initial_tmp y si es consecutive, sería ingesta_FECHA_tmp.pkl
+        return luigi.local_target.LocalTarget('src/pipeline/luigi/luigi_tmp_files/ingesta_tmp.pkl')
