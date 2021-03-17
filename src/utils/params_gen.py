@@ -28,7 +28,7 @@ from datetime import (date, datetime)
 ####################
 
 
-## AWS
+## AWS and directories
 bucket_name = "data-product-architecture-equipo-9"
 hist_ingest_path = "ingestion/initial/"
 hist_dat_prefix = "historic_inspections_"

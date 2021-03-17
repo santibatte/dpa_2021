@@ -61,6 +61,7 @@ class APIDataIngestion(luigi.Task):
     def run(self):
 
         ## Obtaining ingestion from API based on the ingestion type
+        print("********")
         ingesta = guardar_ingesta(self.ingest_type, bucket_name)
 
         ## Saving ingestion results

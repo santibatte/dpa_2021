@@ -128,44 +128,48 @@ def most_recent_lcl_for_cons():
 
 
     ## Intermediary function to get most recent date to call API for data
-    def get_date_by_cases(ing_type):
+    def get_date_by_cases(ing_date_ref):
 
-        ## Most recent year
-        mr_yr = max(lyrs)
+        ## Getting most recent year in local directories based in ingestion type
+        mr_yr = max([ydir[-4:] for ydir in os.listdir(local_temp_ingestions + ing_date_ref) if year_dir in ydir])
 
         ## Most recent month
-        new_path = local_temp_ingestions + ing_type + "/" + year_dir + mr_yr
+        new_path = local_temp_ingestions + ing_date_ref + "/" + year_dir + mr_yr
         mr_mth = max([mdir[-2:] for mdir in os.listdir(new_path) if month_dir in mdir])
 
         ## List of all ingestions in most recent dates
-        new_path = local_temp_ingestions + ing_type + "/" + year_dir + mr_yr + "/" + month_dir + mr_mth
+        new_path = local_temp_ingestions + ing_date_ref + "/" + year_dir + mr_yr + "/" + month_dir + mr_mth
         lings = [ing for ing in os.listdir(new_path)]
 
         ## Regular expression to find all dates in list of ingestions
-        regex = cont_dat_prefix + "(.*).pkl"
+        if ing_date_ref == "consecutive":
+            regex = cont_dat_prefix + "(.*).pkl"
+        elif ing_date_ref == "initial":
+            regex = hist_dat_prefix + "(.*).pkl"
+        else:
+            raise NameError('No reference to perform regex')
 
         ## Most recent date of all ingestions
-        most_recent_ing = max([re.search(regex, ing).group(1) for ing in lings])
+        most_recent_ing = max([re.search(regex, ing).group(1) for ing in lings if ".pkl" in ing])
 
         return most_recent_ing
 
 
     ## Case when we do have other consecutives stored locally
     if len(lyrs) > 0:
-        ing_type = "consecutive"
-        most_recent_ing = get_date_by_cases(ing_type)
+        print("**** Consecutive pickles found, therefore downloading data based on most recent consecutive pickle")
+        ing_date_ref = "consecutive"
+        most_recent_ing = get_date_by_cases(ing_date_ref)
 
     ## Case when we don't have any historic ingestions
     elif len(lyrs) == 0:
-        ing_type = "initial"
-        most_recent_ing = get_date_by_cases(ing_type)
+        print("**** Consecutive pickles NOT found, therefore downloading data based on historic pickle")
+        ing_date_ref = "initial"
+        most_recent_ing = get_date_by_cases(ing_date_ref)
 
     ## Anomaly in algorithm
     else:
         raise NameError('Invalid case looking for pickles.')
-
-    ## Creating directory where latest ingestion will be stored
-    create_path_ingestion(ing_type)
 
     return most_recent_ing
 
@@ -196,14 +200,17 @@ def guardar_ingesta(ingest_type, bucket_name):
         ## Requesting all data from API
         ingesta = ingesta_inicial(client)
 
+        create_path_ingestion(ingest_type)
+
 
     elif ingest_type == "consecutive":
 
         ## Finding most recent date in consecutive pickles
         pkl_mrd = most_recent_lcl_for_cons()
-        print("********")
         print("**** Consecutive data will be downloaded from {} ****".format(pkl_mrd))
         print("********")
+
+        create_path_ingestion(ingest_type)
 
         ## Building query to download data of interest
         soql_query = "inspection_date >= '{}'".format(pkl_mrd)
