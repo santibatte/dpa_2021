@@ -31,6 +31,13 @@ from src.pipeline.luigi.extract import APIDataIngestion
 
 from src.etl.ingesta_almacenamiento import get_s3_resource
 
+from src.utils.params_gen import (
+    year_dir,
+    month_dir,
+    cont_dat_prefix,
+    today_info,
+)
+
 
 
 
@@ -53,9 +60,8 @@ class S3Task(luigi.Task):
 
     ## Parameters
 
-    #### AWS S3 parameters
+    #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
-    root_path = luigi.Parameter()
 
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
@@ -72,7 +78,7 @@ class S3Task(luigi.Task):
 
         #read file
         #if ingest_type.self == 'initial': ()
-        ingesta=pickle.load(open('src/pipeline/luigi/luigi_tmp_files/ingesta_tmp.pkl', 'rb')) ## cambiar nombre buscar el archivo initiarl.
+        ingesta = pickle.load(open('src/pipeline/luigi/luigi_tmp_files/ingesta_tmp.pkl', 'rb')) ## cambiar nombre buscar el archivo initiarl.
         ingesta = pickle.dumps(ingesta)
 
         #elif ingest_type.self == 'consecutive':
@@ -88,13 +94,20 @@ class S3Task(luigi.Task):
     ## Output: uploading data to s3 path
     def output(self):
 
-        output_path = "s3://{}/{}/{}/YEAR={}/MONTH={}/ingesta.pkl".format(
+        ## Define the path where the ingestion will be stored in s3
+
+        #### Initial part of path
+        output_path_start = "s3://{}/{}/".format(
             self.bucket,
-            self.root_path,
             self.ingest_type,
-            #self.task_name,
-            self.year,
-            str(self.month)
         )
 
+        #### Final location of pickle based on date
+        out_path_end = year_dir + "{}/" + month_dir + "{}/" + cont_dat_prefix + today_info + ".pkl"
+
+        #### Concatenating both parts
+        output_path = output_path_start + out_path_end
+
+
         return luigi.contrib.s3.S3Target(output_path)
+
