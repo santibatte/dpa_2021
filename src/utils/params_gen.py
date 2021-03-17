@@ -5,12 +5,40 @@
 
 
 "------------------------------------------------------------------------------"
+#############
+## Imports ##
+#############
+
+## Standard library imports
+
+from datetime import (date, datetime)
+
+## Third party imports
+
+
+## Local application imports
+
+
+
+
+
+"------------------------------------------------------------------------------"
 ####################
 ## Path locations ##
 ####################
 
 
+## AWS and directories
+bucket_name = "data-product-architecture-equipo-9"
+hist_ingest_path = "ingestion/initial/"
+hist_dat_prefix = "historic_inspections_"
+cont_ingest_path = "ingestion/consecutive/"
+cont_dat_prefix = "consecutive_inspections_"
+
 ## Ingestion
+local_temp_ingestions = "src/pipeline/luigi/ingestion_tmp/"
+year_dir = "YEAR="
+month_dir = "MONTH="
 data_path_csv = "data/raw/Food_Inspections.csv"
 ingestion_pickle_loc = "data/pickles/ingest_df.pkl"
 
@@ -42,6 +70,10 @@ aequitas_df_pickle_loc = "data/pickles/aequitas_df.pkl"
 ########################
 ## General Parameters ##
 ########################
+
+
+## Date when the pipeline is executed
+today_info = date.today().strftime('%Y-%m-%d')
 
 
 ## Serious violations parameters

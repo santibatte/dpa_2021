@@ -22,3 +22,7 @@ data/raw/
 
 ## Pycharm
 .idea/
+
+
+## Rob's files
+_robdir/*.csv
