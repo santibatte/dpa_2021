@@ -120,6 +120,57 @@ def get_s3_resource():
 
 
 
+## Getting most recent date in local to download consecutive
+def most_recent_lcl_for_cons():
+
+    ## List of all years
+    lyrs = [ydir[-4:] for ydir in os.listdir(local_temp_ingestions + "consecutive") if year_dir in ydir]
+
+
+    ## Intermediary function to get most recent date to call API for data
+    def get_date_by_cases(ing_type):
+
+        ## Most recent year
+        mr_yr = max(lyrs)
+
+        ## Most recent month
+        new_path = local_temp_ingestions + ing_type + "/" + year_dir + mr_yr
+        mr_mth = max([mdir[-2:] for mdir in os.listdir(new_path) if month_dir in mdir])
+
+        ## List of all ingestions in most recent dates
+        new_path = local_temp_ingestions + ing_type + "/" + year_dir + mr_yr + "/" + month_dir + mr_mth
+        lings = [ing for ing in os.listdir(new_path)]
+
+        ## Regular expression to find all dates in list of ingestions
+        regex = cont_dat_prefix + "(.*).pkl"
+
+        ## Most recent date of all ingestions
+        most_recent_ing = max([re.search(regex, ing).group(1) for ing in lings])
+
+        return most_recent_ing
+
+
+    ## Case when we do have other consecutives stored locally
+    if len(lyrs) > 0:
+        ing_type = "consecutive"
+        most_recent_ing = get_date_by_cases(ing_type)
+
+    ## Case when we don't have any historic ingestions
+    elif len(lyrs) == 0:
+        ing_type = "initial"
+        most_recent_ing = get_date_by_cases(ing_type)
+
+    ## Anomaly in algorithm
+    else:
+        raise NameError('Invalid case looking for pickles.')
+
+    ## Creating directory where latest ingestion will be stored
+    create_path_ingestion(ing_type)
+
+    return most_recent_ing
+
+
+
 ## Saving data donwloaded with Chicago's API
 def guardar_ingesta(ingest_type, bucket_name):
     """
@@ -149,19 +200,10 @@ def guardar_ingesta(ingest_type, bucket_name):
     elif ingest_type == "consecutive":
 
         ## Finding most recent date in consecutive pickles
-
-        #### Getting list with pickles stored in s3 consecutive
-        objects = s3.list_objects_v2(Bucket=bucket_name, Prefix=cont_ingest_path)['Contents']
-
-        #### Regular expression to isolate date in string
-        regex = str(cont_dat_prefix) + "(.*).pkl"
-
-        #### List of all dates in consecutive pickles
-        pkl_dates = [datetime.strptime(re.search(regex, obj["Key"]).group(1), '%Y-%m-%d') for obj in objects if
-                     cont_dat_prefix in obj["Key"]]
-
-        #### Consecutive pickle most recent date
-        pkl_mrd = datetime.strftime(max(pkl_dates), '%Y-%m-%d')
+        pkl_mrd = most_recent_lcl_for_cons()
+        print("********")
+        print("**** Consecutive data will be downloaded from {} ****".format(pkl_mrd))
+        print("********")
 
         ## Building query to download data of interest
         soql_query = "inspection_date >= '{}'".format(pkl_mrd)
@@ -234,9 +276,6 @@ def create_path_ingestion(ingest_type):
         os.mkdir(local_temp_ing_year_month)
 
 
-    return local_temp_ing_year_month
-
-
 
 ## Saving ingestion locally
 def save_local_ingestion(ingest_type):
@@ -247,8 +286,10 @@ def save_local_ingestion(ingest_type):
     :return:
     """
 
-    ## Create directories where data will be stored
-    local_temp_ing_year_month = create_path_ingestion(ingest_type)
+    ## Name of new directory where latest ingestion will be stored
+    year_str = year_dir + today_info[:4]
+    month_str = month_dir + today_info[5:7]
+    local_temp_ing_year_month = local_temp_ingestions + ingest_type + "/" + year_str + "/" + month_str + "/"
 
     ## Saving temporal ingestion locally based on initial parameters
     if ingest_type == 'initial':
