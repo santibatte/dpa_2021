@@ -97,29 +97,6 @@ def ingesta_consecutiva(client, soql_query):
 
 
 
-## Getting an s3 resource to interact with AWS s3 based on .yaml file
-def get_s3_resource():
-    """
-    Getting an s3 resource to interact with AWS s3 based on .yaml file
-        args:
-            -
-        returns:
-            s3 (aws client session): s3 resource
-    """
-
-    s3_creds = get_s3_credentials("conf/local/credentials.yaml")
-
-    session = boto3.Session(
-        aws_access_key_id=s3_creds['aws_access_key_id'],
-        aws_secret_access_key=s3_creds['aws_secret_access_key']
-    )
-
-    s3 = session.client('s3')
-
-    return s3
-
-
-
 ## Getting most recent date in local to download consecutive
 def most_recent_lcl_for_cons():
 

@@ -29,7 +29,7 @@ import boto3
 
 from src.pipeline.luigi.extract import APIDataIngestion
 
-from src.etl.ingesta_almacenamiento import get_s3_resource
+from src.utils.utils import get_s3_resource
 
 from src.utils.params_gen import (
     year_dir,
@@ -102,11 +102,14 @@ class S3Task(luigi.Task):
             self.ingest_type,
         )
 
-        #### Final location of pickle based on date
-        out_path_end = year_dir + "{}/" + month_dir + "{}/" + cont_dat_prefix + today_info + ".pkl"
+        #### Set of directories based on date
+        out_path_date = year_dir + today_info[:4] + month_dir + today_info[5:7]
 
-        #### Concatenating both parts
-        output_path = output_path_start + out_path_end
+        #### Name of file inside directories
+        out_path_file = cont_dat_prefix + today_info + ".pkl"
+
+        #### Concatenating all parts
+        output_path = output_path_start + out_path_date + out_path_file
 
 
         return luigi.contrib.s3.S3Target(output_path)
