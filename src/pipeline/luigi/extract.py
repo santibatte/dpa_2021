@@ -30,25 +30,8 @@ import joblib
 
 ## Local application imports
 
-from src.utils.general import (
-    # read_yaml_file,
-    # get_s3_credentials,
-    get_api_token
-)
-
-from src.utils.utils import (
-    get_s3_resource,
-    get_client,
-    ingesta_inicial,
-    ingesta_consecutiva,
-)
-
 from src.utils.params_gen import (
     bucket_name,
-    hist_ingest_path,
-    hist_dat_prefix,
-    cont_ingest_path,
-    cont_dat_prefix,
 )
 
 from src.etl.ingesta_almacenamiento import (
