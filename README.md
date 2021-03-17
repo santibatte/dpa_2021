@@ -48,7 +48,7 @@ Set the root directory of this repository in the terminal. Run the following com
 
 The pipeline process is organized into the following tasks:
 
-***Task 1.***  `APIDataIngestion`: data extraction from Chicago food inspections API with the module `extract.py` . 
+***Task 1.***  `APIDataIngestion`: data extraction from Chicago Food Inspections API with the module `extract.py` . 
 
 * For historic ingestion run `luigi --module src.pipeline.luigi.extract APIDataIngestion --ingest-type initial --local-scheduler`.
 
