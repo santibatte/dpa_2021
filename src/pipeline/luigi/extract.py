@@ -1,4 +1,4 @@
-## MODULE TO EXTRACT DATA FROM API
+## MODULE WITH TASK TO EXTRACT DATA FROM API
 
 
 
@@ -53,7 +53,8 @@ from src.etl.ingesta_almacenamiento import (
 class APIDataIngestion(luigi.Task):
 
 
-    ## Defining the ingestion type to Luigi (`consecutive` or `initial`)
+    ## Parameters
+    #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
 
