@@ -49,6 +49,7 @@ from src.utils.utils import (
     load_df,
     read_yaml_file,
     get_s3_credentials,
+    get_s3_resource,
     get_api_token
 )
 
