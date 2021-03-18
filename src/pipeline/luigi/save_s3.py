@@ -44,15 +44,9 @@ from src.utils.params_gen import (
     today_info,
 )
 
-def path_file_fn(ingest_type):
-    if ingest_type == 'initial':
-        path_file_2 = hist_dat_prefix + today_info + ".pkl"
-    elif ingest_type == 'consecutive':
-        path_file_2 = cont_dat_prefix + today_info + ".pkl"
-    return path_file_2
-
-
-
+from src.etl.ingesta_almacenamiento import (
+    path_file_fn
+)
 
 
 "----------------------------------------------------------------------------------------------------------------------"

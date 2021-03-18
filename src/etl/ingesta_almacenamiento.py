@@ -286,7 +286,13 @@ def save_local_ingestion(ingest_type):
     return local_save_loc
 
 
-
+## Get path file for saving in S3
+def path_file_fn(ingest_type):
+    if ingest_type == 'initial':
+        path_file_2 = hist_dat_prefix + today_info + ".pkl"
+    elif ingest_type == 'consecutive':
+        path_file_2 = cont_dat_prefix + today_info + ".pkl"
+    return path_file_2
 
 
 "------------------------------------------------------------------------------"
