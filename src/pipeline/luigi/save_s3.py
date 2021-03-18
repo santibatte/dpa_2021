@@ -85,8 +85,6 @@ class S3Task(luigi.Task):
             #ingesta=pickle.load(open('src/pipeline/luigi/luigi_tmp_files/ingesta_tmp.pkl', 'rb')) ## cambiar nombre, mirar el archivo llamado CONSECUTIVE.
             #ingesta = pickle.dumps(ingesta)
 
-
-
         s3 = get_s3_resource()
         s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=ingesta)
 
