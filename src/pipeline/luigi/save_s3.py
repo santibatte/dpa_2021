@@ -35,6 +35,7 @@ from src.utils.utils import (
 )
 
 from src.utils.params_gen import (
+    local_temp_ingestions,
     year_dir,
     month_dir,
     cont_dat_prefix,
@@ -69,6 +70,20 @@ class S3Task(luigi.Task):
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
+    #### Local path to most recent date ingestion
+
+    ###### Initial path to local ingestions
+    path_to_ing_type = local_temp_ingestions + str(ingest_type)
+
+    ###### Set of directories based on date
+    path_date = year_dir + today_info[:4] + "/" + month_dir + today_info[5:7] + "/"
+
+    ###### Name of file inside directories
+    path_file = cont_dat_prefix + today_info + ".pkl"
+
+    ###### Concatenating all parts
+    path_full = path_to_ing_type + path_date + path_file
+
 
     ## Requires: download data from API depending on the ingestion type if latest ingestion is outdated
     def requires(self):
@@ -79,17 +94,13 @@ class S3Task(luigi.Task):
     ## Run: get most recent local ingestion saved to upload it to s3
     def run(self):
 
-        #read file
-        #if ingest_type.self == 'initial': ()
-        ingesta = pickle.load(open('src/pipeline/luigi/luigi_tmp_files/ingesta_tmp.pkl', 'rb')) ## cambiar nombre buscar el archivo initiarl.
-        ingesta = pickle.dumps(ingesta)
 
-        #elif ingest_type.self == 'consecutive':
-            #ingesta=pickle.load(open('src/pipeline/luigi/luigi_tmp_files/ingesta_tmp.pkl', 'rb')) ## cambiar nombre, mirar el archivo llamado CONSECUTIVE.
-            #ingesta = pickle.dumps(ingesta)
+        ## Loading most recent ingestion
+        ingesta = pickle.dumps(pickle.load(open(self.path_full, "rb")))
 
-        # s3 = get_s3_resource()
-        # s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=ingesta)
+        ## Storing object in s3
+        s3 = get_s3_resource()
+        s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=ingesta)
 
 
     ## Output: uploading data to s3 path
@@ -105,15 +116,7 @@ class S3Task(luigi.Task):
             self.ingest_type,
         )
 
-        #### Set of directories based on date
-        out_path_date = year_dir + today_info[:4] + month_dir + today_info[5:7]
-
-        #### Name of file inside directories
-        out_path_file = cont_dat_prefix + today_info + ".pkl"
-
-        #### Concatenating all parts
-        output_path = output_path_start + out_path_date + out_path_file
-
+        output_path = output_path_start + self.path_date + self.path_file
 
         return luigi.contrib.s3.S3Target(output_path, client=client)
 
