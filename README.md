@@ -48,7 +48,7 @@ Set the root directory of this repository in the terminal. Run the following com
 
 The pipeline process is organized into the following tasks:
 
-***Task 1.***  `APIDataIngestion`: data extraction from Chicago Food Inspections API with the module `extract.py` . 
+***Task 1.***  `APIDataIngestion`: data extraction from Chicago food inspections API with the module `extract.py` . 
 
 * For historic ingestion run `luigi --module src.pipeline.luigi.extract APIDataIngestion --ingest-type initial --local-scheduler`.
 
@@ -57,7 +57,10 @@ The pipeline process is organized into the following tasks:
 
 ***Task 2.*** `S3Task`: storage of data in AWS S3 bucket with the module `save_s3.py`
 
-* For `S3Task` run `luigi --module src.pipeline.luigi.save_s3 S3Task --ingest-type initial --bucket data-product-architecture-equipo-9 --root-path ingestion --year 2021 --month 03 --local-scheduler`
+* For historic ingestion run `luigi --module src.pipeline.luigi.save_s3 S3Task --bucket data-product-architecture-equipo-9 --ingest-type initial --local-scheduler`
+* For consecutive ingestion run `luigi --module src.pipeline.luigi.save_s3 S3Task --bucket data-product-architecture-equipo-9 --ingest-type consecutive --local-scheduler`
+
+Remove the --local scheduler to see the Luigi Task Visualizer: 
 
 ![](./images/DAG_checkpoint3.png)
 
