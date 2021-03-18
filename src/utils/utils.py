@@ -221,6 +221,14 @@ def get_s3_resource_luigi():
 
 
 
+## Get key to store data in correct location in s3
+def get_key(s3_name):
+    split = s3_name.split(sep='/')[3:]
+    join = '/'.join(split)
+    return join
+
+
+
 ## Get client to interact with AIP
 def get_client(token):
     return Socrata("data.cityofchicago.org", token)

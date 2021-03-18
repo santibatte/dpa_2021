@@ -32,6 +32,7 @@ from src.pipeline.luigi.extract import APIDataIngestion
 from src.utils.utils import (
     get_s3_resource,
     get_s3_resource_luigi,
+    get_key,
 )
 
 from src.utils.params_gen import (
@@ -52,37 +53,28 @@ from src.utils.params_gen import (
 ################
 
 
-def get_key(s3_name):
-    split = s3_name.split(sep='/')[3:]
-    join = '/'.join(split)
-    return join
-
-
 ## Task aimed to store ingestion in s3
 class S3Task(luigi.Task):
 
 
     ## Parameters
 
+
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
+
 
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
-    #### Local path to most recent date ingestion
 
-    ###### Initial path to local ingestions
-    path_to_ing_type = local_temp_ingestions + str(ingest_type)
+    #### Sections of local path to most recent date ingestion
 
     ###### Set of directories based on date
     path_date = year_dir + today_info[:4] + "/" + month_dir + today_info[5:7] + "/"
 
     ###### Name of file inside directories
     path_file = cont_dat_prefix + today_info + ".pkl"
-
-    ###### Concatenating all parts
-    path_full = path_to_ing_type + path_date + path_file
 
 
     ## Requires: download data from API depending on the ingestion type if latest ingestion is outdated
@@ -94,9 +86,11 @@ class S3Task(luigi.Task):
     ## Run: get most recent local ingestion saved to upload it to s3
     def run(self):
 
+        ## Location to find most recent local ingestion
+        path_full = local_temp_ingestions + self.ingest_type + "/" + self.path_date + self.path_file
 
         ## Loading most recent ingestion
-        ingesta = pickle.dumps(pickle.load(open(self.path_full, "rb")))
+        ingesta = pickle.dumps(pickle.load(open(path_full, "rb")))
 
         ## Storing object in s3
         s3 = get_s3_resource()
