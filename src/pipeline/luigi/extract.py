@@ -34,6 +34,11 @@ from src.utils.params_gen import (
     bucket_name,
 )
 
+from src.utils.utils import (
+    get_s3_resource,
+)
+
+
 from src.etl.ingesta_almacenamiento import (
     guardar_ingesta,
     save_local_ingestion,
