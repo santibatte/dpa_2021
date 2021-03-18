@@ -39,12 +39,6 @@ import pandas as pd
 ## Local application imports
 
 
-from src.utils.general import (
-    read_yaml_file,
-    get_s3_credentials,
-    get_api_token
-)
-
 from src.utils.params_gen import (
     regex_violations,
     serious_viols,
@@ -52,7 +46,10 @@ from src.utils.params_gen import (
 
 from src.utils.utils import (
     save_df,
-    load_df
+    load_df,
+    read_yaml_file,
+    get_s3_credentials,
+    get_api_token
 )
 
 from src.utils.data_dict import data_dict

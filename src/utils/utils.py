@@ -22,6 +22,8 @@ import json
 
 import pickle
 
+import yaml
+
 
 ## Third party imports
 import pandas as pd
@@ -47,6 +49,8 @@ import matplotlib.pyplot as plt
 import boto3
 
 from sodapy import Socrata
+
+import luigi.contrib.s3
 
 
 ## Local application imports
@@ -198,6 +202,22 @@ def get_s3_resource():
     s3 = session.client('s3')
 
     return s3
+
+
+
+## Getting client for s3 using luigi
+def get_s3_resource_luigi():
+    """
+    Getting client for s3 using luigi
+
+    :return:
+    """
+
+    s3_creds = get_s3_credentials("conf/local/credentials.yaml")
+
+    client = luigi.contrib.s3.S3Client(s3_creds['aws_access_key_id'], s3_creds['aws_secret_access_key'])
+
+    return client
 
 
 
