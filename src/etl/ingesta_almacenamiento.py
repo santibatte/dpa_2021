@@ -39,12 +39,6 @@ import pandas as pd
 ## Local application imports
 
 
-from src.utils.general import (
-    read_yaml_file,
-    get_s3_credentials,
-    get_api_token
-)
-
 from src.utils.params_gen import (
     regex_violations,
     serious_viols,
@@ -52,7 +46,11 @@ from src.utils.params_gen import (
 
 from src.utils.utils import (
     save_df,
-    load_df
+    load_df,
+    read_yaml_file,
+    get_s3_credentials,
+    get_s3_resource,
+    get_api_token
 )
 
 from src.utils.data_dict import data_dict
@@ -94,29 +92,6 @@ def ingesta_inicial(client, limit=300000):
 ##
 def ingesta_consecutiva(client, soql_query):
     return client.get("4ijn-s7e5", where=soql_query)
-
-
-
-## Getting an s3 resource to interact with AWS s3 based on .yaml file
-def get_s3_resource():
-    """
-    Getting an s3 resource to interact with AWS s3 based on .yaml file
-        args:
-            -
-        returns:
-            s3 (aws client session): s3 resource
-    """
-
-    s3_creds = get_s3_credentials("conf/local/credentials.yaml")
-
-    session = boto3.Session(
-        aws_access_key_id=s3_creds['aws_access_key_id'],
-        aws_secret_access_key=s3_creds['aws_secret_access_key']
-    )
-
-    s3 = session.client('s3')
-
-    return s3
 
 
 
@@ -311,7 +286,13 @@ def save_local_ingestion(ingest_type):
     return local_save_loc
 
 
-
+## Get path file for saving in S3
+def path_file_fn(ingest_type):
+    if ingest_type == 'initial':
+        path_file_2 = hist_dat_prefix + today_info + ".pkl"
+    elif ingest_type == 'consecutive':
+        path_file_2 = cont_dat_prefix + today_info + ".pkl"
+    return path_file_2
 
 
 "------------------------------------------------------------------------------"

@@ -1,4 +1,4 @@
-## MODULE TO EXTRACT DATA FROM API
+## MODULE WITH TASK TO EXTRACT DATA FROM API
 
 
 
@@ -34,6 +34,11 @@ from src.utils.params_gen import (
     bucket_name,
 )
 
+from src.utils.utils import (
+    get_s3_resource,
+)
+
+
 from src.etl.ingesta_almacenamiento import (
     guardar_ingesta,
     save_local_ingestion,
@@ -53,7 +58,8 @@ from src.etl.ingesta_almacenamiento import (
 class APIDataIngestion(luigi.Task):
 
 
-    ## Defining the ingestion type to Luigi (`consecutive` or `initial`)
+    ## Parameters
+    #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
 

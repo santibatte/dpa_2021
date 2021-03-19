@@ -22,6 +22,8 @@ import json
 
 import pickle
 
+import yaml
+
 
 ## Third party imports
 import pandas as pd
@@ -48,16 +50,12 @@ import boto3
 
 from sodapy import Socrata
 
+import luigi.contrib.s3
+
 
 ## Local application imports
 
 from src.utils.data_dict import (data_created_dict)
-
-from src.utils.general import (
-	read_yaml_file,
-	get_s3_credentials,
-	get_api_token
-)
 
 
 
@@ -144,26 +142,90 @@ def save_df(df, path):
 
 
 
+## Load yaml cofigurations
+def read_yaml_file(yaml_file):
+    """
+    Load yaml cofigurations
+    """
+
+    config = None
+    try:
+        with open (yaml_file, 'r') as f:
+            config = yaml.safe_load(f)
+    except:
+        raise FileNotFoundError('Couldnt load the file')
+
+    return config
+
+
+
+## Get s3 credentials
+def get_s3_credentials(credentials_file):
+    """
+    Get s3 credentials
+    """
+    credentials = read_yaml_file(credentials_file)
+    s3_creds = credentials['s3']
+
+    return s3_creds
+
+
+
+## Get API TOKEN
+def get_api_token(credentials_file):
+    """
+    Get api token
+    """
+    credentials = read_yaml_file(credentials_file)
+    token = credentials['food_inspections']['api_token']
+    return token
+
+
+
 ## Getting an s3 resource to interact with AWS s3 based on .yaml file
 def get_s3_resource():
-	"""
-	Getting an s3 resource to interact with AWS s3 based on .yaml file
-		args:
-			-
-		returns:
-			s3 (aws client session): s3 resource
-	"""
+    """
+    Getting an s3 resource to interact with AWS s3 based on .yaml file
+        args:
+            -
+        returns:
+            s3 (aws client session): s3 resource
+    """
 
-	s3_creds = get_s3_credentials("conf/local/credentials.yaml")
+    s3_creds = get_s3_credentials("conf/local/credentials.yaml")
 
-	session = boto3.Session(
-	    aws_access_key_id=s3_creds['aws_access_key_id'],
-	    aws_secret_access_key=s3_creds['aws_secret_access_key']
-	)
+    session = boto3.Session(
+        aws_access_key_id=s3_creds['aws_access_key_id'],
+        aws_secret_access_key=s3_creds['aws_secret_access_key']
+    )
 
-	s3 = session.client('s3')
+    s3 = session.client('s3')
 
-	return s3
+    return s3
+
+
+
+## Getting client for s3 using luigi
+def get_s3_resource_luigi():
+    """
+    Getting client for s3 using luigi
+
+    :return:
+    """
+
+    s3_creds = get_s3_credentials("conf/local/credentials.yaml")
+
+    client = luigi.contrib.s3.S3Client(s3_creds['aws_access_key_id'], s3_creds['aws_secret_access_key'])
+
+    return client
+
+
+
+## Get key to store data in correct location in s3
+def get_key(s3_name):
+    split = s3_name.split(sep='/')[3:]
+    join = '/'.join(split)
+    return join
 
 
 
