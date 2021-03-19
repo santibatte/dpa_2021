@@ -16,18 +16,23 @@ DPA-ITAM, 2021.
 
 The objective of the project is to develop a data product architecture. The dataset that will be used in the project contains information from inspections of restaurants and other food establishments in Chicago from January 1, 2010 to the present. 
 
-#### Setup
-
-* This project requires [Python 3.7.4](https://www.python.org/downloads/release/python-374/) or later, with packages as specified in `requirements.txt`. If you have pip installed, packages can be installed by running pip install -r requirements.txt.
-
-
 #### Basic Project Structure
-* The Exploratory Data Analysis (EDA) can be found in `notebooks/EDA.ipynb`. The EDA was constructed with the data downloaded as of January 15th, 2021. It contains 17 columns and 215,067 observations.
+
+The Exploratory Data Analysis (EDA) can be found in `notebooks/EDA.ipynb`. The EDA was constructed with the data downloaded as of January 15th, 2021. It contains 17 columns and 215,067 observations.
+
+#### Setup and Dependencies
+
+This project requires:
+
+1. [Python 3.7.4](https://www.python.org/downloads/release/python-374/) or later, with packages as specified in `requirements.txt`. If you have pip installed, packages can be installed by running `pip install -r requirements.txt`.
 
 
+2. [Luigi](https://luigi.readthedocs.io/en/stable/): The project is orchestrated by Luigi. Luigi defines specific tasks to run a DAG process. A Task is an operation to be performed on an item of interest.  To declare a task in Luigi we need to have  script with 4 requires methods: `run()`, `input()`, `output()` and `requires()`.
 
-#### Pipeline
-**Ingestion process**
+    The `PYTHONPATH` should also include the root directory of this repository. This allows loading from Python modules referenced relative to the project root.
+
+#### ETL 
+
 * First, add the `credentials.yaml` file to `conf/local`. This file contains the credentials (`aws_access_key_id` and `aws_secret_access_key`) and token needed.
 * Second, have an active s3 bucket with the name `data-product-architecture-equipo-9`.
 * Third,`src/utils/general.py` you will find the functions to connect with s3 of AWS through the given credentials and API token needed for downloading the Chicago Food Inspections data.
@@ -38,7 +43,27 @@ The objective of the project is to develop a data product architecture. The data
     4. The `ingesta_consecutiva` function allows to set the desired date of the new data, according to it, the client and the observations' limit.
     5. The `guardar_ingesta` function downloads the data and stores it temporarily in local machine prior to the upload to s3. When it is a consecutive ingestion (not the initial), it finds the most recent date in the consecutive existing pickles. Then, it builds a query to download the data of interest. Last, it uploads the data to s3. 
 
-  
+#### Pipeline
+Set the root directory of this repository in the terminal. Run the following command line to set the repository's PYTHONPATH: `export PYTHONPATH=$PWD`.
+
+The pipeline process is organized into the following tasks:
+
+***Task 1.***  `APIDataIngestion`: data extraction from Chicago food inspections API with the module `extract.py` . 
+
+* For historic ingestion run `luigi --module src.pipeline.luigi.extract APIDataIngestion --ingest-type initial --local-scheduler`.
+
+* For consecutive ingestion run `luigi --module src.pipeline.luigi.extract APIDataIngestion --ingest-type consecutive --local-scheduler`.
+
+
+***Task 2.*** `S3Task`: storage of data in AWS S3 bucket with the module `save_s3.py`
+
+* For historic ingestion run `luigi --module src.pipeline.luigi.save_s3 S3Task --bucket data-product-architecture-equipo-9 --ingest-type initial --local-scheduler`
+* For consecutive ingestion run `luigi --module src.pipeline.luigi.save_s3 S3Task --bucket data-product-architecture-equipo-9 --ingest-type consecutive --local-scheduler`
+
+Remove the --local scheduler to see the Luigi Task Visualizer: 
+
+![](./images/DAG_checkpoint3.png)
+
 ## Analytical Question:
 
 ¿Will the facility pass the inspection?
