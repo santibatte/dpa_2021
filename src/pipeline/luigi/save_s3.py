@@ -75,14 +75,6 @@ class S3Task(luigi.Task):
     ###### Set of directories based on date
     path_date = year_dir + today_info[:4] + "/" + month_dir + today_info[5:7] + "/"
 
-    ###### Name of file inside directories
-
-    #path_file = path_file_fn(ingest_type)
-
-
-
-    #path_file = cont_dat_prefix + today_info + ".pkl"
-
 
 
     ## Requires: download data from API depending on the ingestion type if latest ingestion is outdated
@@ -114,17 +106,17 @@ class S3Task(luigi.Task):
     ## Output: uploading data to s3 path
     def output(self):
 
+        ## Conecting to AWS using luigi
         client = get_s3_resource_luigi()
         path_file = path_file_fn(self.ingest_type)
-        ## Define the path where the ingestion will be stored in s3
 
-        #### Initial part of path
+
+        ## Define the path where the ingestion will be stored in s3
         output_path_start = "s3://{}/{}/{}/".format(
             self.bucket,
             'ingestion',
             self.ingest_type,
         )
-
         output_path = output_path_start + self.path_date + path_file
 
         return luigi.contrib.s3.S3Target(output_path, client=client)
