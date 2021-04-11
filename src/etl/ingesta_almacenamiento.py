@@ -473,7 +473,7 @@ def ingest(data_path, ingestion_pickle_loc):
     """
 
     ## Storing time execution metadata
-    ingestion_metadata["ing_time_exec"] = str(datetime.now())
+    ingestion_metadata[ingestion_metadata_index] = str(datetime.now())
 
     ## Executing ingestion functions
     df = ingest_local_csv(data_path) ## Temporal function
@@ -483,7 +483,7 @@ def ingest(data_path, ingestion_pickle_loc):
 
     ## Converting metadata into dataframe and saving locally
     df_meta = pd.DataFrame.from_dict(ingestion_metadata, orient="index").T
-    df_meta.set_index("exec_time", inplace=True)
+    df_meta.set_index(ingestion_metadata_index, inplace=True)
     save_ingestion(df_meta, ingestion_metadata_loc)
 
     ## Sucess message
