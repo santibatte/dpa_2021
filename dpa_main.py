@@ -71,16 +71,16 @@ def main_execution_function():
     # guardar_ingesta(bucket_name, cont_ingest_path)
 
     ##
-    transform(ingestion_pickle_loc, transformation_pickle_loc)
+    # transform(ingestion_pickle_loc, transformation_pickle_loc)
 
     ##
-    feature_engineering(transformation_pickle_loc, fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
+    # feature_engineering(transformation_pickle_loc, fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
 
     ##
-    modeling(fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
+    # modeling(fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
 
     ##
-    model_evaluation(y_test_pickle_loc, test_predict_scores_pickle_loc)
+    # model_evaluation(y_test_pickle_loc, test_predict_scores_pickle_loc)
 
 
 
