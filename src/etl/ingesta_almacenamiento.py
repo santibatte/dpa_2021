@@ -66,6 +66,8 @@ from src.utils.params_gen import (
     cont_dat_prefix,
     today_info,
     ingestion_metadata,
+    ingestion_metadata_index,
+    ingestion_metadata_loc,
 )
 
 
@@ -478,6 +480,13 @@ def ingest(data_path, ingestion_pickle_loc):
     # guardar_ingesta(bucket_name, bucket_path)
     df = initial_cleaning(df)
     save_ingestion(df, ingestion_pickle_loc) ## Temporal function
+
+    ## Converting metadata into dataframe and saving locally
+    df_meta = pd.DataFrame.from_dict(ingestion_metadata, orient="index").T
+    df_meta.set_index("exec_time", inplace=True)
+    save_ingestion(df_meta, ingestion_metadata_loc)
+
+    ## Sucess message
     print("\n** Ingestion module successfully executed **\n")
 
 
