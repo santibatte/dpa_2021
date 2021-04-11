@@ -41,6 +41,7 @@ year_dir = "YEAR="
 month_dir = "MONTH="
 data_path_csv = "data/raw/Food_Inspections.csv"
 ingestion_pickle_loc = "data/pickles/ingest_df.pkl"
+ingestion_metadata = {}
 
 ## Transformation
 transformation_pickle_loc = "data/pickles/transformation_df.pkl"

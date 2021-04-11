@@ -65,6 +65,7 @@ from src.utils.params_gen import (
     cont_ingest_path,
     cont_dat_prefix,
     today_info,
+    ingestion_metadata,
 )
 
 
@@ -407,6 +408,10 @@ def drop_cols(df):
     ## Dropping non relevant columns
     df.drop(nrel_col, inplace=True, axis=1)
 
+    ## Storing metadata related to this function
+    ingestion_metadata["raw_cols_elim"] = len(nrel_col)
+    ingestion_metadata["raw_cols_live"] = len(df.columns)
+
 
     return df
 
@@ -464,6 +469,9 @@ def ingest(data_path, ingestion_pickle_loc):
         returns:
             -
     """
+
+    ## Storing time execution metadata
+    ingestion_metadata["ing_time_exec"] = str(datetime.now())
 
     ## Executing ingestion functions
     df = ingest_local_csv(data_path) ## Temporal function
