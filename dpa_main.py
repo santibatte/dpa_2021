@@ -74,7 +74,7 @@ def main_execution_function():
     transform(ingestion_pickle_loc, transformation_pickle_loc)
 
     ##
-    # feature_engineering(transformation_pickle_loc, fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
+    feature_engineering(transformation_pickle_loc, fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
 
     ##
     # modeling(fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
