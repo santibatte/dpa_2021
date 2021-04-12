@@ -360,7 +360,7 @@ def transform(ingestion_pickle_loc, transformation_pickle_loc):
     transformation_metadata["trans_count"] = trans_count
 
     #### String with list of new columns added after transformation (pipe separated)
-    transformation_metadata["new_cols"] = "|".join(set(res_cols) - set(orig_cols))
+    transformation_metadata["new_cols"] = " | ".join(set(res_cols) - set(orig_cols))
 
     #### Converting metadata into dataframe and saving locally
     df_meta = pd.DataFrame.from_dict(transformation_metadata, orient="index").T
