@@ -14,6 +14,8 @@
 
 import sys
 
+from datetime import (date, datetime)
+
 
 ## Third party imports
 
@@ -46,6 +48,10 @@ from src.utils.utils import (
 
 from src.utils.params_gen import (
     transformation_pickle_loc,
+    fe_metadata,
+    fe_metadata_index,
+    fe_metadata_loc,
+
     fe_pickle_loc_imp_features,
     fe_pickle_loc_feature_labs,
 )
@@ -219,14 +225,18 @@ def feature_generation(df):
                        ]
     df_features.drop(nr_features_cols, axis=1, inplace=True)
     features_cols = list(df_features.columns)
+
+    #### Printing results in log file
     print("\n++ Complete list of features ({}) that will be fed to the model:".format(len(features_cols)))
     for col in features_cols:
         print("    {}. {}".format(features_cols.index(col) + 1, col))
 
+    #### Saving info as metadata
+    fe_metadata["num_features"] = len(features_cols)
+    fe_metadata["name_features"] = " | ".join(features_cols)
 
-    ## Generation dummy columns of categoric variables with OneHotEncoder
 
-    #### Creating list of the features that will processed through the pipeline (categoric).
+    ## Working with categorical features for pipeline
     cat_features_orig = [key for key in data_dict if
                     (data_dict[key]['model_relevant']==True) &
                     (data_dict[key]['feature_type']=='categoric')
@@ -238,6 +248,7 @@ def feature_generation(df):
                    ]
     cat_features = cat_features_orig + cat_features_add
 
+    #### Printing results in log file
     print("\n++ List of categorical features ({}) that will be processed through the categoric pipeline are:".format(len(cat_features)))
     ohe_dict = {}
     for cat in cat_features:
@@ -246,7 +257,12 @@ def feature_generation(df):
         cat_list.sort()
         ohe_dict[cat] = cat_list
 
-    #### Creating list of the features that will processed through the pipeline (numeric).
+    #### Saving info as metadata
+    fe_metadata["num_cat_features"] = len(cat_features)
+    fe_metadata["name_cat_features"] = " | ".join(cat_features)
+
+
+    ## Working with numerical features for pipeline
     num_features_orig = [key for key in data_dict if
                     (data_dict[key]['model_relevant']==True) &
                     (data_dict[key]['feature_type']=='numeric')
@@ -257,18 +273,26 @@ def feature_generation(df):
                    ]
     num_features = num_features_orig + num_features_add
 
+    #### Printing results in log file
     print("\n++ List of numeric features ({}) that will be processed through the numeric pipeline are:".format(len(num_features)))
     for num in num_features:
         print("    {}. {}".format(num_features.index(num) + 1, num))
 
+    #### Saving info as metadata
+    fe_metadata["num_num_features"] = len(num_features)
+    fe_metadata["name_num_features"] = " | ".join(num_features)
 
-    #### Applying data processing pipeline.
+
+    ## Applying data processing pipeline.
     pipeline = ColumnTransformer([
         ('categoric', categoric_pipeline, cat_features),
         ('numeric', numeric_pipeline, num_features)
     ])
     df_features_prc = pipeline.fit_transform(df_features)
     print("\n++ Dimensions of matrix after going through pipeline: {}\n".format(df_features_prc.shape))
+
+    #### Saving info as metadata
+    fe_metadata["dim_after_fe"] = str(df_features_prc.shape)
 
 
     ## List of all features that were fed to the model.
@@ -277,9 +301,6 @@ def feature_generation(df):
         for i in range(len(ohe_dict[ohe_key])):
             df_features_prc_cols.insert(i + df_features_prc_cols.index(ohe_key), ohe_dict[ohe_key][i])
         df_features_prc_cols.remove(ohe_key)
-
-    # print("\n++ ohe_dict: {}\n", ohe_dict)
-    # print("\n++ df_features_prc_cols: {}\n", df_features_prc_cols)
 
 
     return df_features_prc, df_labels, ohe_dict, df_features_prc_cols
@@ -388,16 +409,34 @@ def feature_engineering(transformation_pickle_loc, fe_pickle_loc_imp_features, f
             -
     """
 
-    ## Executing transformation functions
+    ## Storing time execution metadata
+    fe_metadata[fe_metadata_index] = str(datetime.now())
+
+
+    ## Executing feature engineering functions
+
     df = load_transformation(transformation_pickle_loc)
-    # df_features_prc, df_labels, df_features_prc_cols = feature_generation(df)
+
+    #### Df shape prior fe metadata
+    fe_metadata["dim_prior_fe"] = str(df.shape)
+
     df_features_prc, df_labels, ohe_dict, df_features_prc_cols = feature_generation(df)
-    # df_features_prc = feature_selection(df_features_prc, df_labels, df_features_prc_cols)
+
     df_imp_features_prc = feature_selection(df, df_features_prc, df_labels, df_features_prc_cols, ohe_dict)
-    # save_fe(df_features_prc, fe_pickle_loc)
+
+    #### Saving fe results
     save_fe(df_imp_features_prc, fe_pickle_loc_imp_features)
     save_fe(df_labels, fe_pickle_loc_feature_labs)
+
     print("\n** Feature engineering module successfully executed **\n")
+
+
+    ## Working with module's metadata
+
+    #### Converting metadata into dataframe and saving locally
+    df_meta = pd.DataFrame.from_dict(fe_metadata, orient="index").T
+    df_meta.set_index(fe_metadata_index, inplace=True)
+    save_fe(df_meta, fe_metadata_loc)
 
 
 
