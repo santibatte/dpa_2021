@@ -43,10 +43,14 @@ data_path_csv = "data/raw/Food_Inspections.csv"
 ingestion_pickle_loc = "data/pickles/ingest_df.pkl"
 ingestion_metadata = {}
 ingestion_metadata_index = "ing_time_exec"
-ingestion_metadata_loc = "results/metadata/ingesta/ingesta_metadata.pkl"
+ingestion_metadata_loc = "results/metadata/ingesta_metadata.pkl"
 
 ## Transformation
 transformation_pickle_loc = "data/pickles/transformation_df.pkl"
+transformation_metadata = {}
+transformation_metadata_index = "ing_time_exec"
+transformation_metadata_loc = "results/metadata/transform_metadata.pkl"
+trans_count = 0
 
 ## Feature engineering
 fe_pickle_loc_imp_features = "data/pickles/fe_df_imp_features.pkl"
