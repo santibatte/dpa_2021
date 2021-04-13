@@ -24,8 +24,8 @@ from src.utils.utils import (
 from src.utils.params_gen import (
     #bucket_name,
     #local_temp_ingestions,
-    #year_dir,
-    #month_dir,
+    year_dir,
+    month_dir,
     #hist_ingest_path,
     #hist_dat_prefix,
     #cont_ingest_path,
@@ -33,12 +33,20 @@ from src.utils.params_gen import (
     today_info
 )
 
+
+
+
+
 from src.utils.params_gen import (
     ingestion_pickle_loc,
     transformation_pickle_loc,
     #cat_reduction_ref,
     #regex_violations,
     #serious_viols,
+)
+
+from src.etl.ingesta_almacenamiento import (
+    path_file_fn
 )
 
 from src.pipeline.luigi.save_s3 import S3Task
@@ -60,6 +68,8 @@ class Transformation(luigi.Task):
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
+    path_date = year_dir + today_info[:4] + "/" + month_dir + today_info[5:7] + "/"
+
     ## Requires: download data from API depending on the ingestion type if latest ingestion is outdated
     def requires(self):
 
@@ -76,10 +86,37 @@ class Transformation(luigi.Task):
 
         # Agregar lectura de datos desde AWS.
 
-        transformation = pickle.dumps(transform(ingestion_pickle_loc, transformation_pickle_loc))
+
+
+
 
         ## Storing object in s3
         s3 = get_s3_resource()
+
+
+        ## Geet extraction path:
+
+        path_file = path_file_fn(self.ingest_type)
+
+        ## Define the path where the ingestion will be stored in s3
+        extract_path_start = "{}/{}/".format(
+            'ingestion',
+            self.ingest_type,
+        )
+        extract_pickle_loc_s3 = extract_path_start + self.path_date + path_file
+
+        s3_ingestion = s3.get_object(Bucket=self.bucket,Key=extract_pickle_loc_s3)
+        transformation_luigi = pickle.dumps(pickle.loads(response['Body'].read()))
+
+## Hay que modificar el codigo para que tome los datos de s3:
+        # MAke Data Transformation
+        transformation = pickle.dumps(transform(ingestion_pickle_loc, transformation_pickle_loc))
+
+
+
+
+        #Stores transformation in S3
+
         s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=transformation)
 
 
