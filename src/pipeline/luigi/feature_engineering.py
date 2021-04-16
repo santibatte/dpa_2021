@@ -49,12 +49,18 @@ class FeatureEngineering(luigi.Task):
 
         ## makes feature engeneering from transformed data
 
-        # Agregar lectura de datos desde AWS.
-
-        feature_engineering_luigi = pickle.dumps(feature_engineering(transformation_pickle_loc,\
+        #Reads from local computer
+        # feature_engineering_luigi = pickle.dumps(feature_engineering(transformation_pickle_loc,\
         fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs))
         ## Storing object in s3
         s3 = get_s3_resource()
+
+        ##  s3.get(s3_path, destination_local_path)
+        ## Read from S3 instead of local computer
+        transformation_pickle_loc_s3 = transformation/'transformation_' +  today_info +'.pkl'
+
+        feature_engineering_luigi = s3.get_object(Bucket=self.bucket, Key =  transformation_pickle_loc_s3)
+
         s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=feature_engineering_luigi)
 
 

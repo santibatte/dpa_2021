@@ -7,6 +7,8 @@
 import luigi
 import luigi.contrib.s3
 import pickle
+import pandas as pd
+
 
 
 
@@ -106,11 +108,44 @@ class Transformation(luigi.Task):
         extract_pickle_loc_s3 = extract_path_start + self.path_date + path_file
 
         s3_ingestion = s3.get_object(Bucket=self.bucket,Key=extract_pickle_loc_s3)
-        transformation_luigi = pickle.dumps(pickle.loads(response['Body'].read()))
+        #df = pickle.load(open(s3_ingestion['Body'].read(), 'rb'))
+        #df = pickle.loads(open(s3_ingestion['Body'].read()))
+
+        hola= s3_ingestion['Body'].read()
+
+        print(type(hola))  ## <class 'bytes'>
+
+
+        print ('esto es', hola)  ##  b'\x80\x03C\x06\x80\x03]q\x00.q\x00.'
+
+        df = pickle.loads(open(s3_ingestion['Body'].read(), 'rb')) ##esto da error.... no such file b. 
+
+        #df = pickle.loads(hola)
+
+        print( 'miau aca', type(df))  #  <class 'bytes'>
+
+        print(df)  ### es esto, no es un DF > b'\x80\x03]q\x00.'
+
+
+        unpickled_df = pd.read_pickle(df)
+
+
+
+
+
+#pickle.load(open(path, "rb"))
+        print('el pickle es', type(unpickled_df))
+
+        ## transformation_luigi es un data frame?
 
 ## Hay que modificar el codigo para que tome los datos de s3:
         # MAke Data Transformation
-        transformation = pickle.dumps(transform(ingestion_pickle_loc, transformation_pickle_loc))
+        #transformation = pickle.dumps(transform(df, transformation_pickle_loc))
+        transformation = pickle.dumps(transform(unpickled_df, transformation_pickle_loc))
+
+
+
+
 
 
 
