@@ -51,7 +51,7 @@ class FeatureEngineering(luigi.Task):
 
         #Reads from local computer
         # feature_engineering_luigi = pickle.dumps(feature_engineering(transformation_pickle_loc,\
-        fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs))
+        fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
         ## Storing object in s3
         s3 = get_s3_resource()
 
