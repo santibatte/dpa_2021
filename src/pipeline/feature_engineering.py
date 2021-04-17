@@ -399,6 +399,8 @@ def feature_engineering(transformation_pickle_loc, fe_pickle_loc_imp_features, f
     save_fe(df_labels, fe_pickle_loc_feature_labs)
     print("\n** Feature engineering module successfully executed **\n")
 
+    return df_imp_features_prc
+
 
 
 

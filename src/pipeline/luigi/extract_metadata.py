@@ -11,8 +11,13 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
+from src.pipeline.luigi.extract import APIDataIngestion
 
-class CopyTableExample(CopyToTable):
+class ExtractMetadata(CopyToTable):
+
+    def requires(self):
+
+        return APIDataIngestion(self.ingest_type)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
@@ -21,13 +26,16 @@ class CopyTableExample(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_metadata.example'
+    table = 'dpa_metadata.extract'
 
+
+## ADAPTAR al numero de columnas correctas
     columns = [("col_1", "VARCHAR"),
                ("col_2", "VARCHAR")]
 
 
-    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/example_df.csv"
+    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_metadata.csv"
+
 
 
     def rows(self):

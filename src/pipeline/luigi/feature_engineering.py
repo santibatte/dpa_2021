@@ -8,7 +8,7 @@ import pickle
 
 ## Local application imports
 
-from src.pipeline.luigi.transform import Transformation
+from src.pipeline.luigi.transform_metadata import TransformationMetadata
 
 from src.pipeline.feature_engineering import feature_engineering
 from src.utils.params_gen import (
@@ -42,7 +42,7 @@ class FeatureEngineering(luigi.Task):
 
     ## Requires: download data from API depending on the ingestion type if latest ingestion is outdated
     def requires(self):
-        return Transformation(ingest_type=self.ingest_type, bucket=self.bucket)
+        return TransformationMetadata(ingest_type=self.ingest_type, bucket=self.bucket)
 
 
     def run(self):

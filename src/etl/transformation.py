@@ -268,7 +268,7 @@ def category_reductions(df):
     :return df: processed dataframe
     :type df: dataframe
     """
-    
+
     for dfcol in cat_reduction_ref:
         df[dfcol] = df[dfcol].apply(lambda x: cat_red(x, dfcol))
 
@@ -310,6 +310,9 @@ def transform(ingestion_pickle_loc, transformation_pickle_loc):
     save_transformation(df, transformation_pickle_loc)
 
     print("\n** Tranformation module successfully executed **\n")
+
+    return df
+
 
 
 

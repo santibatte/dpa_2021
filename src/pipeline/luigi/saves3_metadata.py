@@ -1,5 +1,4 @@
 
-
 from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
@@ -11,8 +10,15 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
+from src.pipeline.luigi.save_s3 import S3Task
 
-class CopyTableExample(CopyToTable):
+
+
+
+class SaveS3Metadata(CopyToTable):
+
+    def requires(self):
+        return S3Task(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
@@ -21,13 +27,16 @@ class CopyTableExample(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_metadata.example'
+    table = 'dpa_metadata.saveS3'
 
+
+## ADAPTAR al numero de columnas correctas
     columns = [("col_1", "VARCHAR"),
                ("col_2", "VARCHAR")]
 
 
-    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/example_df.csv"
+    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
+
 
 
     def rows(self):
