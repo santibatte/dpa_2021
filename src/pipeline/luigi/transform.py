@@ -19,6 +19,7 @@ from src.utils.utils import (
     get_s3_resource,
     get_s3_resource_luigi,
     get_key,
+    get_postgres_credentials
 )
 
 
@@ -34,9 +35,6 @@ from src.utils.params_gen import (
     #cont_dat_prefix,
     today_info
 )
-
-
-
 
 
 from src.utils.params_gen import (
@@ -88,10 +86,6 @@ class Transformation(luigi.Task):
 
         # Agregar lectura de datos desde AWS.
 
-
-
-
-
         ## Storing object in s3
         s3 = get_s3_resource()
 
@@ -111,37 +105,36 @@ class Transformation(luigi.Task):
         #df = pickle.load(open(s3_ingestion['Body'].read(), 'rb'))
         #df = pickle.loads(open(s3_ingestion['Body'].read()))
 
-        hola= s3_ingestion['Body'].read()
+        body = s3_ingestion['Body'].read()
+        df = pickle.loads(body)
 
-        print(type(hola))  ## <class 'bytes'>
+        print('df es de tipo: ', type(df))
 
+        #hola= s3_ingestion['Body'].read()
 
-        print ('esto es', hola)  ##  b'\x80\x03C\x06\x80\x03]q\x00.q\x00.'
+        #print(type(hola))  ## <class 'bytes'>
 
-        df = pickle.loads(open(s3_ingestion['Body'].read(), 'rb')) ##esto da error.... no such file b. 
+        #print ('esto es', hola)  ##  b'\x80\x03C\x06\x80\x03]q\x00.q\x00.'
+
+        #df = pickle.loads(open(s3_ingestion['Body'].read(), 'rb')) ##esto da error.... no such file b.
 
         #df = pickle.loads(hola)
 
-        print( 'miau aca', type(df))  #  <class 'bytes'>
+        #print( 'miau aca', type(df))  #  <class 'bytes'>
 
-        print(df)  ### es esto, no es un DF > b'\x80\x03]q\x00.'
+        #print(df)  ### es esto, no es un DF > b'\x80\x03]q\x00.'
 
-
-        unpickled_df = pd.read_pickle(df)
-
-
-
-
+        #unpickled_df = pd.read_pickle(df)
 
 #pickle.load(open(path, "rb"))
-        print('el pickle es', type(unpickled_df))
+        #print('el pickle es', type(unpickled_df))
 
         ## transformation_luigi es un data frame?
 
 ## Hay que modificar el codigo para que tome los datos de s3:
         # MAke Data Transformation
         #transformation = pickle.dumps(transform(df, transformation_pickle_loc))
-        transformation = pickle.dumps(transform(unpickled_df, transformation_pickle_loc))
+        transformation = pickle.dumps(transform(df, transformation_pickle_loc))
 
 
 

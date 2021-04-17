@@ -268,7 +268,7 @@ def category_reductions(df):
     :return df: processed dataframe
     :type df: dataframe
     """
-    
+
     for dfcol in cat_reduction_ref:
         df[dfcol] = df[dfcol].apply(lambda x: cat_red(x, dfcol))
 
@@ -285,11 +285,13 @@ def category_reductions(df):
 
 
 ## Function desigend to execute all transformation functions.
-def transform(ingestion_pickle_loc, transformation_pickle_loc):
+#def transform(ingestion_pickle_loc, transformation_pickle_loc):
+def transform(df,transformation_pickle_loc):
     """
     Function desigend to execute all transformation functions.
         args:
-            ingestion_pickle_loc (string): path where the picke obtained from the ingestion is.
+            df: data frame ingestion 
+            #ingestion_pickle_loc (string): path where the pickle obtained from the ingestion is.
             transformation_pickle_loc (string): location where the resulting pickle object will be stored.
         returns:
             -
@@ -297,7 +299,7 @@ def transform(ingestion_pickle_loc, transformation_pickle_loc):
 
     ## Executing transformation functions
 
-    df = load_ingestion(ingestion_pickle_loc)
+    #df = load_ingestion(ingestion_pickle_loc)
 
     df = serious_viols_col(df)
 
@@ -310,6 +312,9 @@ def transform(ingestion_pickle_loc, transformation_pickle_loc):
     save_transformation(df, transformation_pickle_loc)
 
     print("\n** Tranformation module successfully executed **\n")
+
+    return df
+
 
 
 
