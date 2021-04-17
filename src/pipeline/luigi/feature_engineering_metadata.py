@@ -15,6 +15,7 @@ from src.utils.utils import (
 
 from src.pipeline.luigi.feature_engineering import FeatureEngineering
 
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/feature_engineering_metadata.csv"
 
 
 
@@ -26,7 +27,7 @@ class SaveS3Metadata(CopyToTable):
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
-    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
+    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/feature_engineering_metadata.csv"
 
     def requires(self):
         return FeatureEngineering(ingest_type=self.ingest_type, bucket=self.bucket)

@@ -12,7 +12,7 @@ from src.utils.utils import (
 
 from src.pipeline.luigi.save_s3 import S3Task
 
-
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
 
 
 class SaveS3Metadata(CopyToTable):

@@ -13,6 +13,8 @@ from src.utils.utils import (
 
 from src.pipeline.luigi.extract import APIDataIngestion
 
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_metadata.csv"
+
 class ExtractMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3

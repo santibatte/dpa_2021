@@ -12,6 +12,8 @@ from src.utils.utils import (
 
 from src.pipeline.luigi.transform import Transformation
 
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
+
 class TransformationMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
