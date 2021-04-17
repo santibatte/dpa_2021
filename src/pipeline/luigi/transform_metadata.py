@@ -20,6 +20,8 @@ class TransformationMetadata(CopyToTable):
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
+    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
+
     def requires(self):
         return Transformation(ingest_type=self.ingest_type, bucket=self.bucket)
 
@@ -38,7 +40,6 @@ class TransformationMetadata(CopyToTable):
                ("col_2", "VARCHAR")]
 
 
-    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
 
 
 

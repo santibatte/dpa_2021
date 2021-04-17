@@ -21,6 +21,8 @@ class ExtractMetadata(CopyToTable):
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
+    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_metadata.csv"
+
     def requires(self):
 
         return APIDataIngestion(self.ingest_type)
@@ -40,7 +42,6 @@ class ExtractMetadata(CopyToTable):
                ("col_2", "VARCHAR")]
 
 
-    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_metadata.csv"
 
 
 
