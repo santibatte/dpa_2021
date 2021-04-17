@@ -70,8 +70,8 @@ class Transformation(luigi.Task):
     path_date = year_dir + today_info[:4] + "/" + month_dir + today_info[5:7] + "/"
 
     ## Requires: download data from API depending on the ingestion type if latest ingestion is outdated
-    def requires(self):
-        return SaveS3Metadata(ingest_type=self.ingest_type, bucket=self.bucket)
+    #def requires(self):
+    #    return SaveS3Metadata(ingest_type=self.ingest_type, bucket=self.bucket)
 
 
 
@@ -89,19 +89,31 @@ class Transformation(luigi.Task):
 
         ## Geet extraction path:
 
-        #path_file = path_file_fn(self.ingest_type)
+        path_file = path_file_fn(self.ingest_type)
 
         ## Define the path where the ingestion will be stored in s3
-        #extract_path_start = "{}/{}/".format(
-        #    'ingestion',
-        #    self.ingest_type,
-        #)
-        #extract_pickle_loc_s3 = extract_path_start + self.path_date + path_file
+        extract_path_start = "{}/{}/".format(
+            'ingestion',
+            self.ingest_type,
+        )
+        extract_pickle_loc_s3 = extract_path_start + self.path_date + path_file
 
         #Reads from local file not from S3
-        ingestion_pickle_loc_ok = ingestion_pickle_loc
 
-        #s3_ingestion = s3.get_object(Bucket=self.bucket,Key=extract_pickle_loc_s3)
+        s3_ingestion = s3.get_object(Bucket=self.bucket,Key=extract_pickle_loc_s3)
+
+        ingestion_pickle_loc_ok = pickle.loads(s3_ingestion['Body'].read())
+
+        print(ingestion_pickle_loc_ok)
+
+        print('la ubicacion en que buscamos el pickle es: ', extract_pickle_loc_s3)
+        print('pkl_file es de tipo:  ', type(ingestion_pickle_loc_ok))
+
+
+        #ingestion_pickle_loc_ok =
+
+        #ingestion_pickle_loc_ok = ingestion_pickle_loc
+
         #df = pickle.load(open(s3_ingestion['Body'].read(), 'rb'))
         #df = pickle.loads(open(s3_ingestion['Body'].read()))
 

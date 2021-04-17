@@ -11,6 +11,7 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/example_df.csv"
 
 class CopyTableExample(CopyToTable):
 
