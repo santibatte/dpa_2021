@@ -8,8 +8,8 @@ from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
 import luigi
-#import psycopg2
-import yaml
+import psycopg2
+
 
 from src.utils.utils import (
     get_s3_resource,
@@ -20,7 +20,7 @@ from src.utils.utils import (
 
 
 class CopyTableExample(CopyToTable):
-    
+
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
     user = credentials['user']
@@ -28,7 +28,7 @@ class CopyTableExample(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'metadata.example'
+    table = 'dpa_metadata.example'
 
     columns = [("col_1", "VARCHAR"),
                ("col_2", "VARCHAR")]
@@ -39,7 +39,7 @@ class CopyTableExample(CopyToTable):
 
 
     def rows(self):
-        reader = pd.read_csv(csv_local_file, header=None)
+        csv = pd.read_csv(csv_local_file, header=None)
 
-        for element in reader.itertuples(index=False):
+        for element in csv.itertuples(index=False):
             yield element
