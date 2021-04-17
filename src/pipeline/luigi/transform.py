@@ -48,7 +48,7 @@ from src.etl.ingesta_almacenamiento import (
     path_file_fn
 )
 
-from src.pipeline.luigi.save_s3_metadata import SaveS3Metadata
+from src.pipeline.luigi.saves3_metadata import SaveS3Metadata
 
 
 "----------------------------------------------------------------------------------------------------------------------"

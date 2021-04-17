@@ -15,6 +15,12 @@ from src.pipeline.luigi.extract import APIDataIngestion
 
 class ExtractMetadata(CopyToTable):
 
+    #### Bucket where all ingestions will be stored in AWS S3
+    bucket = luigi.Parameter()
+
+    #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
+    ingest_type = luigi.Parameter()
+
     def requires(self):
 
         return APIDataIngestion(self.ingest_type)

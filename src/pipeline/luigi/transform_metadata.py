@@ -14,6 +14,12 @@ from src.pipeline.luigi.transform import Transformation
 
 class TransformationMetadata(CopyToTable):
 
+    #### Bucket where all ingestions will be stored in AWS S3
+    bucket = luigi.Parameter()
+
+    #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
+    ingest_type = luigi.Parameter()
+
     def requires(self):
         return Transformation(ingest_type=self.ingest_type, bucket=self.bucket)
 
