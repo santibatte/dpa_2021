@@ -142,6 +142,7 @@ def save_df(df, path):
 
 
 
+
 ## Load yaml cofigurations
 def read_yaml_file(yaml_file):
     """
@@ -168,6 +169,15 @@ def get_s3_credentials(credentials_file):
     s3_creds = credentials['s3']
 
     return s3_creds
+
+def get_postgres_credentials(credentials_file):
+    """
+    Get postgres credentials
+    """
+    credentials = read_yaml_file(credentials_file)
+    sql_creds = credentials['db']
+
+    return sql_creds
 
 
 

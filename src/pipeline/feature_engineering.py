@@ -430,6 +430,8 @@ def feature_engineering(transformation_pickle_loc, fe_pickle_loc_imp_features, f
 
     print("\n** Feature engineering module successfully executed **\n")
 
+    return df_imp_features_prc
+
 
     ## Working with module's metadata
 
