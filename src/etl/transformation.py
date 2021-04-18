@@ -46,8 +46,10 @@ from src.utils.params_gen import (
     metadata_dir_loc,
 
     ingestion_pickle_loc,
+    transformation_pickle_loc,
     transformation_metadata,
     transformation_metadata_index,
+    transformation_metadata_loc,
     trans_count,
     trans_metadata_csv_name,
     cat_reduction_ref,
@@ -339,8 +341,7 @@ def transform(df,transformation_pickle_loc):
 
     ## Executing transformation functions
 
-    #### Loading data
-    df = load_ingestion(ingestion_pickle_loc)
+    #df = load_ingestion(ingestion_pickle_loc)
 
     #### List of df's original set of columns
     orig_cols = df.columns
