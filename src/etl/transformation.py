@@ -38,7 +38,8 @@ from src.utils.data_dict import (
 from src.utils.utils import (
     update_created_dict,
     load_df,
-    save_df
+    save_df,
+    write_csv_from_df,
 )
 
 from src.utils.params_gen import (
