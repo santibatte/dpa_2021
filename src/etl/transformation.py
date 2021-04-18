@@ -369,7 +369,7 @@ def transform(df,transformation_pickle_loc):
     #### Converting metadata into dataframe and saving locally
     df_meta = pd.DataFrame.from_dict(transformation_metadata, orient="index").T
     df_meta.set_index(transformation_metadata_index, inplace=True)
-    save_transformation(df_meta, transformation_metadata_loc)
+    write_csv_from_df(df_meta, metadata_dir_loc, trans_metadata_csv_name)
 
 
     print("\n** Tranformation module successfully executed **\n")

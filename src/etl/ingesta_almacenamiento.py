@@ -488,7 +488,7 @@ def ingest(data_path, ingestion_pickle_loc):
     ## Converting metadata into dataframe and saving locally
     df_meta = pd.DataFrame.from_dict(ingestion_metadata, orient="index").T
     df_meta.set_index(ingestion_metadata_index, inplace=True)
-    save_ingestion(df_meta, ingestion_metadata_loc)
+    write_csv_from_df(df_meta, metadata_dir_loc, ingestion_metadata_csv_name)
 
     ## Sucess message
     print("\n** Ingestion module successfully executed **\n")
