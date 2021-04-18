@@ -64,7 +64,7 @@ from src.utils.params_gen import (
     hist_dat_prefix,
     cont_ingest_path,
     cont_dat_prefix,
-    today_info,
+    ###  today_info,
 )
 
 
@@ -190,7 +190,8 @@ def guardar_ingesta(ingest_type, bucket_name):
         ## Building query to download data of interest
         soql_query = "inspection_date >= '{}'".format(pkl_mrd)
 
-        ingesta = pickle.dumps(ingesta_consecutiva(client, soql_query))
+        #ingesta = pickle.dumps(ingesta_consecutiva(client, soql_query))
+        ingesta = ingesta_consecutiva(client, soql_query)
 
 
     else:
