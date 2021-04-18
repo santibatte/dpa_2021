@@ -56,7 +56,10 @@ from src.utils.utils import (
 from src.utils.data_dict import data_dict
 
 from src.utils.params_gen import (
+    metadata_dir_loc,
+
     bucket_name,
+
     local_temp_ingestions,
     year_dir,
     month_dir,
@@ -65,9 +68,10 @@ from src.utils.params_gen import (
     cont_ingest_path,
     cont_dat_prefix,
     today_info,
+
     ingestion_metadata,
     ingestion_metadata_index,
-    ingestion_metadata_loc,
+    ingestion_metadata_csv_name,
 )
 
 
