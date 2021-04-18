@@ -65,6 +65,9 @@ from src.utils.params_gen import (
     cont_ingest_path,
     cont_dat_prefix,
     today_info,
+    ingestion_metadata,
+    ingestion_metadata_index,
+    ingestion_metadata_loc,
 )
 
 
@@ -407,6 +410,10 @@ def drop_cols(df):
     ## Dropping non relevant columns
     df.drop(nrel_col, inplace=True, axis=1)
 
+    ## Storing metadata related to this function
+    ingestion_metadata["raw_cols_elim"] = len(nrel_col)
+    ingestion_metadata["raw_cols_live"] = len(df.columns)
+
 
     return df
 
@@ -465,11 +472,21 @@ def ingest(data_path, ingestion_pickle_loc):
             -
     """
 
+    ## Storing time execution metadata
+    ingestion_metadata[ingestion_metadata_index] = str(datetime.now())
+
     ## Executing ingestion functions
     df = ingest_local_csv(data_path) ## Temporal function
     # guardar_ingesta(bucket_name, bucket_path)
     df = initial_cleaning(df)
     save_ingestion(df, ingestion_pickle_loc) ## Temporal function
+
+    ## Converting metadata into dataframe and saving locally
+    df_meta = pd.DataFrame.from_dict(ingestion_metadata, orient="index").T
+    df_meta.set_index(ingestion_metadata_index, inplace=True)
+    save_ingestion(df_meta, ingestion_metadata_loc)
+
+    ## Sucess message
     print("\n** Ingestion module successfully executed **\n")
 
 
