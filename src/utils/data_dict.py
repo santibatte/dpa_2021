@@ -36,7 +36,7 @@ data_dict = {
         "data_type": "string",
         "model_relevant": False
     },
-    "facility_type": {
+    "facility-type": {
         "relevant": True,
         "feature_type": "categoric",
         "data_type": "string",
