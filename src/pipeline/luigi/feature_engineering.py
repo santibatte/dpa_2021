@@ -62,11 +62,17 @@ class FeatureEngineering(luigi.Task):
 
         ##  s3.get(s3_path, destination_local_path)
         ## Read from S3 instead of local computer
-        transformation_pickle_loc_s3 = transformation/'transformation_' +  today_info +'.pkl'
+        transformation_pickle_loc_s3 = 'transformation/transformation_' + today_info + '.pkl'
 
-        feature_engineering_luigi = s3.get_object(Bucket=self.bucket, Key =  transformation_pickle_loc_s3)
+        feature_engineering_luigi = s3.get_object(Bucket=self.bucket, Key=transformation_pickle_loc_s3)
 
-        s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=feature_engineering_luigi)
+        df_pre_fe = pickle.loads(feature_engineering_luigi['Body'].read())
+
+        df_post_fe = feature_engineering(df_pre_fe, fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
+
+        df_fe_pickle = pickle.dumps(df_post_fe)
+
+        s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=df_fe_pickle)
 
 
     ## Output: uploading data to s3 path

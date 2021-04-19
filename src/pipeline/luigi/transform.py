@@ -46,7 +46,8 @@ from src.utils.params_gen import (
 )
 
 from src.etl.ingesta_almacenamiento import (
-    path_file_fn
+    path_file_fn,
+    initial_cleaning
 )
 
 from src.pipeline.luigi.saves3_metadata import SaveS3Metadata
@@ -102,9 +103,15 @@ class Transformation(luigi.Task):
 
         ingestion_pickle_loc_ok = pickle.loads(s3_ingestion['Body'].read())
 
-        print('df es de tipo: ', type(ingestion_pickle_loc_ok))
+        ingestion_df = pd.DataFrame(ingestion_pickle_loc_ok)
 
-        transformation = pickle.dumps(transform(ingestion_pickle_loc_ok, transformation_pickle_loc))
+        print("***** dimensiones antes de initial clean: ", ingestion_df.shape)
+        ingestion_df_cln = initial_cleaning(ingestion_df)
+        print("***** dimensiones después de initial clean: ", ingestion_df_cln.shape)
+
+        print('df es de tipo: ', type(ingestion_df_cln))
+
+        transformation = pickle.dumps(transform(ingestion_df_cln, transformation_pickle_loc))
 
         s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=transformation)
 
@@ -122,6 +129,6 @@ class Transformation(luigi.Task):
             'transformation',
         )
 
-        output_path = output_path_start + 'transformation_' +  today_info +'.pkl'
+        output_path = output_path_start + 'transformation_' + today_info + '.pkl'
 
         return luigi.contrib.s3.S3Target(output_path, client=client)

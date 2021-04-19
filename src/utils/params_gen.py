@@ -60,7 +60,6 @@ fe_pickle_loc_imp_features = "data/pickles/fe_df_imp_features.pkl"
 fe_pickle_loc_feature_labs = "data/pickles/fe_df_feature_labs.pkl"
 fe_metadata = {}
 fe_metadata_index = "ing_time_exec"
-fe_metadata_loc = "results/metadata/fe_metadata.pkl"
 fe_metadata_csv_name = "feature_engineering_metadata.csv"
 
 ## Modeling
