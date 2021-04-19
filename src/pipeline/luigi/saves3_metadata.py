@@ -43,9 +43,6 @@ class SaveS3Metadata(CopyToTable):
                ("col_2", "VARCHAR")]
 
 
-
-
-
     def rows(self):
         reader = pd.read_csv(csv_local_file, header=None)
 

@@ -61,7 +61,6 @@ from src.pipeline.luigi.saves3_metadata import SaveS3Metadata
 ## Task aimed to store transformation in s3
 class Transformation(luigi.Task):
 
-
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
 
@@ -73,9 +72,6 @@ class Transformation(luigi.Task):
     ## Requires: download data from API depending on the ingestion type if latest ingestion is outdated
     def requires(self):
         return SaveS3Metadata(ingest_type=self.ingest_type, bucket=self.bucket)
-
-
-
 
 ### RUN :
 
@@ -100,76 +96,19 @@ class Transformation(luigi.Task):
         extract_pickle_loc_s3 = extract_path_start + self.path_date + path_file
 
         #Reads from local file not from S3
-        print(extract_pickle_loc_s3)
+        print('esta es la direccion en la que buscamos el pickle: ',extract_pickle_loc_s3)
 
         s3_ingestion = s3.get_object(Bucket=self.bucket,Key=extract_pickle_loc_s3)
 
         ingestion_pickle_loc_ok = pickle.loads(s3_ingestion['Body'].read())
 
-        print(ingestion_pickle_loc_ok)
+        print('df es de tipo: ', type(ingestion_pickle_loc_ok))
 
-        print('la ubicacion en que buscamos el pickle es: ', extract_pickle_loc_s3)
-        print('pkl_file es de tipo:  ', type(ingestion_pickle_loc_ok))
-
-
-        #ingestion_pickle_loc_ok =
-
-        #ingestion_pickle_loc_ok = ingestion_pickle_loc
-
-        #df = pickle.load(open(s3_ingestion['Body'].read(), 'rb'))
-        #df = pickle.loads(open(s3_ingestion['Body'].read()))
-
-        body = s3_ingestion['Body'].read()
-        df = pickle.loads(body)
-
-        print('df es de tipo: ', type(df))
-
-        #hola= s3_ingestion['Body'].read()
-
-        #print ('esto es', hola)  ##  b'\x80\x03C\x06\x80\x03]q\x00.q\x00.'
-
-        #df = pickle.loads(open(s3_ingestion['Body'].read(), 'rb')) ##esto da error.... no such file b.
-
-        #df = pickle.loads(hola)
-
-        #print( 'miau aca', type(df))  #  <class 'bytes'>
-
-        #print(df)  ### es esto, no es un DF > b'\x80\x03]q\x00.'
-
-        #df = pickle.loads(hola)
-
-        #unpickled_df = pd.read_pickle(df)
-
-        #print(df)  ### es esto, no es un DF > b'\x80\x03]q\x00.'
-
-        #unpickled_df = pd.read_pickle(df)
-
-#pickle.load(open(path, "rb"))
-        #print('el pickle es', type(unpickled_df))
-
-        ## transformation_luigi es un data frame?
-
-## Hay que modificar el codigo para que tome los datos de s3:
-        # MAke Data Transformation
-        #transformation = pickle.dumps(transform(df, transformation_pickle_loc))
-        transformation = pickle.dumps(transform(df, transformation_pickle_loc))
-
-
-
-
-
-
-
-
-        #Stores transformation in S3
+        transformation = pickle.dumps(transform(ingestion_pickle_loc_ok, transformation_pickle_loc))
 
         s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=transformation)
 
-
-
-
 ### OUTPUT:
-
 
     ## Output: uploading data to s3 path
     def output(self):
