@@ -102,7 +102,7 @@ serious_viols = [str(num) for num in list(range(1, 44 + 1)) + [70]]
 
 #### Dictionary with references to make substitution
 cat_reduction_ref = {
-    "facility_type": {
+    "facility-type": {
         "cat_1": {
             "key_words": [
                 "resta",
@@ -128,7 +128,7 @@ cat_reduction_ref = {
             "substitution": "chicago"
         },
     },
-    "inspection_type": {
+    "inspection-type": {
         "cat_1": {
             "key_words": [
                 "re-inspec",
