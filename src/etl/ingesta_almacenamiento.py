@@ -440,14 +440,9 @@ def initial_cleaning(data):
 
     ## Cleaning names of columns
     dfx = clean_col_names(dfx)
-    print("@@@@@@@@ clean_col_names complete")
-    print("####### columns cleaned: ")
-    print(dfx.columns)
-    print("#######")
 
     ## Eliminating unused columns
     dfx = drop_cols(dfx)
-    print("@@@@@@@@ drop_cols complete")
 
     ## Cleaning string columns
     #### Selecting only columns that are relevant and that have strings
@@ -456,11 +451,9 @@ def initial_cleaning(data):
     for str_col in str_cols:
         dfx[str_col] = dfx[str_col].astype("str")
         dfx[str_col] = dfx[str_col].apply(lambda x: clean_strings(x))
-    print("@@@@@@@@ clean string columns complete")
 
     ## Adding column with predictive label
     dfx = generate_label(dfx)
-    print("@@@@@@@@ generate_label complete")
 
     return dfx
 

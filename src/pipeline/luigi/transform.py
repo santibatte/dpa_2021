@@ -105,12 +105,7 @@ class Transformation(luigi.Task):
 
         ingestion_df = pd.DataFrame(ingestion_pickle_loc_ok)
 
-        print("***** dimensiones antes de initial clean: ", ingestion_df.shape)
-        print("&&&&& columns in dataframe: ")
-        print(ingestion_df.columns)
-        print("&&&&&")
         ingestion_df_cln = initial_cleaning(ingestion_df)
-        print("***** dimensiones después de initial clean: ", ingestion_df_cln.shape)
 
         print('df es de tipo: ', type(ingestion_df_cln))
 

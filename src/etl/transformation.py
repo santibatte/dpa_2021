@@ -347,11 +347,9 @@ def transform(df, transformation_pickle_loc):
 
     #### Adding column of serious violations (transformation)
     df = serious_viols_col(df)
-    print("@@@@@@@@ serious_viols_col complete")
 
     #### Reducing the number of categories in data (transformation)
     df = category_reductions(df)
-    print("@@@@@@@@ category_reductions complete")
 
     #### List of df's resulting set of columns
     res_cols = df.columns
