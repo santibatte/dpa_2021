@@ -78,7 +78,7 @@ data_dict = {
         "data_type": "string",
         "model_relevant": False
     },
-    "inspection_type": {
+    "inspection-type": {
         "relevant": True,
         "feature_type": "categoric",
         "data_type": "string",
