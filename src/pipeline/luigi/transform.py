@@ -96,22 +96,18 @@ class Transformation(luigi.Task):
         )
         extract_pickle_loc_s3 = extract_path_start + self.path_date + path_file
 
-        #Reads from local file not from S3
-        print('esta es la direccion en la que buscamos el pickle: ',extract_pickle_loc_s3)
+        ## Reading data form s3
 
-        s3_ingestion = s3.get_object(Bucket=self.bucket,Key=extract_pickle_loc_s3)
+        s3_ingestion = s3.get_object(Bucket=self.bucket, Key=extract_pickle_loc_s3)
 
         ingestion_pickle_loc_ok = pickle.loads(s3_ingestion['Body'].read())
 
         ingestion_df = pd.DataFrame(ingestion_pickle_loc_ok)
 
-        ingestion_df_cln = initial_cleaning(ingestion_df)
-
-        print('df es de tipo: ', type(ingestion_df_cln))
-
-        transformation = pickle.dumps(transform(ingestion_df_cln, transformation_pickle_loc))
+        transformation = pickle.dumps(transform(ingestion_df, transformation_pickle_loc))
 
         s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=transformation)
+
 
 ### OUTPUT:
 
