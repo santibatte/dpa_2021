@@ -441,6 +441,9 @@ def initial_cleaning(data):
     ## Cleaning names of columns
     dfx = clean_col_names(dfx)
     print("@@@@@@@@ clean_col_names complete")
+    print("####### columns cleaned: ")
+    print(dfx.columns)
+    print("#######")
 
     ## Eliminating unused columns
     dfx = drop_cols(dfx)
