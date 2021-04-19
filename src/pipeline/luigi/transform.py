@@ -97,9 +97,10 @@ class Transformation(luigi.Task):
             'ingestion',
             self.ingest_type,
         )
-        extract_pickle_loc_s3 = extract_path_start + self.path_date + path_file
+        extract_pickle_loc_s3 = extract_path_start + self.path_date + path_file +
 
         #Reads from local file not from S3
+        print(extract_pickle_loc_s3)
 
         s3_ingestion = s3.get_object(Bucket=self.bucket,Key=extract_pickle_loc_s3)
 
