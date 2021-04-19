@@ -18,7 +18,7 @@ csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_metadata.csv"
 class ExtractMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
-    bucket = luigi.Parameter()
+    #bucket = luigi.Parameter()
 
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
