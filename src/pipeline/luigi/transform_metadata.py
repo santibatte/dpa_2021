@@ -38,8 +38,9 @@ class TransformationMetadata(CopyToTable):
 
 
 ## ADAPTAR al numero de columnas correctas
-    columns = [("col_1", "VARCHAR"),
-               ("col_2", "VARCHAR")]
+    columns = [("execution_date", "VARCHAR"),
+               ("number_of_transformations", "VARCHAR"),
+               ("new_columns", "VARCHAR")]
 
 
     def rows(self):
