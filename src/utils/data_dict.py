@@ -11,20 +11,20 @@
 
 
 data_dict = {
-    "inspection_id": {
+    "inspection-id": {
         "relevant": False,
         "feature_type": "categoric",
         "data_type": "string",
         "model_relevant": False,
         "id_feature": True
     },
-    "dba_name": {
+    "dba-name": {
         "relevant": False,
         "feature_type": "categoric",
         "data_type": "string",
         "model_relevant": False
     },
-    "aka_name": {
+    "aka-name": {
         "relevant": False,
         "feature_type": "categoric",
         "data_type": "string",
@@ -72,7 +72,7 @@ data_dict = {
         "data_type": "string",
         "model_relevant": False
     },
-    "inspection_date": {
+    "inspection-date": {
         "relevant": False,
         "feature_type": "categoric",
         "data_type": "string",
