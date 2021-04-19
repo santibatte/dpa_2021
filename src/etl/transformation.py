@@ -18,6 +18,8 @@ import sys
 
 import re
 
+from datetime import (date, datetime)
+
 
 ## Third party imports
 
@@ -42,12 +44,15 @@ from src.utils.utils import (
 from src.utils.params_gen import (
     ingestion_pickle_loc,
     transformation_pickle_loc,
+    transformation_metadata,
+    transformation_metadata_index,
+    transformation_metadata_loc,
+    trans_count,
     cat_reduction_ref,
 
     regex_violations,
     serious_viols,
 )
-
 
 
 
@@ -175,6 +180,12 @@ def date_transformation(col, df):
 
     update_data_created_dict("anio_inicio", relevant=True, feature_type="categoric", model_relevant=True)
 
+
+    ## Updating transformation counts
+    global trans_count
+    trans_count += 1
+
+
     return df
 
 
@@ -195,6 +206,12 @@ def hour_transformation(col, df):
         cyclic_trasformation(df, val)
 
     df.drop(['hora_inicio','min_inicio'], axis=1, inplace=True)
+
+
+    ## Updating transformation counts
+    global trans_count
+    trans_count += 1
+
 
     return df
 
@@ -229,6 +246,10 @@ def cyclic_trasformation(df, col):
     update_created_dict(col + "_cos", relevant=True, feature_type="numeric", model_relevant=True)
 
 
+    ## Updating transformation counts
+    global trans_count
+    trans_count += 1
+
 
     return df
 
@@ -253,6 +274,12 @@ def serious_viols_col(df):
     ## Updating data creation dictionary to new column
     update_created_dict("serious_violations", relevant=True, feature_type="categoric", model_relevant=True)
 
+
+    ## Updating transformation counts
+    global trans_count
+    trans_count += 1
+
+
     return df
 
 
@@ -272,6 +299,12 @@ def category_reductions(df):
     for dfcol in cat_reduction_ref:
         df[dfcol] = df[dfcol].apply(lambda x: cat_red(x, dfcol))
 
+
+    ## Updating transformation counts
+    global trans_count
+    trans_count += 1
+
+
     return df
 
 
@@ -290,26 +323,51 @@ def transform(df,transformation_pickle_loc):
     """
     Function desigend to execute all transformation functions.
         args:
-            df: data frame ingestion 
+            df: data frame ingestion
             #ingestion_pickle_loc (string): path where the pickle obtained from the ingestion is.
             transformation_pickle_loc (string): location where the resulting pickle object will be stored.
         returns:
             -
     """
 
+    ## Storing time execution metadata
+    transformation_metadata[transformation_metadata_index] = str(datetime.now())
+
+
     ## Executing transformation functions
 
     #df = load_ingestion(ingestion_pickle_loc)
 
+    #### List of df's original set of columns
+    orig_cols = df.columns
+
+    #### Adding column of serious violations (transformation)
     df = serious_viols_col(df)
 
-    # df = date_transformation("fecha_creacion", df)
-
-    # df = hour_transformation("hora_creacion", df)
-
+    #### Reducing the number of categories in data (transformation)
     df = category_reductions(df)
 
+    #### List of df's resulting set of columns
+    res_cols = df.columns
+
+
+    ## Saving results
     save_transformation(df, transformation_pickle_loc)
+
+
+    ## Working with module's metadata
+
+    #### Storing number of transformations in metadata
+    transformation_metadata["trans_count"] = trans_count
+
+    #### String with list of new columns added after transformation (pipe separated)
+    transformation_metadata["new_cols"] = " | ".join(set(res_cols) - set(orig_cols))
+
+    #### Converting metadata into dataframe and saving locally
+    df_meta = pd.DataFrame.from_dict(transformation_metadata, orient="index").T
+    df_meta.set_index(transformation_metadata_index, inplace=True)
+    save_transformation(df_meta, transformation_metadata_loc)
+
 
     print("\n** Tranformation module successfully executed **\n")
 
