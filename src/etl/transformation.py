@@ -38,21 +38,26 @@ from src.utils.data_dict import (
 from src.utils.utils import (
     update_created_dict,
     load_df,
-    save_df
+    save_df,
+    write_csv_from_df,
 )
 
 from src.utils.params_gen import (
+    metadata_dir_loc,
+
     ingestion_pickle_loc,
     transformation_pickle_loc,
     transformation_metadata,
     transformation_metadata_index,
     transformation_metadata_loc,
     trans_count,
+    trans_metadata_csv_name,
     cat_reduction_ref,
 
     regex_violations,
     serious_viols,
 )
+
 
 
 
@@ -366,7 +371,7 @@ def transform(df,transformation_pickle_loc):
     #### Converting metadata into dataframe and saving locally
     df_meta = pd.DataFrame.from_dict(transformation_metadata, orient="index").T
     df_meta.set_index(transformation_metadata_index, inplace=True)
-    save_transformation(df_meta, transformation_metadata_loc)
+    write_csv_from_df(df_meta, metadata_dir_loc, trans_metadata_csv_name)
 
 
     print("\n** Tranformation module successfully executed **\n")

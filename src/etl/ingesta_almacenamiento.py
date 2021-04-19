@@ -50,13 +50,17 @@ from src.utils.utils import (
     read_yaml_file,
     get_s3_credentials,
     get_s3_resource,
-    get_api_token
+    get_api_token,
+    write_csv_from_df,
 )
 
 from src.utils.data_dict import data_dict
 
 from src.utils.params_gen import (
+    metadata_dir_loc,
+
     bucket_name,
+
     local_temp_ingestions,
     year_dir,
     month_dir,
@@ -65,9 +69,10 @@ from src.utils.params_gen import (
     cont_ingest_path,
     cont_dat_prefix,
     today_info,
+
     ingestion_metadata,
     ingestion_metadata_index,
-    ingestion_metadata_loc,
+    ingestion_metadata_csv_name,
 )
 
 
@@ -485,7 +490,7 @@ def ingest(data_path, ingestion_pickle_loc):
     ## Converting metadata into dataframe and saving locally
     df_meta = pd.DataFrame.from_dict(ingestion_metadata, orient="index").T
     df_meta.set_index(ingestion_metadata_index, inplace=True)
-    save_ingestion(df_meta, ingestion_metadata_loc)
+    write_csv_from_df(df_meta, metadata_dir_loc, ingestion_metadata_csv_name)
 
     ## Sucess message
     print("\n** Ingestion module successfully executed **\n")
