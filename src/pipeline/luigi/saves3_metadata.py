@@ -38,9 +38,11 @@ class SaveS3Metadata(CopyToTable):
     table = 'dpa_metadata.saveS3'
 
 
-## ADAPTAR al numero de columnas correctas
-    columns = [("col_1", "VARCHAR"),
-               ("col_2", "VARCHAR")]
+    ## Postgres table layout
+    columns = [("save_time", "VARCHAR"),
+               ("s3_bucket_name", "VARCHAR"),
+               ("s3_key_name", "VARCHAR"),
+               ("df_shape", "VARCHAR")]
 
 
     def rows(self):
