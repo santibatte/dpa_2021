@@ -71,8 +71,8 @@ class Transformation(luigi.Task):
     path_date = year_dir + today_info[:4] + "/" + month_dir + today_info[5:7] + "/"
 
     ## Requires: download data from API depending on the ingestion type if latest ingestion is outdated
-    #def requires(self):
-    #    return SaveS3Metadata(ingest_type=self.ingest_type, bucket=self.bucket)
+    def requires(self):
+        return SaveS3Metadata(ingest_type=self.ingest_type, bucket=self.bucket)
 
 
 
@@ -97,7 +97,7 @@ class Transformation(luigi.Task):
             'ingestion',
             self.ingest_type,
         )
-        extract_pickle_loc_s3 = extract_path_start + self.path_date + path_file 
+        extract_pickle_loc_s3 = extract_path_start + self.path_date + path_file
 
         #Reads from local file not from S3
         print(extract_pickle_loc_s3)
