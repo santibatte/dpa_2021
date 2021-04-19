@@ -30,7 +30,7 @@ data_dict = {
         "data_type": "string",
         "model_relevant": False
     },
-    "license_-": {
+    "license-": {
         "relevant": False,
         "feature_type": "categoric",
         "data_type": "string",
