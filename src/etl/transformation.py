@@ -323,7 +323,7 @@ def category_reductions(df):
 
 ## Function desigend to execute all transformation functions.
 #def transform(ingestion_pickle_loc, transformation_pickle_loc):
-def transform(df,transformation_pickle_loc):
+def transform(df, transformation_pickle_loc):
     """
     Function desigend to execute all transformation functions.
         args:
