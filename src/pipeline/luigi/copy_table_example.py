@@ -32,7 +32,7 @@ class CopyTableExample(CopyToTable):
 
 
     def rows(self):
-        reader = pd.read_csv(csv_local_file, header=None)
+        csv = pd.read_csv(csv_local_file, header=None)
 
-        for element in reader.itertuples(index=False):
+        for element in csv.itertuples(index=False):
             yield element

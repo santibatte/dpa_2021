@@ -19,6 +19,7 @@ from src.utils.utils import (
     get_s3_resource,
     get_s3_resource_luigi,
     get_key,
+    get_postgres_credentials
 )
 
 
@@ -117,10 +118,12 @@ class Transformation(luigi.Task):
         #df = pickle.load(open(s3_ingestion['Body'].read(), 'rb'))
         #df = pickle.loads(open(s3_ingestion['Body'].read()))
 
+        body = s3_ingestion['Body'].read()
+        df = pickle.loads(body)
+
+        print('df es de tipo: ', type(df))
+
         #hola= s3_ingestion['Body'].read()
-
-        #print(type(hola))  ## <class 'bytes'>
-
 
         #print ('esto es', hola)  ##  b'\x80\x03C\x06\x80\x03]q\x00.q\x00.'
 
@@ -132,10 +135,13 @@ class Transformation(luigi.Task):
 
         #print(df)  ### es esto, no es un DF > b'\x80\x03]q\x00.'
 
+        #df = pickle.loads(hola)
 
         #unpickled_df = pd.read_pickle(df)
 
+        #print(df)  ### es esto, no es un DF > b'\x80\x03]q\x00.'
 
+        #unpickled_df = pd.read_pickle(df)
 
 #pickle.load(open(path, "rb"))
         #print('el pickle es', type(unpickled_df))
@@ -145,7 +151,7 @@ class Transformation(luigi.Task):
 ## Hay que modificar el codigo para que tome los datos de s3:
         # MAke Data Transformation
         #transformation = pickle.dumps(transform(df, transformation_pickle_loc))
-        transformation = pickle.dumps(transform(ingestion_pickle_loc_ok, transformation_pickle_loc))
+        transformation = pickle.dumps(transform(df, transformation_pickle_loc))
 
 
 

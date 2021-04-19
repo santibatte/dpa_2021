@@ -24,6 +24,8 @@ import pickle
 
 import yaml
 
+import csv
+
 
 ## Third party imports
 import pandas as pd
@@ -170,6 +172,9 @@ def get_s3_credentials(credentials_file):
 
     return s3_creds
 
+
+
+## Obtaining Postgres credentials
 def get_postgres_credentials(credentials_file):
     """
     Get postgres credentials
@@ -254,6 +259,26 @@ def ingesta_inicial(client, limit=3000000):
 ## Request data to API based on query
 def ingesta_consecutiva(client, soql_query):
     return client.get("4ijn-s7e5", where=soql_query)
+
+
+
+## Overwriting csv file from a dataframe (no header)
+def write_csv_from_df(df, filepath, filename):
+    """
+    :param df: dataframe whose contents will be writen to csv file (without column names; no header).
+    :param filepath: path where the csv file will be stored.
+    :param filename: name of resulting csv file.
+    :return:
+    """
+
+    ## Extracting df contents as list
+    mdata_list = [df.index[0]]
+    [mdata_list.append(val) for val in df.iloc[0, :]]
+
+    ## Creating and writing csv file with extracted list
+    with open(filepath + filename, mode="w") as metadata_file:
+        metadata_writer = csv.writer(metadata_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        metadata_writer.writerow(mdata_list)
 
 
 

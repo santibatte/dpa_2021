@@ -50,13 +50,17 @@ from src.utils.utils import (
     read_yaml_file,
     get_s3_credentials,
     get_s3_resource,
-    get_api_token
+    get_api_token,
+    write_csv_from_df,
 )
 
 from src.utils.data_dict import data_dict
 
 from src.utils.params_gen import (
+    metadata_dir_loc,
+
     bucket_name,
+
     local_temp_ingestions,
     year_dir,
     month_dir,
@@ -65,6 +69,10 @@ from src.utils.params_gen import (
     cont_ingest_path,
     cont_dat_prefix,
     today_info,
+
+    ingestion_metadata,
+    ingestion_metadata_index,
+    ingestion_metadata_csv_name,
 )
 
 
@@ -190,7 +198,8 @@ def guardar_ingesta(ingest_type, bucket_name):
         ## Building query to download data of interest
         soql_query = "inspection_date >= '{}'".format(pkl_mrd)
 
-        ingesta = pickle.dumps(ingesta_consecutiva(client, soql_query))
+        #ingesta = pickle.dumps(ingesta_consecutiva(client, soql_query))
+        ingesta = ingesta_consecutiva(client, soql_query)
 
 
     else:
@@ -407,6 +416,10 @@ def drop_cols(df):
     ## Dropping non relevant columns
     df.drop(nrel_col, inplace=True, axis=1)
 
+    ## Storing metadata related to this function
+    ingestion_metadata["raw_cols_elim"] = len(nrel_col)
+    ingestion_metadata["raw_cols_live"] = len(df.columns)
+
 
     return df
 
@@ -465,11 +478,21 @@ def ingest(data_path, ingestion_pickle_loc):
             -
     """
 
+    ## Storing time execution metadata
+    ingestion_metadata[ingestion_metadata_index] = str(datetime.now())
+
     ## Executing ingestion functions
     df = ingest_local_csv(data_path) ## Temporal function
     # guardar_ingesta(bucket_name, bucket_path)
     df = initial_cleaning(df)
     save_ingestion(df, ingestion_pickle_loc) ## Temporal function
+
+    ## Converting metadata into dataframe and saving locally
+    df_meta = pd.DataFrame.from_dict(ingestion_metadata, orient="index").T
+    df_meta.set_index(ingestion_metadata_index, inplace=True)
+    write_csv_from_df(df_meta, metadata_dir_loc, ingestion_metadata_csv_name)
+
+    ## Sucess message
     print("\n** Ingestion module successfully executed **\n")
 
 
