@@ -159,7 +159,7 @@ def most_recent_lcl_for_cons():
 
 
 ## Saving data donwloaded with Chicago's API
-def guardar_ingesta(ingest_type, bucket_name):
+def request_data_to_API(ingest_type, bucket_name):
     """
     Saving data donwloaded with Chicago's API
     :param ingest_type:

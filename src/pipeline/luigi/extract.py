@@ -40,7 +40,7 @@ from src.utils.utils import (
 
 
 from src.etl.ingesta_almacenamiento import (
-    guardar_ingesta,
+    request_data_to_API,
     save_local_ingestion,
 )
 
@@ -68,7 +68,7 @@ class APIDataIngestion(luigi.Task):
 
         ## Obtaining ingestion from API based on the ingestion type
         print("********")
-        ingesta = guardar_ingesta(self.ingest_type, bucket_name)
+        ingesta = request_data_to_API(self.ingest_type, bucket_name)
 
         ## Saving ingestion results
         pickle.dump(ingesta, open(self.output().path, 'wb'))
