@@ -19,7 +19,7 @@ csv_local_file = "src/pipeline/luigi/luigi_tmp_files/feature_engineering_metadat
 
 
 
-class SaveS3Metadata(CopyToTable):
+class SaveFeatureEngineeringMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
