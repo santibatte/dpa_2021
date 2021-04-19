@@ -27,7 +27,7 @@ import boto3
 
 ## Local application imports
 
-from src.pipeline.luigi.extract import APIDataIngestion
+from src.pipeline.luigi.extract_metadata import ExtractMetadata
 
 from src.utils.utils import (
     get_s3_resource,
@@ -47,6 +47,7 @@ from src.utils.params_gen import (
 from src.etl.ingesta_almacenamiento import (
     path_file_fn
 )
+
 
 
 "----------------------------------------------------------------------------------------------------------------------"
@@ -70,6 +71,7 @@ class S3Task(luigi.Task):
     ingest_type = luigi.Parameter()
 
 
+
     #### Sections of local path to most recent date ingestion
 
     ###### Set of directories based on date
@@ -78,9 +80,11 @@ class S3Task(luigi.Task):
 
 
     ## Requires: download data from API depending on the ingestion type if latest ingestion is outdated
-    def requires(self):
+    #def requires(self):
+#        return APIDataIngestion(self.ingest_type)
 
-        return APIDataIngestion(self.ingest_type)
+    def requires(self):
+        return ExtractMetadata(self.ingest_type)
 
 
     ## Run: get most recent local ingestion saved to upload it to s3
@@ -93,7 +97,6 @@ class S3Task(luigi.Task):
 
         ## Location to find most recent local ingestion
         path_full = local_temp_ingestions + self.ingest_type + "/" + self.path_date + path_file
-
 
         ## Loading most recent ingestion
         ingesta = pickle.dumps(pickle.load(open(path_full, "rb")))

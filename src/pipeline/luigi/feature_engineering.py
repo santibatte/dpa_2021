@@ -8,7 +8,7 @@ import pickle
 
 ## Local application imports
 
-from src.pipeline.luigi.transform import Transformation
+from src.pipeline.luigi.transform_metadata import TransformationMetadata
 
 from src.pipeline.feature_engineering import feature_engineering
 from src.utils.params_gen import (
@@ -47,7 +47,7 @@ class FeatureEngineering(luigi.Task):
 
     ## Requires: download data from API depending on the ingestion type if latest ingestion is outdated
     def requires(self):
-        return Transformation(ingest_type=self.ingest_type, bucket=self.bucket)
+        return TransformationMetadata(ingest_type=self.ingest_type, bucket=self.bucket)
 
 
     def run(self):
@@ -56,17 +56,23 @@ class FeatureEngineering(luigi.Task):
 
         #Reads from local computer
         # feature_engineering_luigi = pickle.dumps(feature_engineering(transformation_pickle_loc,\
-        fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
+        #fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
         ## Storing object in s3
         s3 = get_s3_resource()
 
         ##  s3.get(s3_path, destination_local_path)
         ## Read from S3 instead of local computer
-        transformation_pickle_loc_s3 = transformation/'transformation_' +  today_info +'.pkl'
+        transformation_pickle_loc_s3 = 'transformation/transformation_' + today_info + '.pkl'
 
-        feature_engineering_luigi = s3.get_object(Bucket=self.bucket, Key =  transformation_pickle_loc_s3)
+        feature_engineering_luigi = s3.get_object(Bucket=self.bucket, Key=transformation_pickle_loc_s3)
 
-        s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=feature_engineering_luigi)
+        df_pre_fe = pickle.loads(feature_engineering_luigi['Body'].read())
+
+        df_post_fe = feature_engineering(df_pre_fe, fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
+
+        df_fe_pickle = pickle.dumps(df_post_fe)
+
+        s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=df_fe_pickle)
 
 
     ## Output: uploading data to s3 path

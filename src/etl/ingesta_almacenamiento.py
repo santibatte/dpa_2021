@@ -439,7 +439,7 @@ def initial_cleaning(data):
     dfx = data.copy()
 
     ## Cleaning names of columns
-    clean_col_names(dfx)
+    dfx = clean_col_names(dfx)
 
     ## Eliminating unused columns
     dfx = drop_cols(dfx)

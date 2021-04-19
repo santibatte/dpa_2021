@@ -1,8 +1,4 @@
 
-## leer de un .csv en local y guardar en postgres
-
-
-## Ver de agregar las credentials.yaml
 
 from luigi.contrib.postgres import CopyToTable
 
@@ -12,12 +8,10 @@ import psycopg2
 
 
 from src.utils.utils import (
-    get_s3_resource,
-    get_s3_resource_luigi,
-    get_key,
     get_postgres_credentials
 )
 
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/example_df.csv"
 
 class CopyTableExample(CopyToTable):
 
@@ -35,7 +29,6 @@ class CopyTableExample(CopyToTable):
 
 
     csv_local_file = "src/pipeline/luigi/luigi_tmp_files/example_df.csv"
-    #path_full = local_temp_ingestions + self.ingest_type + "/" + self.path_date + path_file
 
 
     def rows(self):

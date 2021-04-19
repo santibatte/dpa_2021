@@ -49,7 +49,6 @@ from src.utils.params_gen import (
     transformation_pickle_loc,
     transformation_metadata,
     transformation_metadata_index,
-    transformation_metadata_loc,
     trans_count,
     trans_metadata_csv_name,
     cat_reduction_ref,
@@ -324,7 +323,7 @@ def category_reductions(df):
 
 ## Function desigend to execute all transformation functions.
 #def transform(ingestion_pickle_loc, transformation_pickle_loc):
-def transform(df,transformation_pickle_loc):
+def transform(df, transformation_pickle_loc):
     """
     Function desigend to execute all transformation functions.
         args:
