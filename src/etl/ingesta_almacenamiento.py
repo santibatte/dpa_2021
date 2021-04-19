@@ -70,9 +70,9 @@ from src.utils.params_gen import (
     cont_dat_prefix,
     today_info,
 
-    ingestion_metadata,
-    ingestion_metadata_index,
-    ingestion_metadata_csv_name,
+    extract_metadata,
+    extract_metadata_index,
+    extract_metadata_csv_name,
 )
 
 
@@ -204,6 +204,9 @@ def request_data_to_API(ingest_type, bucket_name):
 
     else:
         raise NameError('Invalid parameter')
+
+
+    ## Obtaining and storing ingestion metadata
 
 
     return ingesta
@@ -417,8 +420,8 @@ def drop_cols(df):
     df.drop(nrel_col, inplace=True, axis=1)
 
     ## Storing metadata related to this function
-    ingestion_metadata["raw_cols_elim"] = len(nrel_col)
-    ingestion_metadata["raw_cols_live"] = len(df.columns)
+    extract_metadata["raw_cols_elim"] = len(nrel_col)
+    extract_metadata["raw_cols_live"] = len(df.columns)
 
 
     return df
@@ -468,32 +471,33 @@ def initial_cleaning(data):
 
 
 ## Function desigend to execute all ingestion functions.
-def ingest(data_path, ingestion_pickle_loc):
+def ingest(df):
     """
     Function desigend to execute all ingestion functions.
         args:
-            path (string): path where the project's data is stored.
-            ingestion_save (string): location where the resulting pickle object will be stored.
+            df (string): dataframe that will go through the initial cleaning process
         returns:
             -
     """
 
     ## Storing time execution metadata
-    ingestion_metadata[ingestion_metadata_index] = str(datetime.now())
+    extract_metadata[extract_metadata_index] = str(datetime.now())
 
     ## Executing ingestion functions
-    df = ingest_local_csv(data_path) ## Temporal function
-    # guardar_ingesta(bucket_name, bucket_path)
+
+    #### Receiving extraction
     df = initial_cleaning(df)
-    save_ingestion(df, ingestion_pickle_loc) ## Temporal function
 
     ## Converting metadata into dataframe and saving locally
-    df_meta = pd.DataFrame.from_dict(ingestion_metadata, orient="index").T
-    df_meta.set_index(ingestion_metadata_index, inplace=True)
-    write_csv_from_df(df_meta, metadata_dir_loc, ingestion_metadata_csv_name)
+    df_meta = pd.DataFrame.from_dict(extract_metadata, orient="index").T
+    df_meta.set_index(extract_metadata_index, inplace=True)
+    write_csv_from_df(df_meta, metadata_dir_loc, extract_metadata_csv_name)
 
-    ## Sucess message
+    ## Success message
     print("\n** Ingestion module successfully executed **\n")
+
+
+    return df
 
 
 

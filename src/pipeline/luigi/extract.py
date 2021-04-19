@@ -69,9 +69,10 @@ class APIDataIngestion(luigi.Task):
         ## Obtaining ingestion from API based on the ingestion type
         print("********")
         ingesta = request_data_to_API(self.ingest_type, bucket_name)
+        ingesta_df_clean = ingest(pd.DataFrame(ingesta))
 
         ## Saving ingestion results
-        pickle.dump(ingesta, open(self.output().path, 'wb'))
+        pickle.dump(ingesta_df_clean, open(self.output().path, 'wb'))
 
 
     ## Output: storing downloaded information locally
