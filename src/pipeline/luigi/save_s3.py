@@ -18,6 +18,8 @@ import pickle
 
 from datetime import (date, datetime)
 
+import pandas as pd
+
 
 ## Third party imports
 
