@@ -418,8 +418,6 @@ def feature_engineering(df, fe_pickle_loc_imp_features, fe_pickle_loc_feature_la
 
     ## Executing feature engineering functions
 
-    # df = load_transformation(transformation_pickle_loc)
-
     #### Df shape prior fe metadata
     fe_metadata["dim_prior_fe"] = str(df.shape)
 
