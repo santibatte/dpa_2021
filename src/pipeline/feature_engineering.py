@@ -43,17 +43,14 @@ from src.utils.data_dict import (
 from src.utils.utils import (
     json_dump_dict,
     load_df,
-    save_df,
-    write_csv_from_df
+    save_df
 )
 
 from src.utils.params_gen import (
-    metadata_dir_loc,
-
     transformation_pickle_loc,
     fe_metadata,
     fe_metadata_index,
-    fe_metadata_csv_name,
+    fe_metadata_loc,
 
     fe_pickle_loc_imp_features,
     fe_pickle_loc_feature_labs,
@@ -418,7 +415,7 @@ def feature_engineering(df, fe_pickle_loc_imp_features, fe_pickle_loc_feature_la
 
     ## Executing feature engineering functions
 
-    # df = load_transformation(transformation_pickle_loc)
+    df = load_transformation(transformation_pickle_loc)
 
     #### Df shape prior fe metadata
     fe_metadata["dim_prior_fe"] = str(df.shape)
@@ -433,16 +430,15 @@ def feature_engineering(df, fe_pickle_loc_imp_features, fe_pickle_loc_feature_la
 
     print("\n** Feature engineering module successfully executed **\n")
 
+    return df_imp_features_prc
+
 
     ## Working with module's metadata
 
     #### Converting metadata into dataframe and saving locally
     df_meta = pd.DataFrame.from_dict(fe_metadata, orient="index").T
     df_meta.set_index(fe_metadata_index, inplace=True)
-    write_csv_from_df(df_meta, metadata_dir_loc, fe_metadata_csv_name)
-
-
-    return df_imp_features_prc
+    save_fe(df_meta, fe_metadata_loc)
 
 
 
