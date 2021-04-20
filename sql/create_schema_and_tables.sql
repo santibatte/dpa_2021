@@ -4,11 +4,6 @@ DROP SCHEMA IF EXISTS dpa_metadata CASCADE;
 
 CREATE SCHEMA dpa_metadata;
 
-DROP TABLE IF EXISTS dpa_metadata.extract, 
-dpa_metadata.saveS3,
-dpa_metadata.transformation,
-dpa_metadata.feature_engineering;
-
 CREATE TABLE dpa_metadata.extract (
 	extraction_time varchar DEFAULT NULL,
 	raw_cols_deleted varchar DEFAULT NULL,
