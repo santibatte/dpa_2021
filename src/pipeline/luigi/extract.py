@@ -40,6 +40,7 @@ from src.utils.utils import (
 
 
 from src.etl.ingesta_almacenamiento import (
+    ingest,
     request_data_to_API,
     save_local_ingestion,
 )
