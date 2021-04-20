@@ -20,6 +20,8 @@ import re
 
 import yaml
 
+import pandas as pd
+
 
 ## Third party imports
 
@@ -40,7 +42,8 @@ from src.utils.utils import (
 
 
 from src.etl.ingesta_almacenamiento import (
-    guardar_ingesta,
+    ingest,
+    request_data_to_API,
     save_local_ingestion,
 )
 
@@ -68,10 +71,11 @@ class APIDataIngestion(luigi.Task):
 
         ## Obtaining ingestion from API based on the ingestion type
         print("********")
-        ingesta = guardar_ingesta(self.ingest_type, bucket_name)
+        ingesta = request_data_to_API(self.ingest_type, bucket_name)
+        ingesta_df_clean = ingest(pd.DataFrame(ingesta))
 
         ## Saving ingestion results
-        pickle.dump(ingesta, open(self.output().path, 'wb'))
+        pickle.dump(ingesta_df_clean, open(self.output().path, 'wb'))
 
 
     ## Output: storing downloaded information locally

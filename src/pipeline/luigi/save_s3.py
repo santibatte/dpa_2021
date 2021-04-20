@@ -16,6 +16,10 @@ import os
 
 import pickle
 
+from datetime import (date, datetime)
+
+import pandas as pd
+
 
 ## Third party imports
 
@@ -33,6 +37,7 @@ from src.utils.utils import (
     get_s3_resource,
     get_s3_resource_luigi,
     get_key,
+    write_csv_from_df,
 )
 
 from src.utils.params_gen import (
@@ -42,6 +47,12 @@ from src.utils.params_gen import (
     hist_dat_prefix,
     cont_dat_prefix,
     today_info,
+
+    ## Metadata
+    metadata_dir_loc,
+    save_s3_metadata,
+    save_s3_metadata_index,
+    save_s3_metadata_csv_name,
 )
 
 from src.etl.ingesta_almacenamiento import (
@@ -98,12 +109,32 @@ class S3Task(luigi.Task):
         ## Location to find most recent local ingestion
         path_full = local_temp_ingestions + self.ingest_type + "/" + self.path_date + path_file
 
-        ## Loading most recent ingestion
-        ingesta = pickle.dumps(pickle.load(open(path_full, "rb")))
 
-        ## Storing object in s3
+        ## Loading most recent ingestion
+        ingesta_df = pickle.load(open(path_full, "rb"))
+
+
+        ## Obtaining task metadata
+        
+        #### Storing time execution metadata
+        save_s3_metadata[save_s3_metadata_index] = str(datetime.now())
+        #### Bucket where data will be saved
+        save_s3_metadata["s3_bucket_name"] = str(self.bucket)
+        #### S3 key related to the data
+        save_s3_metadata["s3_key_name"] = str(get_key(self.output().path))
+        #### Shape of df going into s3
+        save_s3_metadata["df_shape"] = str(ingesta_df.shape)
+
+        #### Converting dict to df and writing contents to df
+        df_meta = pd.DataFrame.from_dict(save_s3_metadata, orient="index").T
+        df_meta.set_index(save_s3_metadata_index, inplace=True)
+        write_csv_from_df(df_meta, metadata_dir_loc, save_s3_metadata_csv_name)
+
+
+        ## Storing object in s3 as pickle
+        ingesta_pkl = pickle.dumps(ingesta_df)
         s3 = get_s3_resource()
-        s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=ingesta)
+        s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=ingesta_pkl)
 
 
     ## Output: uploading data to s3 path

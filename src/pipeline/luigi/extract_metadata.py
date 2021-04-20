@@ -40,8 +40,9 @@ class ExtractMetadata(CopyToTable):
 
 
 ## ADAPTAR al numero de columnas correctas
-    columns = [("col_1", "VARCHAR"),
-               ("col_2", "VARCHAR")]
+    columns = [("extraction_time", "VARCHAR"),
+               ("raw_cols_deleted", "VARCHAR"),
+               ("raw_cols_left", "VARCHAR")]
 
 
 
