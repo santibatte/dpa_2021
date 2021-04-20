@@ -1,6 +1,6 @@
 # Manual Arq de Datos Equipo 9
 
-# Conectarse a máquinas remotas:
+## Conectarse a máquinas remotas:
 
 ### Conectarse a bastion:
 
@@ -30,7 +30,7 @@ Activar el pyenv:
 
 Desde aquí se pueden correr todos los tasks de luigi. (abajo pongo los comandos para correr los que tenemos hasta ahora). 
 
-### Conectarse a la postgres:
+## Conectarse a la postgres:
 
 Desde la máquina de procesamiento:
 
