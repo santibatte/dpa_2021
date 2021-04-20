@@ -51,7 +51,7 @@ extract_metadata_csv_name = "extract_metadata.csv"
 ## Save_s3
 save_s3_metadata = {}
 save_s3_metadata_index = "ing_time_exec"
-save_s3_metadata_csv_name = "save_s3_metadata.csv"
+save_s3_metadata_csv_name = "saveS3_metadata.csv"
 
 ## Transformation
 transformation_pickle_loc = "data/pickles/transformation_df.pkl"
