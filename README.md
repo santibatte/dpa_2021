@@ -92,7 +92,7 @@ We use the following Amazon Web Services(AWS) to run the all code:
   
     RDS can only be accessed from the processing instance.
 ![](./images/inbound_rules_rds.png)
- **Important note**: The "All traffic" rules were temporarily added for testing purposes, but they shouldn't be. Only the others should be.
+ 
 
 The general architecture copied from dpa course notes is:
 
