@@ -418,11 +418,13 @@ def feature_engineering(df, fe_pickle_loc_imp_features, fe_pickle_loc_feature_la
 
     ## Executing feature engineering functions
 
-    #### Df shape prior fe metadata
+    #### Metadata: df shape prior fe metadata
     fe_metadata["dim_prior_fe"] = str(df.shape)
 
+    #### Generating features processed by specific pipeline
     df_features_prc, df_labels, ohe_dict, df_features_prc_cols = feature_generation(df)
 
+    #### Using model to evaluate which features are more important based on threshold
     df_imp_features_prc = feature_selection(df, df_features_prc, df_labels, df_features_prc_cols, ohe_dict)
 
     #### Saving fe results
