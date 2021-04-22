@@ -415,7 +415,7 @@ def feature_engineering(df, fe_results_pickle_loc):
 
     #### Saving all module's results in dictionary
     fe_results_dict = {
-        "df_imp_features_prc": df_imp_features_prc,
+        "df_imp_engineered_features": df_imp_features_prc,
         "data_labels": df_labels,
         "ohe_reference": ohe_dict,
         "df_cols_features_engineered": df_features_prc_cols,
