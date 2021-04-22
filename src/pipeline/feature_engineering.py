@@ -427,6 +427,15 @@ def feature_engineering(df, fe_pickle_loc_imp_features, fe_pickle_loc_feature_la
     #### Using model to evaluate which features are more important based on threshold
     df_imp_features_prc = feature_selection(df, df_features_prc, df_labels, df_features_prc_cols, ohe_dict)
 
+    #### Saving all module's results in dictionary
+    fe_results_dict = {
+        "df_imp_features_prc": df_imp_features_prc,
+        "data_labels": df_labels,
+        "ohe_reference": ohe_dict,
+        "df_cols_features_engineered": df_features_prc_cols,
+        "features_engineered": df_features_prc
+    }
+
     #### Saving fe results
     save_fe(df_imp_features_prc, fe_pickle_loc_imp_features)
     save_fe(df_labels, fe_pickle_loc_feature_labs)
@@ -442,7 +451,7 @@ def feature_engineering(df, fe_pickle_loc_imp_features, fe_pickle_loc_feature_la
     write_csv_from_df(df_meta, metadata_dir_loc, fe_metadata_csv_name)
 
 
-    return df_imp_features_prc
+    return fe_results_dict
 
 
 
