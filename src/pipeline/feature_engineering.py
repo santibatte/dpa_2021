@@ -16,6 +16,8 @@ import sys
 
 from datetime import (date, datetime)
 
+import pickle
+
 
 ## Third party imports
 
@@ -55,8 +57,7 @@ from src.utils.params_gen import (
     fe_metadata_index,
     fe_metadata_csv_name,
 
-    fe_pickle_loc_imp_features,
-    fe_pickle_loc_feature_labs,
+    fe_results_pickle_loc,
 )
 
 from src.utils.params_ml import (
@@ -92,21 +93,6 @@ def load_transformation(path):
     df = load_df(path)
 
     return df
-
-
-
-## Save fe data frame as pickle.
-def save_fe(df, path):
-    """
-    Save fe data frame as pickle.
-        args:
-            df (dataframe): fe resulting dataframe.
-            path (string): location where the pickle object will be stored.
-        returns:
-            -
-    """
-
-    save_df(df, path)
 
 
 
@@ -437,8 +423,7 @@ def feature_engineering(df, fe_pickle_loc_imp_features, fe_pickle_loc_feature_la
     }
 
     #### Saving fe results
-    save_fe(df_imp_features_prc, fe_pickle_loc_imp_features)
-    save_fe(df_labels, fe_pickle_loc_feature_labs)
+    pickle.loads(fe_results_dict, open(fe_results_pickle_loc, "wb"))
 
     print("\n** Feature engineering module successfully executed **\n")
 
