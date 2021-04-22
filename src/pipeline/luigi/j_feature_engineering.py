@@ -29,8 +29,7 @@ from src.utils.params_gen import (
     metadata_dir_loc,
 
     transformation_pickle_loc,
-    fe_pickle_loc_imp_features,
-    fe_pickle_loc_feature_labs,
+    fe_results_pickle_loc,
     today_info,
 
     fe_metadata_csv_name,
@@ -60,11 +59,11 @@ class FeatureEngineering(luigi.Task):
 
         df_pre_fe = pickle.loads(feature_engineering_luigi['Body'].read())
 
-        df_post_fe = feature_engineering(df_pre_fe, fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
+        df_post_fe = feature_engineering(df_pre_fe, fe_results_pickle_loc)
 
-        df_fe_pickle = pickle.dumps(df_post_fe)
+        fe_results_dict = pickle.dumps(df_post_fe)
 
-        s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=df_fe_pickle)
+        s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=fe_results_dict)
 
 
     ## Output: uploading data to s3 path
