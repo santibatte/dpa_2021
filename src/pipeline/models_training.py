@@ -29,15 +29,6 @@ from sklearn.model_selection import (
 
 ## Local application imports
 
-from src.utils.utils import (
-    load_df,
-    save_df
-)
-
-from src.utils.params_gen import (
-    mt_results_pickle_loc
-)
-
 from src.utils.params_ml import (
     models_dict,
     time_series_splits,
@@ -49,9 +40,9 @@ from src.utils.params_ml import (
 
 
 "------------------------------------------------------------------------------"
-########################
-## Modeling functions ##
-########################
+###############################
+## Models training functions ##
+###############################
 
 
 ## Run magic loop to train a selection of models with various parameters.
@@ -106,13 +97,13 @@ def magic_loop(models_dict, fe_results_dict):
 
 
 "------------------------------------------------------------------------------"
-############################
-## Modeling main function ##
-############################
+###################################
+## Models training main function ##
+###################################
 
 
 ## Function desigend to execute all fe functions.
-def models_training(fe_results_dict):
+def models_training(fe_results_dict, mt_results_pickle_loc):
     """
     Function desigend to execute all modeling functions.
         args:
