@@ -66,7 +66,10 @@ fe_metadata = {}
 fe_metadata_index = "ing_time_exec"
 fe_metadata_csv_name = "feature_engineering_metadata.csv"
 
-## Modeling
+## Models training
+mt_results_pickle_loc = "data/pickles/mt_results.pkl"
+
+## Model selection
 models_pickle_loc = "data/pickles/model_loop.pkl"
 X_train_pickle_loc = "data/pickles/X_train.pkl"
 y_train_pickle_loc = "data/pickles/y_train.pkl"

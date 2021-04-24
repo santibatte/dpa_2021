@@ -12,6 +12,8 @@
 
 ## Standard library imports
 
+import pickle
+
 
 ## Third party imports
 
@@ -33,7 +35,7 @@ from src.utils.utils import (
 )
 
 from src.utils.params_gen import (
-    s
+    mt_results_pickle_loc
 )
 
 from src.utils.params_ml import (
@@ -123,22 +125,25 @@ def modeling(fe_results_dict):
     ## Implementing magic loop to train various models
     models_mloop, X_train, X_test, y_train, y_test = magic_loop(models_dict, fe_results_dict)
 
-    ## Saving modeling results
 
-    #### Best model
-    save_models(sel_model, models_pickle_loc)
+    ## Saving models training results
 
-    #### Data used to train the model
-    save_models(X_train, X_train_pickle_loc)
-    save_models(y_train, y_train_pickle_loc)
-    save_models(X_test, X_test_pickle_loc)
-    save_models(y_test, y_test_pickle_loc)
+    #### Dictionary with all module results
+    mt_results_dict = {
+        "trained_models": models_mloop,
+        "training_data": X_train,
+        "training_labels": y_train,
+        "test_data": X_test,
+        "test_labels": y_test,
+    }
 
-    #### Results from testing the model
-    save_models(test_predict_labs, test_predict_labs_pickle_loc)
-    save_models(test_predict_scores, test_predict_scores_pickle_loc)
+    #### Saving dictionary with results as pickle
+    pickle.load(mt_results_dict, open(mt_results_pickle_loc, "wb"))
 
     print("\n** Modeling module successfully executed **\n")
+
+
+    return mt_results_dict
 
 
 
