@@ -193,7 +193,7 @@ def best_model_predict_test(sel_model, X_test):
 
 
 ## Function desigend to execute all fe functions.
-def modeling(fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs):
+def modeling(fe_results_dict):
     """
     Function desigend to execute all modeling functions.
         args:
@@ -204,8 +204,8 @@ def modeling(fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs):
     """
 
     ## Loading feature engineering results
-    df_imp_features_prc = load_features(fe_pickle_loc_imp_features)
-    df_labels = load_features(fe_pickle_loc_feature_labs)
+    # df_imp_features_prc = load_features(fe_pickle_loc_imp_features)
+    # df_labels = load_features(fe_pickle_loc_feature_labs)
 
     ## Implementing magic loop to select best model from `models_dict`
     sel_model, X_train, X_test, y_train, y_test = magic_loop(models_dict, df_imp_features_prc, df_labels)
