@@ -112,7 +112,7 @@ def magic_loop(models_dict, fe_results_dict):
 
 
 ## Function desigend to execute all fe functions.
-def modeling(fe_results_dict):
+def models_training(fe_results_dict):
     """
     Function desigend to execute all modeling functions.
         args:
