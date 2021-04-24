@@ -1,4 +1,4 @@
-## MODULE TO EXECUTE VARIOUS MODELS AND DETERMINE THE BEST POSSIBLE ONE.
+## MODULE TO TRAIN VARIOUS MODELS AND STORE THEM IN A DICTIONARY.
 
 
 
@@ -33,17 +33,7 @@ from src.utils.utils import (
 )
 
 from src.utils.params_gen import (
-
-    fe_pickle_loc_imp_features,
-    fe_pickle_loc_feature_labs,
-
-    models_pickle_loc,
-    X_train_pickle_loc,
-    y_train_pickle_loc,
-    X_test_pickle_loc,
-    y_test_pickle_loc,
-    test_predict_labs_pickle_loc,
-    test_predict_scores_pickle_loc,
+    s
 )
 
 from src.utils.params_ml import (
@@ -57,88 +47,37 @@ from src.utils.params_ml import (
 
 
 "------------------------------------------------------------------------------"
-#################################
-## Generic ancillary functions ##
-#################################
-
-
-## Loading transformation pickle as dataframe for transformation pipeline.
-def load_features(path):
-    """
-    Loading fe pickle as dataframe from fe pipeline.
-        args:
-            path (string): location where the pickle that will be loaded is.
-        returns:
-            -
-    """
-
-    df = load_df(path)
-
-    return df
-
-
-
-## Save best model form magic loop as pickle.
-def save_models(selected_model, path):
-    """
-    Save best model form magic loop as pickle.
-        args:
-            selected_model (dataframe): model that got best performance in magic loop.
-            path (string): location where the pickle object will be stored.
-        returns:
-            -
-    """
-
-    save_df(selected_model, path)
-
-
-
-## Selecting model from magic loop with best estimator score
-def select_best_model(models_mloop):
-    """
-    """
-
-    res = "nothing_"
-    bench = 0
-
-    for mdl in models_mloop:
-        if models_mloop[mdl]["best_estimator_score"] > bench:
-            res = mdl
-            bench = models_mloop[mdl]["best_estimator_score"]
-
-    print("\n++The model with the best performance is: {} (score: {})".format(res, round(bench, 6)))
-
-    return res
-
-
-
-
-
-"------------------------------------------------------------------------------"
 ########################
 ## Modeling functions ##
 ########################
 
 
 ## Run magic loop to train a selection of models with various parameters.
-def magic_loop(models_dict, df_imp_features_prc, df_labels):
+def magic_loop(models_dict, fe_results_dict):
     """
     Run magic loop to train a selection of models with various parameters.
 
     :param models_dict: (dict) - models and parameters that will be trained
-    :param df_imp_features_prc: (dataframe) - engineered data features
-    :param df_labels: (dataframe) - data training labels
+    :param fe_results_dict: (dict) - dictionary with all feature engineering results
 
     :return:
     """
 
 
     ## Splitting data in train and test
-    X_train, X_test, y_train, y_test = train_test_split(df_imp_features_prc, df_labels, test_size=0.3)
+    X_train, X_test, y_train, y_test = train_test_split(
+        fe_results_dict["df_imp_engineered_features"],
+        fe_results_dict["data_labels"],
+        test_size=0.3
+    )
 
 
-    ##
+    ## Training models selected in magic loop
+
+    #### Dictionary where all the results will be stored
     models_mloop = {}
+
+    #### Magic loop
     for mdl in models_dict:
 
         model = models_dict[mdl]["model"]
@@ -157,30 +96,8 @@ def magic_loop(models_dict, df_imp_features_prc, df_labels):
             "best_estimator_score": grid_search.best_score_
         }
 
-    # sel_model = models_mloop[select_best_model(models_mloop)]["best_estimator"]
-    #
-    #
-    # return sel_model, X_train, X_test, y_train, y_test
 
-
-
-## Testing model with test data set.
-def best_model_predict_test(sel_model, X_test):
-    """
-    Testing model with test data set.
-        args:
-            sel_model (sklearn model): best model obtained from magic loop.
-            X_test (numpy array): dataset to test best model.
-        returns:
-            test_predict_labs (array): labels predicted by best model.
-            test_predict_scores (array): probabilities related with classification by best model.
-    """
-
-    ## Predict test labels and probabilities with selected model.
-    test_predict_labs = sel_model.predict(X_test)
-    test_predict_scores = sel_model.predict_proba(X_test)
-
-    return test_predict_labs, test_predict_scores
+    return models_mloop, X_train, X_test, y_train, y_test
 
 
 
@@ -203,13 +120,8 @@ def modeling(fe_results_dict):
             -
     """
 
-    ## Loading feature engineering results
-    # df_imp_features_prc = load_features(fe_pickle_loc_imp_features)
-    # df_labels = load_features(fe_pickle_loc_feature_labs)
-
-    ## Implementing magic loop to select best model from `models_dict`
-    sel_model, X_train, X_test, y_train, y_test = magic_loop(models_dict, df_imp_features_prc, df_labels)
-    test_predict_labs, test_predict_scores = best_model_predict_test(sel_model, X_test)
+    ## Implementing magic loop to train various models
+    models_mloop, X_train, X_test, y_train, y_test = magic_loop(models_dict, fe_results_dict)
 
     ## Saving modeling results
 
