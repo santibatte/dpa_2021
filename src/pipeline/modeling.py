@@ -120,9 +120,16 @@ def select_best_model(models_mloop):
 ########################
 
 
-##
+## Run magic loop to train a selection of models with various parameters.
 def magic_loop(models_dict, df_imp_features_prc, df_labels):
     """
+    Run magic loop to train a selection of models with various parameters.
+
+    :param models_dict: (dict) - models and parameters that will be trained
+    :param df_imp_features_prc: (dataframe) - engineered data features
+    :param df_labels: (dataframe) - data training labels
+
+    :return:
     """
 
 
@@ -150,10 +157,10 @@ def magic_loop(models_dict, df_imp_features_prc, df_labels):
             "best_estimator_score": grid_search.best_score_
         }
 
-    sel_model = models_mloop[select_best_model(models_mloop)]["best_estimator"]
-
-
-    return sel_model, X_train, X_test, y_train, y_test
+    # sel_model = models_mloop[select_best_model(models_mloop)]["best_estimator"]
+    #
+    #
+    # return sel_model, X_train, X_test, y_train, y_test
 
 
 
