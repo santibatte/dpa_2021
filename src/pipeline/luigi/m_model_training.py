@@ -12,6 +12,11 @@ from src.utils.utils import (
     write_csv_from_df,
 )
 
+from src.utils.params_gen import (
+    today_info,
+
+)
+
 from src.pipeline.luigi.l_feature_engineering_metadata import FeatureEngineeringMetadata
 
 class ModelTraining(luigi.Task):
