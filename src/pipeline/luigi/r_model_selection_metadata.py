@@ -16,12 +16,9 @@ from src.utils.utils import (
 
 from src.pipeline.luigi.q_model_selection_test import ModelSelectionUnitTest
 
-modificar esta direccion
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/model_selection_metadata.csv"
 
-
-
-class FeatureEngineeringMetadata(CopyToTable):
+class ModelSelectionMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
