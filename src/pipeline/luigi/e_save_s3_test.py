@@ -38,7 +38,6 @@ class SaveS3UnitTest(CopyToTable):
         table = 'dpa_unittest.saves3'
 
     columns = [("XXX", "VARCHAR"),
-               ("XXX", "VARCHAR"),
                ("XXX", "VARCHAR")]
 
 

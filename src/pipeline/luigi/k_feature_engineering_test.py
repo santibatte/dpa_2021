@@ -43,7 +43,6 @@ class SaveS3UnitTest(CopyToTable):
 
 
     columns = [("XXX", "VARCHAR"),
-               ("XXX", "VARCHAR"),
                ("XXX", "VARCHAR")]
 
 

@@ -39,7 +39,6 @@ ingest_type = luigi.Parameter()
 
 
         columns = [("XXX", "VARCHAR"),
-                   ("XXX", "VARCHAR"),
                    ("XXX", "VARCHAR")]
 
 

@@ -1,9 +1,4 @@
 
-
-
-Cambiar el codigo
-
-
 from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
@@ -40,7 +35,6 @@ class ModelSelectionUnitTest(CopyToTable):
     table = 'dpa_unittest.model_selection'
 
     columns = [("XXX", "VARCHAR"),
-               ("XXX", "VARCHAR"),
                ("XXX", "VARCHAR")]
 
     def rows(self):
