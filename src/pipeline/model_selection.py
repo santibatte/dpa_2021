@@ -34,19 +34,7 @@ from src.utils.utils import (
     save_df
 )
 
-from src.utils.params_gen import (
-
-    fe_pickle_loc_imp_features,
-    fe_pickle_loc_feature_labs,
-
-    models_pickle_loc,
-    X_train_pickle_loc,
-    y_train_pickle_loc,
-    X_test_pickle_loc,
-    y_test_pickle_loc,
-    test_predict_labs_pickle_loc,
-    test_predict_scores_pickle_loc,
-)
+from src.utils.params_gen import models_pickle_loc
 
 from src.utils.params_ml import (
     models_dict,
