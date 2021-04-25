@@ -135,7 +135,7 @@ def model_selection(mt_results_dict, ms_results_pickle_loc):
     }
 
     #### Saving dictionary with results as pickle
-    pickle.load(ms_results_dict, open(ms_results_pickle_loc, "wb"))
+    pickle.dump(ms_results_dict, open(ms_results_pickle_loc, "wb"))
 
     print("\n** Model selection module successfully executed **\n")
 
