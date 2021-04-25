@@ -25,26 +25,27 @@ class ModelSelection(luigi.Task):
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
-
+    ## Requires: assessing that model training metadata is stored
     def requires(self):
         return ModelTrainingMetadata(ingest_type=self.ingest_type, bucket=self.bucket)
 
 
+    ## Run: selecting best trained model
     def run(self):
 
         s3 = get_s3_resource()
 
-        trained_model_pickle_loc_s3 = 'trained_models/trained_models_' + today_info + '.pkl'
+        mt_pickle_loc_s3 = 'trained_models/trained_models_' + today_info + '.pkl'
 
-        model_selection_luigi = s3.get_object(Bucket=self.bucket, Key=trained_model_pickle_loc_s3)
+        mt_results_pkl = s3.get_object(Bucket=self.bucket, Key=mt_pickle_loc_s3)
 
-        df_pre_model_selection = pickle.loads(model_selection_luigi['Body'].read())
+        mt_results_dict = pickle.loads(mt_results_pkl['Body'].read())
 
-        model_selection =   df_pre_model_selection ###  aqui_entrenamos_modelo  con parametro : df_pre_model_selection
+        ms_results_dict = model_selection(mt_results_dict, ms_results_pickle_loc)
 
-        model_selection_pkl = pickle.dumps(model_selection)
+        ms_results_pkl = pickle.dumps(ms_results_dict)
 
-        s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=model_selection_pkl)
+        s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=ms_results_pkl)
 
 
     ## Output: uploading data to s3 path
@@ -59,6 +60,6 @@ class ModelSelection(luigi.Task):
             'model_selection',
         )
 
-        output_path = output_path_start + 'trained_model_' +  today_info +'.pkl'
+        output_path = output_path_start + 'trained_model_' + today_info + '.pkl'
 
         return luigi.contrib.s3.S3Target(output_path, client=client)

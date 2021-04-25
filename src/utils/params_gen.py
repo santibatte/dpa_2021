@@ -70,13 +70,7 @@ fe_metadata_csv_name = "feature_engineering_metadata.csv"
 mt_results_pickle_loc = "data/pickles/mt_results.pkl"
 
 ## Model selection
-models_pickle_loc = "data/pickles/model_loop.pkl"
-X_train_pickle_loc = "data/pickles/X_train.pkl"
-y_train_pickle_loc = "data/pickles/y_train.pkl"
-X_test_pickle_loc = "data/pickles/X_test.pkl"
-y_test_pickle_loc = "data/pickles/y_test.pkl"
-test_predict_labs_pickle_loc = "data/pickles/test_predict_labs.pkl"
-test_predict_scores_pickle_loc = "data/pickles/test_predict_scores.pkl"
+ms_results_pickle_loc = "data/pickles/ms_results.pkl"
 
 ## Model evaluation
 metrics_report_pickle_loc = "data/pickles/metrics_report.pkl"
