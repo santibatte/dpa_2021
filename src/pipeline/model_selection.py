@@ -14,6 +14,8 @@
 
 import pickle
 
+import pandas as pd
+
 
 ## Third party imports
 
