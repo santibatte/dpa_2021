@@ -123,7 +123,7 @@ def models_training(fe_results_dict, mt_results_pickle_loc):
     """
 
     ## Storing time execution metadata
-    mt_metadata[fe_metadata_index] = str(datetime.now())
+    mt_metadata[mt_metadata_index] = str(datetime.now())
 
     ## Implementing magic loop to train various models
     models_mloop, X_train, X_test, y_train, y_test = magic_loop(models_dict, fe_results_dict)
