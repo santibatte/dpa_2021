@@ -417,7 +417,7 @@ def feature_engineering(df, fe_results_pickle_loc):
     }
 
     #### Saving fe results
-    pickle.loads(fe_results_dict, open(fe_results_pickle_loc, "wb"))
+    pickle.load(fe_results_dict, open(fe_results_pickle_loc, "wb"))
 
     print("\n** Feature engineering module successfully executed **\n")
 
