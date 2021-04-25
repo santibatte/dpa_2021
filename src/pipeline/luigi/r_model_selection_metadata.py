@@ -23,7 +23,7 @@ class ModelSelectionMetadata(CopyToTable):
 
 
     def requires(self):
-        return FeatureEngineering(ingest_type=self.ingest_type, bucket=self.bucket)
+        return ModelSelectionUnitTest(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
