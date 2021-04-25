@@ -8,6 +8,13 @@ import pickle
 
 class ModelSelection(luigi.Task):
 
+    #### Bucket where all ingestions will be stored in AWS S3
+    bucket = luigi.Parameter()
+
+    #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
+    ingest_type = luigi.Parameter()
+
+
     def requires(self):
         return FeatureEngineeringMetadata(ingest_type=self.ingest_type, bucket=self.bucket)
 
