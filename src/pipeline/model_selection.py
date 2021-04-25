@@ -1,4 +1,4 @@
-## MODULE TO EXECUTE VARIOUS MODELS AND DETERMINE THE BEST POSSIBLE ONE.
+## MODULE TO SELECT BEST TRAINED MODEL
 
 
 
@@ -93,25 +93,6 @@ def save_models(selected_model, path):
 
 
 
-## Selecting model from magic loop with best estimator score
-def select_best_model(models_mloop):
-    """
-    """
-
-    res = "nothing_"
-    bench = 0
-
-    for mdl in models_mloop:
-        if models_mloop[mdl]["best_estimator_score"] > bench:
-            res = mdl
-            bench = models_mloop[mdl]["best_estimator_score"]
-
-    print("\n++The model with the best performance is: {} (score: {})".format(res, round(bench, 6)))
-
-    return res
-
-
-
 
 
 "------------------------------------------------------------------------------"
@@ -164,6 +145,25 @@ def magic_loop(models_dict, df_imp_features_prc, df_labels):
 
 
 
+## Selecting best trained model based on estimator score
+def select_best_model(mt_results_dict):
+    """
+    """
+
+    best_model = "_no_best_model"
+    bench = 0
+
+    for mdl in mt_results_dict["models_mloop"]:
+        if models_mloop[mdl]["best_estimator_score"] > bench:
+            best_model = mdl
+            bench = models_mloop[mdl]["best_estimator_score"]
+
+    print("\n++The model with the best performance is: {} (score: {})".format(best_model, round(bench, 6)))
+
+    return best_model
+
+
+
 ## Testing model with test data set.
 def best_model_predict_test(sel_model, X_test):
     """
@@ -187,13 +187,13 @@ def best_model_predict_test(sel_model, X_test):
 
 
 "------------------------------------------------------------------------------"
-############################
-## Modeling main function ##
-############################
+###################################
+## Model selection main function ##
+###################################
 
 
-## Function desigend to execute all fe functions.
-def modeling(fe_results_dict):
+## Function desigend to execute all ms functions.
+def model_selection(mt_results_dict, ms_results_pickle_loc):
     """
     Function desigend to execute all modeling functions.
         args:
@@ -203,13 +203,11 @@ def modeling(fe_results_dict):
             -
     """
 
-    ## Loading feature engineering results
-    # df_imp_features_prc = load_features(fe_pickle_loc_imp_features)
-    # df_labels = load_features(fe_pickle_loc_feature_labs)
+    ## Selecting best trained model from magic_loop
+    best_model = select_best_model(mt_results_dict)
 
-    ## Implementing magic loop to select best model from `models_dict`
-    sel_model, X_train, X_test, y_train, y_test = magic_loop(models_dict, df_imp_features_prc, df_labels)
-    test_predict_labs, test_predict_scores = best_model_predict_test(sel_model, X_test)
+    ## Testing best model with test data
+    test_predict_labs, test_predict_scores = best_model_predict_test(best_model, mt_results_dict["training_data"])
 
     ## Saving modeling results
 
@@ -227,6 +225,9 @@ def modeling(fe_results_dict):
     save_models(test_predict_scores, test_predict_scores_pickle_loc)
 
     print("\n** Modeling module successfully executed **\n")
+
+
+    return ms_results_dict
 
 
 
