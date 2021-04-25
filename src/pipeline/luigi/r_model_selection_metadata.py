@@ -32,7 +32,7 @@ class ModelSelectionMetadata(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_metadata.feature_engineering'
+    table = 'dpa_metadata.model_selection'
 
 
 ## ADAPTAR al numero de columnas correctas

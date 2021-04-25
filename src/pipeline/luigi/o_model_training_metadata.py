@@ -35,7 +35,7 @@ class ModelTrainingMetadata(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_unittest.model_training'
+    table = 'dpa_metadata.model_training'
 
 
 ## ADAPTAR al numero de columnas correctas
