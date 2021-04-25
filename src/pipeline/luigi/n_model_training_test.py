@@ -4,9 +4,6 @@ import pandas as pd
 import luigi
 import psycopg2
 
-
-from src.pipeline.luigi.save_s3 import S3Task
-
 from src.utils.utils import (
     get_postgres_credentials
 )
@@ -40,8 +37,6 @@ class ModelTrainingTest(CopyToTable):
 
     columns = [("XXX", "VARCHAR"),
                ("XXX", "VARCHAR")]
-
-
 
 
 
