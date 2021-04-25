@@ -27,7 +27,7 @@ class SaveS3Metadata(CopyToTable):
     csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
 
     def requires(self):
-        return S3Task(ingest_type=self.ingest_type, bucket=self.bucket)
+        return SaveS3UnitTest(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
