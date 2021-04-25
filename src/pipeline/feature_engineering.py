@@ -54,8 +54,6 @@ from src.utils.params_gen import (
     fe_metadata,
     fe_metadata_index,
     fe_metadata_csv_name,
-
-    fe_results_pickle_loc,
 )
 
 from src.utils.params_ml import (
