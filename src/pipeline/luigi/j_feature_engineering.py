@@ -8,7 +8,7 @@ import pickle
 
 ## Local application imports
 
-from src.pipeline.luigi.transform_metadata import TransformationMetadata
+from src.pipeline.luigi.i_transform_metadata import TransformationMetadata
 
 from src.pipeline.feature_engineering import feature_engineering
 from src.utils.params_gen import (
@@ -52,16 +52,8 @@ class FeatureEngineering(luigi.Task):
 
     def run(self):
 
-        ## makes feature engeneering from transformed data
-
-        #Reads from local computer
-        # feature_engineering_luigi = pickle.dumps(feature_engineering(transformation_pickle_loc,\
-        #fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
-        ## Storing object in s3
         s3 = get_s3_resource()
 
-        ##  s3.get(s3_path, destination_local_path)
-        ## Read from S3 instead of local computer
         transformation_pickle_loc_s3 = 'transformation/transformation_' + today_info + '.pkl'
 
         feature_engineering_luigi = s3.get_object(Bucket=self.bucket, Key=transformation_pickle_loc_s3)

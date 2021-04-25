@@ -1,4 +1,5 @@
 
+
 from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
@@ -10,23 +11,26 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.pipeline.luigi.save_s3 import S3Task
+#Cambiar, aqui se importara de Unit test
+from src.pipeline.luigi.b_extract_test import ExtractUnitTest
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_metadata.csv"
 
-
-class SaveS3Metadata(CopyToTable):
+class ExtractMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
-    bucket = luigi.Parameter()
+    #bucket = luigi.Parameter()
 
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
-    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
+    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_metadata.csv"
+
+
 
     def requires(self):
-        return S3Task(ingest_type=self.ingest_type, bucket=self.bucket)
+
+        return ExtractUnitTest(self.ingest_type)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
@@ -35,14 +39,16 @@ class SaveS3Metadata(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_metadata.saveS3'
+    table = 'dpa_metadata.extract'
 
 
-    ## Postgres table layout
-    columns = [("save_time", "VARCHAR"),
-               ("s3_bucket_name", "VARCHAR"),
-               ("s3_key_name", "VARCHAR"),
-               ("df_shape", "VARCHAR")]
+## ADAPTAR al numero de columnas correctas
+    columns = [("extraction_time", "VARCHAR"),
+               ("raw_cols_deleted", "VARCHAR"),
+               ("raw_cols_left", "VARCHAR")]
+
+
+
 
 
     def rows(self):
