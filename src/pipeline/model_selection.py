@@ -159,7 +159,7 @@ def model_selection(mt_results_dict, ms_results_pickle_loc):
     ## Saving relevant module metadata
 
     #### Model selected metadata
-    ms_metadata["selected_model"] = str(best_model["best_trained_model"])
+    ms_metadata["selected_model"] = str(best_model)
 
     #### Converting metadata into dataframe and saving locally
     df_meta = pd.DataFrame.from_dict(ms_metadata, orient="index").T
