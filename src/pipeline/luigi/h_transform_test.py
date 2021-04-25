@@ -41,9 +41,6 @@ class TransformationUnitTest(CopyToTable):
                ("XXX", "VARCHAR")]
 
 
-
-
-
     def rows(self):
         reader = pd.read_csv(csv_local_file, header=None)
 
