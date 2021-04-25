@@ -10,6 +10,10 @@ from src.utils.utils import (
     write_csv_from_df,
 )
 
+from src.utils.params_gen import (
+    today_info,
+)
+
 
 class ModelSelection(luigi.Task):
 
