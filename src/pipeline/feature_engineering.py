@@ -16,6 +16,8 @@ import sys
 
 from datetime import (date, datetime)
 
+import pickle
+
 
 ## Third party imports
 
@@ -55,8 +57,7 @@ from src.utils.params_gen import (
     fe_metadata_index,
     fe_metadata_csv_name,
 
-    fe_pickle_loc_imp_features,
-    fe_pickle_loc_feature_labs,
+    fe_results_pickle_loc,
 )
 
 from src.utils.params_ml import (
@@ -92,21 +93,6 @@ def load_transformation(path):
     df = load_df(path)
 
     return df
-
-
-
-## Save fe data frame as pickle.
-def save_fe(df, path):
-    """
-    Save fe data frame as pickle.
-        args:
-            df (dataframe): fe resulting dataframe.
-            path (string): location where the pickle object will be stored.
-        returns:
-            -
-    """
-
-    save_df(df, path)
 
 
 
@@ -402,7 +388,7 @@ def feature_selection(df, df_features_prc, df_labels, df_features_prc_cols, ohe_
 
 
 ## Function desigend to execute all fe functions.
-def feature_engineering(df, fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs):
+def feature_engineering(df, fe_results_pickle_loc):
     """
     Function desigend to execute all fe functions.
         args:
@@ -418,16 +404,26 @@ def feature_engineering(df, fe_pickle_loc_imp_features, fe_pickle_loc_feature_la
 
     ## Executing feature engineering functions
 
-    #### Df shape prior fe metadata
+    #### Metadata: df shape prior fe metadata
     fe_metadata["dim_prior_fe"] = str(df.shape)
 
+    #### Generating features processed by specific pipeline
     df_features_prc, df_labels, ohe_dict, df_features_prc_cols = feature_generation(df)
 
+    #### Using model to evaluate which features are more important based on threshold
     df_imp_features_prc = feature_selection(df, df_features_prc, df_labels, df_features_prc_cols, ohe_dict)
 
+    #### Saving all module's results in dictionary
+    fe_results_dict = {
+        "df_imp_engineered_features": df_imp_features_prc,
+        "data_labels": df_labels,
+        "ohe_reference": ohe_dict,
+        "df_cols_features_engineered": df_features_prc_cols,
+        "features_engineered": df_features_prc
+    }
+
     #### Saving fe results
-    save_fe(df_imp_features_prc, fe_pickle_loc_imp_features)
-    save_fe(df_labels, fe_pickle_loc_feature_labs)
+    pickle.loads(fe_results_dict, open(fe_results_pickle_loc, "wb"))
 
     print("\n** Feature engineering module successfully executed **\n")
 
@@ -440,7 +436,7 @@ def feature_engineering(df, fe_pickle_loc_imp_features, fe_pickle_loc_feature_la
     write_csv_from_df(df_meta, metadata_dir_loc, fe_metadata_csv_name)
 
 
-    return df_imp_features_prc
+    return fe_results_dict
 
 
 

@@ -120,9 +120,16 @@ def select_best_model(models_mloop):
 ########################
 
 
-##
+## Run magic loop to train a selection of models with various parameters.
 def magic_loop(models_dict, df_imp_features_prc, df_labels):
     """
+    Run magic loop to train a selection of models with various parameters.
+
+    :param models_dict: (dict) - models and parameters that will be trained
+    :param df_imp_features_prc: (dataframe) - engineered data features
+    :param df_labels: (dataframe) - data training labels
+
+    :return:
     """
 
 
@@ -150,10 +157,10 @@ def magic_loop(models_dict, df_imp_features_prc, df_labels):
             "best_estimator_score": grid_search.best_score_
         }
 
-    sel_model = models_mloop[select_best_model(models_mloop)]["best_estimator"]
-
-
-    return sel_model, X_train, X_test, y_train, y_test
+    # sel_model = models_mloop[select_best_model(models_mloop)]["best_estimator"]
+    #
+    #
+    # return sel_model, X_train, X_test, y_train, y_test
 
 
 
@@ -186,7 +193,7 @@ def best_model_predict_test(sel_model, X_test):
 
 
 ## Function desigend to execute all fe functions.
-def modeling(fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs):
+def modeling(fe_results_dict):
     """
     Function desigend to execute all modeling functions.
         args:
@@ -197,8 +204,8 @@ def modeling(fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs):
     """
 
     ## Loading feature engineering results
-    df_imp_features_prc = load_features(fe_pickle_loc_imp_features)
-    df_labels = load_features(fe_pickle_loc_feature_labs)
+    # df_imp_features_prc = load_features(fe_pickle_loc_imp_features)
+    # df_labels = load_features(fe_pickle_loc_feature_labs)
 
     ## Implementing magic loop to select best model from `models_dict`
     sel_model, X_train, X_test, y_train, y_test = magic_loop(models_dict, df_imp_features_prc, df_labels)

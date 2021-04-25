@@ -61,13 +61,15 @@ trans_count = 0
 trans_metadata_csv_name = "transformation_metadata.csv"
 
 ## Feature engineering
-fe_pickle_loc_imp_features = "data/pickles/fe_df_imp_features.pkl"
-fe_pickle_loc_feature_labs = "data/pickles/fe_df_feature_labs.pkl"
+fe_results_pickle_loc = "data/pickles/fe_results.pkl"
 fe_metadata = {}
 fe_metadata_index = "ing_time_exec"
 fe_metadata_csv_name = "feature_engineering_metadata.csv"
 
-## Modeling
+## Models training
+mt_results_pickle_loc = "data/pickles/mt_results.pkl"
+
+## Model selection
 models_pickle_loc = "data/pickles/model_loop.pkl"
 X_train_pickle_loc = "data/pickles/X_train.pkl"
 y_train_pickle_loc = "data/pickles/y_train.pkl"
