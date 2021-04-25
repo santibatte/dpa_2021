@@ -42,6 +42,13 @@ from src.utils.params_ml import (
     evaluation_metric,
 )
 
+from src.utils.params_gen import (
+    metadata_dir_loc,
+    ms_metadata,
+    ms_metadata_index,
+    ms_metadata_csv_name
+)
+
 from src.utils.utils import write_csv_from_df
 
 
@@ -75,6 +82,10 @@ def select_best_model(mt_results_dict):
     print("\n++The model with the best performance is: {} (score: {})".format(model_bench, round(bench, 6)))
 
     best_model = mt_results_dict["trained_models"][model_bench]["best_estimator"]
+
+
+    ## Model performance metadata
+    ms_metadata["training_score"] = round(bench, 4)
 
     return best_model
 
@@ -118,6 +129,9 @@ def model_selection(mt_results_dict, ms_results_pickle_loc):
             -
     """
 
+    ## Storing time execution metadata
+    ms_metadata[ms_metadata_index] = str(datetime.now())
+
     ## Selecting best trained model from magic_loop
     best_model = select_best_model(mt_results_dict)
 
@@ -138,6 +152,17 @@ def model_selection(mt_results_dict, ms_results_pickle_loc):
     pickle.dump(ms_results_dict, open(ms_results_pickle_loc, "wb"))
 
     print("\n** Model selection module successfully executed **\n")
+
+
+    ## Saving relevant module metadata
+
+    #### Model selected metadata
+    ms_metadata["selected_model"] = str(best_model["best_trained_model"])
+
+    #### Converting metadata into dataframe and saving locally
+    df_meta = pd.DataFrame.from_dict(ms_metadata, orient="index").T
+    df_meta.set_index(ms_metadata_index, inplace=True)
+    write_csv_from_df(df_meta, metadata_dir_loc, ms_metadata_csv_name)
 
 
     return ms_results_dict
