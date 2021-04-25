@@ -74,6 +74,9 @@ mt_metadata_csv_name = "models_training_metadata.csv"
 
 ## Model selection
 ms_results_pickle_loc = "data/pickles/ms_results.pkl"
+ms_metadata = {}
+ms_metadata_index = "ing_time_exec"
+ms_metadata_csv_name = "model_selection_metadata.csv"
 
 ## Model evaluation
 metrics_report_pickle_loc = "data/pickles/metrics_report.pkl"
