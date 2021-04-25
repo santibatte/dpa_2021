@@ -51,8 +51,6 @@ from src.utils.utils import (
 
 from src.utils.params_gen import (
     metadata_dir_loc,
-
-    transformation_pickle_loc,
     fe_metadata,
     fe_metadata_index,
     fe_metadata_csv_name,
