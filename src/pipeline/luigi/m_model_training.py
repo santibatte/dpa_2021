@@ -37,7 +37,7 @@ class ModelTraining(luigi.Task):
 
         feature_engineering_pickle_loc_s3 = 'feature_engineering/feature_engineering_' + today_info + '.pkl'
 
-        model_training_luigi = s3.get_object(Bucket=self.bucket, Key=feature_engineering_luigi)
+        model_training_luigi = s3.get_object(Bucket=self.bucket, Key=feature_engineering_pickle_loc_s3)
 
         df_pre_training = pickle.loads(model_training_luigi['Body'].read())
 
