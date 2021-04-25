@@ -10,7 +10,7 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.pipeline.luigi.h_transform_metadata import TransformationUnitTest
+from src.pipeline.luigi.h_transform_test import TransformationUnitTest
 
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
 
