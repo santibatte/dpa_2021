@@ -141,7 +141,7 @@ def models_training(fe_results_dict, mt_results_pickle_loc):
     }
 
     #### Saving dictionary with results as pickle
-    pickle.load(mt_results_dict, open(mt_results_pickle_loc, "wb"))
+    pickle.dump(mt_results_dict, open(mt_results_pickle_loc, "wb"))
 
     print("\n** Models training module successfully executed **\n")
 
