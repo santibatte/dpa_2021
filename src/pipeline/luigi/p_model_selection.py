@@ -12,6 +12,7 @@ from src.utils.utils import (
 
 from src.utils.params_gen import (
     today_info,
+    ms_results_pickle_loc
 )
 
 from src.pipeline.luigi.o_model_training_metadata import ModelTrainingMetadata
