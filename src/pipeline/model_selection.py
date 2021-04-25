@@ -34,8 +34,6 @@ from src.utils.utils import (
     save_df
 )
 
-from src.utils.params_gen import models_pickle_loc
-
 from src.utils.params_ml import (
     models_dict,
     time_series_splits,
@@ -112,7 +110,6 @@ def model_selection(mt_results_dict, ms_results_pickle_loc):
     Function desigend to execute all modeling functions.
         args:
             fe_pickle_loc (string): path where the picke obtained from the feature engineering is.
-            models_pickle_loc (string): location where the resulting pickle object (best model) will be stored.
         returns:
             -
     """
