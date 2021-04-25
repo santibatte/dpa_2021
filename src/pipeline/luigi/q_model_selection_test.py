@@ -6,7 +6,7 @@ import luigi
 import psycopg2
 
 
-from src.pipeline.luigi.q_model_selection import ModelSelection
+from src.pipeline.luigi.p_model_selection import ModelSelection
 
 from src.utils.utils import (
     get_postgres_credentials
