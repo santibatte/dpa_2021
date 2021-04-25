@@ -1,7 +1,4 @@
 
-
-
-
 from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
@@ -13,7 +10,7 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.pipeline.luigi.k_feature_engineering import FeatureEngineering
+from src.pipeline.luigi.k_feature_engineering_test import FeatureEngineeringUnitTest
 
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/feature_engineering_metadata.csv"
 
@@ -30,7 +27,7 @@ class FeatureEngineeringMetadata(CopyToTable):
     csv_local_file = "src/pipeline/luigi/luigi_tmp_files/feature_engineering_metadata.csv"
 
     def requires(self):
-        return FeatureEngineering(ingest_type=self.ingest_type, bucket=self.bucket)
+        return FeatureEngineeringUnitTest(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 

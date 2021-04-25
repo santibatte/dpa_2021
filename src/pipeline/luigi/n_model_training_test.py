@@ -1,8 +1,3 @@
-
-
-Cambiar el codigo
-
-
 from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
