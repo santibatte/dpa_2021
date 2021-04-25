@@ -11,7 +11,7 @@ from src.utils.utils import (
 )
 
 
-from src.pipeline.luigi.e_saves3_test import S3UnitTest
+from src.pipeline.luigi.e_saves3_test import SaveS3UnitTest
 
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
 
