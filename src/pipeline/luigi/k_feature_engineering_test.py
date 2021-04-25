@@ -34,6 +34,9 @@ class SaveS3UnitTest(CopyToTable):
     def requires(self):
         return FeatureEngineering(ingest_type=self.ingest_type, bucket=self.bucket)
 
+
+    credentials = get_postgres_credentials("conf/local/credentials.yaml")
+    
     user = credentials['user']
     password = credentials['pass']
     database = credentials['db']

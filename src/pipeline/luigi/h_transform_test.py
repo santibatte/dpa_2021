@@ -29,17 +29,18 @@ ingest_type = luigi.Parameter()
     def requires(self):
         return Transformation(ingest_type=self.ingest_type, bucket=self.bucket)
 
+    credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
-        user = credentials['user']
-        password = credentials['pass']
-        database = credentials['db']
-        host = credentials['host']
-        port = credentials['port']
-        table = 'dpa_unittest.transform'
+    user = credentials['user']
+    password = credentials['pass']
+    database = credentials['db']
+    host = credentials['host']
+    port = credentials['port']
+    table = 'dpa_unittest.transform'
 
 
-        columns = [("XXX", "VARCHAR"),
-                   ("XXX", "VARCHAR")]
+    columns = [("XXX", "VARCHAR"),
+               ("XXX", "VARCHAR")]
 
 
 

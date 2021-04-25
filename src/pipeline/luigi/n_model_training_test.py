@@ -33,12 +33,14 @@ class ModelTrainingTest(CopyToTable):
     def requires(self):
         return ModelTraining(ingest_type=self.ingest_type, bucket=self.bucket)
 
-        user = credentials['user']
-        password = credentials['pass']
-        database = credentials['db']
-        host = credentials['host']
-        port = credentials['port']
-        table = 'dpa_unittest.model_training'
+    credentials = get_postgres_credentials("conf/local/credentials.yaml")    
+
+    user = credentials['user']
+    password = credentials['pass']
+    database = credentials['db']
+    host = credentials['host']
+    port = credentials['port']
+    table = 'dpa_unittest.model_training'
 
 
 
