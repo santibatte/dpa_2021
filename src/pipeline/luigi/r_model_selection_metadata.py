@@ -1,8 +1,3 @@
-cambiar este codigo de modelo selection metadata
-
-
-
-
 from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
@@ -42,13 +37,6 @@ class ModelSelectionMetadata(CopyToTable):
 
 ## ADAPTAR al numero de columnas correctas
     columns = [("execution_time", "VARCHAR"),
-               ("shape_prior_fe", "VARCHAR"),
-               ("num_features", "VARCHAR"),
-               ("name_features", "VARCHAR"),
-               ("num_cat_features", "VARCHAR"),
-               ("name_cat_features", "VARCHAR"),
-               ("num_num_features", "VARCHAR"),
-               ("name_num_features", "VARCHAR"),
                ("shape_after_fe", "VARCHAR")]
 
 
