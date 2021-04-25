@@ -392,8 +392,6 @@ def feature_engineering(df, fe_results_pickle_loc):
     """
     Function desigend to execute all fe functions.
         args:
-            transformation_pickle_loc (string): path where the picke obtained from the transformation is.
-            fe_pickle_loc (string): location where the resulting pickle object will be stored.
         returns:
             -
     """
