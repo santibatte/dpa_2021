@@ -16,6 +16,11 @@ from src.utils.params_gen import (
 
 from src.pipeline.luigi.o_model_training_metadata import ModelTrainingMetadata
 
+from src.pipeline.model_selection import model_selection
+
+
+
+
 
 class ModelSelection(luigi.Task):
 
