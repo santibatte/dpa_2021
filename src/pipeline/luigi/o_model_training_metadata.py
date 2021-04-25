@@ -11,7 +11,6 @@ from src.utils.utils import (
 
 from src.pipeline.luigi.n_model_training_test import ModelTrainingTest
 
-modificar linea de abajo
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/model_training_metadata.csv"
 
 
