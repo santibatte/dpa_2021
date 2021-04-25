@@ -66,6 +66,6 @@ class ModelSelection(luigi.Task):
             'model_selection',
         )
 
-        output_path = output_path_start + 'trained_model_' + today_info + '.pkl'
+        output_path = output_path_start + 'selected_model_' + today_info + '.pkl'
 
         return luigi.contrib.s3.S3Target(output_path, client=client)
