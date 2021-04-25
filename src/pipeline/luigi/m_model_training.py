@@ -5,6 +5,13 @@ import luigi.contrib.s3
 import pickle
 
 
+from src.utils.utils import (
+    get_s3_resource,
+    get_s3_resource_luigi,
+    get_key,
+    write_csv_from_df,
+)
+
 from src.pipeline.luigi.l_feature_engineering_metadata import FeatureEngineeringMetadata
 
 from src.utils.params_gen import (
@@ -18,6 +25,11 @@ from src.utils.params_gen import (
 
 class ModelTraining(luigi.Task):
 
+    #### Bucket where all ingestions will be stored in AWS S3
+    bucket = luigi.Parameter()
+
+    #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
+    ingest_type = luigi.Parameter()
 
     ## Requires: assessing that feature engineering metadata is stored
     def requires(self):

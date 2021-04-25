@@ -8,7 +8,7 @@ import pickle
 
 ## Local application imports
 
-from src.pipeline.luigi.transform_metadata import TransformationMetadata
+from src.pipeline.luigi.i_transform_metadata import TransformationMetadata
 
 from src.pipeline.feature_engineering import feature_engineering
 from src.utils.params_gen import (

@@ -13,11 +13,11 @@ from src.utils.utils import (
 )
 
 
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_unittest.csv"
 
 class ExtractUnitTest(CopyToTable):
 
     ingest_type = luigi.Parameter()
-
 
 
     def requires(self):
@@ -33,8 +33,8 @@ class ExtractUnitTest(CopyToTable):
     port = credentials['port']
     table = 'dpa_unittest.extract'
 
-    columns = [("XXX", "VARCHAR"),
-               ("XXX", "VARCHAR")]
+    columns = [("XXX1", "VARCHAR"),
+               ("XXX2", "VARCHAR")]
 
     def rows(self):
         reader = pd.read_csv(csv_local_file, header=None)

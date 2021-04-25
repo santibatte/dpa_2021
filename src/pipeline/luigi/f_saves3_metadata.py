@@ -11,10 +11,7 @@ from src.utils.utils import (
 )
 
 
-
-Modificar este import y todos los de metadata ...
-
-from src.pipeline.luigi.f_save_s3_test import S3Task
+from src.pipeline.luigi.e_saves3_test import SaveS3UnitTest
 
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
 
@@ -30,7 +27,7 @@ class SaveS3Metadata(CopyToTable):
     csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
 
     def requires(self):
-        return S3Task(ingest_type=self.ingest_type, bucket=self.bucket)
+        return SaveS3UnitTest(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 

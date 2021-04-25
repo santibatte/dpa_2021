@@ -1,9 +1,3 @@
-cambiar el codigo
-
-
-
-
-
 from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
@@ -16,8 +10,10 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/feature_engineering_unittest.csv"
 
-class SaveS3UnitTest(CopyToTable):
+
+class FeatureEngineeringUnitTest(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
@@ -27,10 +23,11 @@ class SaveS3UnitTest(CopyToTable):
 
 
 
-
-
     def requires(self):
         return FeatureEngineering(ingest_type=self.ingest_type, bucket=self.bucket)
+
+
+    credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
     user = credentials['user']
     password = credentials['pass']
@@ -40,9 +37,8 @@ class SaveS3UnitTest(CopyToTable):
     table = 'dpa_unittest.feature_engineering'
 
 
-    columns = [("XXX", "VARCHAR"),
-               ("XXX", "VARCHAR"),
-               ("XXX", "VARCHAR")]
+    columns = [("XXX1", "VARCHAR"),
+               ("XXX2", "VARCHAR")]
 
 
 

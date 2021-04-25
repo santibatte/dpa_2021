@@ -1,8 +1,3 @@
-cambiar este codigo de modelo selection metadata
-
-
-
-
 from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
@@ -16,12 +11,9 @@ from src.utils.utils import (
 
 from src.pipeline.luigi.q_model_selection_test import ModelSelectionUnitTest
 
-modificar esta direccion
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/model_selection_metadata.csv"
 
-
-
-class FeatureEngineeringMetadata(CopyToTable):
+class ModelSelectionMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
@@ -31,7 +23,7 @@ class FeatureEngineeringMetadata(CopyToTable):
 
 
     def requires(self):
-        return FeatureEngineering(ingest_type=self.ingest_type, bucket=self.bucket)
+        return ModelSelectionUnitTest(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
@@ -40,18 +32,11 @@ class FeatureEngineeringMetadata(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_metadata.feature_engineering'
+    table = 'dpa_metadata.model_selection'
 
 
 ## ADAPTAR al numero de columnas correctas
     columns = [("execution_time", "VARCHAR"),
-               ("shape_prior_fe", "VARCHAR"),
-               ("num_features", "VARCHAR"),
-               ("name_features", "VARCHAR"),
-               ("num_cat_features", "VARCHAR"),
-               ("name_cat_features", "VARCHAR"),
-               ("num_num_features", "VARCHAR"),
-               ("name_num_features", "VARCHAR"),
                ("shape_after_fe", "VARCHAR")]
 
 

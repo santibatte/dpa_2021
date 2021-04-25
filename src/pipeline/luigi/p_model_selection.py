@@ -1,15 +1,33 @@
 
-mport luigi
+import luigi
 import luigi.contrib.s3
 import pickle
 
+from src.utils.utils import (
+    get_s3_resource,
+    get_s3_resource_luigi,
+    get_key,
+    write_csv_from_df,
+)
 
-ImportarRequirement
+from src.utils.params_gen import (
+    today_info,
+)
+
+from src.pipeline.luigi.o_model_training_metadata import ModelTrainingMetadata
+
 
 class ModelSelection(luigi.Task):
 
+    #### Bucket where all ingestions will be stored in AWS S3
+    bucket = luigi.Parameter()
+
+    #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
+    ingest_type = luigi.Parameter()
+
+
     def requires(self):
-        return FeatureEngineeringMetadata(ingest_type=self.ingest_type, bucket=self.bucket)
+        return ModelTrainingMetadata(ingest_type=self.ingest_type, bucket=self.bucket)
 
 
     def run(self):
@@ -22,7 +40,7 @@ class ModelSelection(luigi.Task):
 
         df_pre_model_selection = pickle.loads(model_selection_luigi['Body'].read())
 
-        model_selection = aqui_entrenamos_modelo  con parametro : df_pre_model_selection
+        model_selection =   df_pre_model_selection ###  aqui_entrenamos_modelo  con parametro : df_pre_model_selection
 
         model_selection_pkl = pickle.dumps(model_selection)
 

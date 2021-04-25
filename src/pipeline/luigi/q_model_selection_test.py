@@ -1,9 +1,4 @@
 
-
-
-Cambiar el codigo
-
-
 from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
@@ -11,13 +6,14 @@ import luigi
 import psycopg2
 
 
-from src.pipeline.luigi.q_model_selection import ModelSelection
+from src.pipeline.luigi.p_model_selection import ModelSelection
 
 from src.utils.utils import (
     get_postgres_credentials
 )
 
 
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/model_selection_unittest.csv"
 
 class ModelSelectionUnitTest(CopyToTable):
 
@@ -32,6 +28,9 @@ class ModelSelectionUnitTest(CopyToTable):
         return ModelSelection(ingest_type=self.ingest_type, bucket=self.bucket)
 
 
+    credentials = get_postgres_credentials("conf/local/credentials.yaml")
+
+
     user = credentials['user']
     password = credentials['pass']
     database = credentials['db']
@@ -39,12 +38,10 @@ class ModelSelectionUnitTest(CopyToTable):
     port = credentials['port']
     table = 'dpa_unittest.model_selection'
 
+    columns = [("XXX1", "VARCHAR"),
+               ("XXX2", "VARCHAR")]
 
-    columns = [("XXX", "VARCHAR"),
-               ("XXX", "VARCHAR"),
-               ("XXX", "VARCHAR")]
-
-
+               
     def rows(self):
         reader = pd.read_csv(csv_local_file, header=None)
 

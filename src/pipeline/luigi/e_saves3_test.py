@@ -1,12 +1,9 @@
 
-from luigi.contrib.postgres import CopyToTable
+from luigi.contrib.postgres import CopyToTable ##
 
 import pandas as pd
 import luigi
 import psycopg2
-
-
-from src.pipeline.luigi.save_s3 import S3Task
 
 from src.pipeline.luigi.d_save_s3 import S3Task
 
@@ -14,6 +11,7 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_unittest.csv"
 
 class SaveS3UnitTest(CopyToTable):
 
@@ -29,16 +27,17 @@ class SaveS3UnitTest(CopyToTable):
     def requires(self):
         return S3Task(ingest_type=self.ingest_type, bucket=self.bucket)
 
-        user = credentials['user']
-        password = credentials['pass']
-        database = credentials['db']
-        host = credentials['host']
-        port = credentials['port']
-        table = 'dpa_unittest.saves3'
+    credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
-    columns = [("XXX", "VARCHAR"),
-               ("XXX", "VARCHAR"),
-               ("XXX", "VARCHAR")]
+    user = credentials['user']
+    password = credentials['pass']
+    database = credentials['db']
+    host = credentials['host']
+    port = credentials['port']
+    table = 'dpa_unittest.saves3'
+
+    columns = [("XXX1", "VARCHAR"),
+               ("XXX2", "VARCHAR")]
 
 
 
