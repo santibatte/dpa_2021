@@ -37,8 +37,8 @@ class FeatureEngineeringUnitTest(CopyToTable):
     table = 'dpa_unittest.feature_engineering'
 
 
-    columns = [("XXX", "VARCHAR"),
-               ("XXX", "VARCHAR")]
+    columns = [("XXX1", "VARCHAR"),
+               ("XXX2", "VARCHAR")]
 
 
 

@@ -38,9 +38,10 @@ class ModelSelectionUnitTest(CopyToTable):
     port = credentials['port']
     table = 'dpa_unittest.model_selection'
 
-    columns = [("XXX", "VARCHAR"),
-               ("XXX", "VARCHAR")]
+    columns = [("XXX1", "VARCHAR"),
+               ("XXX2", "VARCHAR")]
 
+               
     def rows(self):
         reader = pd.read_csv(csv_local_file, header=None)
 

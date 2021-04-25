@@ -36,8 +36,8 @@ class SaveS3UnitTest(CopyToTable):
     port = credentials['port']
     table = 'dpa_unittest.saves3'
 
-    columns = [("XXX", "VARCHAR"),
-               ("XXX", "VARCHAR")]
+    columns = [("XXX1", "VARCHAR"),
+               ("XXX2", "VARCHAR")]
 
 
 

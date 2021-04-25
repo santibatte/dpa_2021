@@ -37,8 +37,8 @@ class TransformationUnitTest(CopyToTable):
     table = 'dpa_unittest.transform'
 
 
-    columns = [("XXX", "VARCHAR"),
-               ("XXX", "VARCHAR")]
+    columns = [("XXX1", "VARCHAR"),
+               ("XXX2", "VARCHAR")]
 
 
     def rows(self):
