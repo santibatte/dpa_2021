@@ -16,6 +16,7 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
+from src.pipeline.luigi.m_model_training import ModelTraining
 
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/model_training_unittest.csv"
 
@@ -28,12 +29,10 @@ class ModelTrainingTest(CopyToTable):
     ingest_type = luigi.Parameter()
 
 
-
-
     def requires(self):
         return ModelTraining(ingest_type=self.ingest_type, bucket=self.bucket)
 
-    credentials = get_postgres_credentials("conf/local/credentials.yaml")    
+    credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
     user = credentials['user']
     password = credentials['pass']

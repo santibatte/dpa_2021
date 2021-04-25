@@ -15,14 +15,14 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.pipeline.luigi.feature_engineering import FeatureEngineering
+from src.pipeline.luigi.n_model_training_test import ModelTrainingTest
 
 modificar linea de abajo
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/model_training_metadata.csv"
 
 
 
-class FeatureEngineeringMetadata(CopyToTable):
+class ModelTrainingMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
@@ -33,7 +33,7 @@ class FeatureEngineeringMetadata(CopyToTable):
     csv_local_file = "src/pipeline/luigi/luigi_tmp_files/feature_engineering_metadata.csv"
 
     def requires(self):
-        return FeatureEngineering(ingest_type=self.ingest_type, bucket=self.bucket)
+        return ModelTrainingTest(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 

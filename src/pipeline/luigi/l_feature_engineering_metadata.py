@@ -13,7 +13,7 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.pipeline.luigi.feature_engineering import FeatureEngineering
+from src.pipeline.luigi.k_feature_engineering import FeatureEngineering
 
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/feature_engineering_metadata.csv"
 

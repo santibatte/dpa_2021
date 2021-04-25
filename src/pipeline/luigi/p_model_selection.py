@@ -14,6 +14,8 @@ from src.utils.params_gen import (
     today_info,
 )
 
+from src.pipeline.luigi.o_model_training_metadata import ModelTrainingMetadata
+
 
 class ModelSelection(luigi.Task):
 
@@ -25,7 +27,7 @@ class ModelSelection(luigi.Task):
 
 
     def requires(self):
-        return FeatureEngineeringMetadata(ingest_type=self.ingest_type, bucket=self.bucket)
+        return ModelTrainingMetadata(ingest_type=self.ingest_type, bucket=self.bucket)
 
 
     def run(self):
