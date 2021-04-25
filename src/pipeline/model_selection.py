@@ -67,14 +67,14 @@ def select_best_model(mt_results_dict):
     model_bench = "_no_result"
     bench = 0
 
-    for mdl in mt_results_dict["models_mloop"]:
+    for mdl in mt_results_dict["trained_models"]:
         if models_mloop[mdl]["best_estimator_score"] > bench:
             model_bench = mdl
             bench = models_mloop[mdl]["best_estimator_score"]
 
     print("\n++The model with the best performance is: {} (score: {})".format(model_bench, round(bench, 6)))
 
-    best_model = mt_results_dict["models_mloop"][model_bench]["best_estimator"]
+    best_model = mt_results_dict["trained_models"][model_bench]["best_estimator"]
 
     return best_model
 
