@@ -4,7 +4,7 @@ import luigi.contrib.s3
 import pickle
 
 
-ImportarRequirement
+
 
 class ModelSelection(luigi.Task):
 
