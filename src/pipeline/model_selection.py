@@ -42,6 +42,8 @@ from src.utils.params_ml import (
     evaluation_metric,
 )
 
+from src.utils.utils import write_csv_from_df
+
 
 
 

@@ -44,8 +44,6 @@ from src.utils.data_dict import (
 
 from src.utils.utils import (
     json_dump_dict,
-    load_df,
-    save_df,
     write_csv_from_df
 )
 
@@ -74,22 +72,6 @@ from src.utils.params_ml import (
 #################################
 ## Generic ancillary functions ##
 #################################
-
-
-## Loading transformation pickle as dataframe for transformation pipeline.
-def load_transformation(path):
-    """
-    Loading transformation pickle as dataframe for transformation pipeline.
-        args:
-            path (string): location where the pickle that will be loaded is.
-        returns:
-            df (dataframe): dataframe with features obtained from the transformation module.
-    """
-
-    df = load_df(path)
-
-    return df
-
 
 
 ## Identifying the original features related to the processed features
