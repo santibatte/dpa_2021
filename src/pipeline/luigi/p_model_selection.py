@@ -51,7 +51,7 @@ class ModelSelection(luigi.Task):
     ## Output: uploading data to s3 path
     def output(self):
 
-        ## Conecting to AWS using luigi
+        ## Connecting to AWS using luigi
         client = get_s3_resource_luigi()
 
         ## Define the path where the ingestion will be stored in s3
