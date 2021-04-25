@@ -22,7 +22,7 @@ class ModelSelection(luigi.Task):
 
         df_pre_model_selection = pickle.loads(model_selection_luigi['Body'].read())
 
-        model_selection = aqui_entrenamos_modelo  con parametro : df_pre_model_selection
+        model_selection =   df_pre_model_selection ###  aqui_entrenamos_modelo  con parametro : df_pre_model_selection
 
         model_selection_pkl = pickle.dumps(model_selection)
 

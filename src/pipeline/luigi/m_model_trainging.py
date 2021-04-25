@@ -23,7 +23,7 @@ class ModelTraining(luigi.Task):
 
         df_pre_training = pickle.loads(model_training_luigi['Body'].read())
 
-        model_training = aqui_entrenamos_modelo  con parametro : df_pre_transformation
+        model_training =   df_pre_training  ##aqui_entrenamos_modelo  con parametro : df_pre_transformation
 
         model_training_pkl = pickle.dumps(model_training)
 
