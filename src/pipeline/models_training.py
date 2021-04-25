@@ -14,6 +14,8 @@
 
 import pickle
 
+from datetime import (date, datetime)
+
 
 ## Third party imports
 
@@ -33,6 +35,13 @@ from src.utils.params_ml import (
     models_dict,
     time_series_splits,
     evaluation_metric,
+)
+
+from src.utils.params_gen import (
+    metadata_dir_loc,
+    mt_metadata,
+    mt_metadata_index,
+    mt_metadata_csv_name
 )
 
 
@@ -113,6 +122,9 @@ def models_training(fe_results_dict, mt_results_pickle_loc):
             -
     """
 
+    ## Storing time execution metadata
+    mt_metadata[fe_metadata_index] = str(datetime.now())
+
     ## Implementing magic loop to train various models
     models_mloop, X_train, X_test, y_train, y_test = magic_loop(models_dict, fe_results_dict)
 
@@ -132,6 +144,20 @@ def models_training(fe_results_dict, mt_results_pickle_loc):
     pickle.load(mt_results_dict, open(mt_results_pickle_loc, "wb"))
 
     print("\n** Models training module successfully executed **\n")
+
+
+    ## Saving relevant module metadata
+
+    #### Number of models trained
+    mt_metadata["no_models_trained"] = len(models_mloop)
+
+    #### Types of models trained
+    mt_metadata["type_models_trained"] = " | ".join([mdl for mdl in models_dict])
+
+    #### Converting metadata into dataframe and saving locally
+    df_meta = pd.DataFrame.from_dict(mt_metadata, orient="index").T
+    df_meta.set_index(mt_metadata_index, inplace=True)
+    write_csv_from_df(df_meta, metadata_dir_loc, mt_metadata_csv_name)
 
 
     return mt_results_dict

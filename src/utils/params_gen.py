@@ -68,6 +68,9 @@ fe_metadata_csv_name = "feature_engineering_metadata.csv"
 
 ## Models training
 mt_results_pickle_loc = "data/pickles/mt_results.pkl"
+mt_metadata = {}
+mt_metadata_index = "ing_time_exec"
+mt_metadata_csv_name = "models_training_metadata.csv"
 
 ## Model selection
 ms_results_pickle_loc = "data/pickles/ms_results.pkl"
