@@ -17,9 +17,9 @@ from src.utils.utils import (
 )
 
 
-ModelTraining
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/model_training_unittest.csv"
 
-class SaveS3UnitTest(CopyToTable):
+class ModelTrainingTest(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()

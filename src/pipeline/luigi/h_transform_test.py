@@ -15,6 +15,7 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/tansform_unittest.csv"
 
 
 class TransformationUnitTest(CopyToTable):

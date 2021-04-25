@@ -13,6 +13,7 @@ from src.utils.utils import (
 )
 
 
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_unittest.csv"
 
 class ExtractUnitTest(CopyToTable):
 

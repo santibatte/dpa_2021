@@ -16,6 +16,8 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/feature_engineering_unittest.csv"
+
 
 class SaveS3UnitTest(CopyToTable):
 

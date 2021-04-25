@@ -18,6 +18,7 @@ from src.utils.utils import (
 )
 
 
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/model_selection_unittest.csv"
 
 class ModelSelectionUnitTest(CopyToTable):
 
@@ -31,7 +32,6 @@ class ModelSelectionUnitTest(CopyToTable):
     def requires(self):
         return ModelSelection(ingest_type=self.ingest_type, bucket=self.bucket)
 
-
     user = credentials['user']
     password = credentials['pass']
     database = credentials['db']
@@ -39,11 +39,9 @@ class ModelSelectionUnitTest(CopyToTable):
     port = credentials['port']
     table = 'dpa_unittest.model_selection'
 
-
     columns = [("XXX", "VARCHAR"),
                ("XXX", "VARCHAR"),
                ("XXX", "VARCHAR")]
-
 
     def rows(self):
         reader = pd.read_csv(csv_local_file, header=None)

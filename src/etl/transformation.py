@@ -372,6 +372,13 @@ def transform(df, transformation_pickle_loc):
     df_meta.set_index(transformation_metadata_index, inplace=True)
     write_csv_from_df(df_meta, metadata_dir_loc, trans_metadata_csv_name)
 
+ UNIT TEST ....
+ guardas el resultado del unit test en un DATAFRAME
+ lo conviertes a .csv ...
+ Lo guardas en local :
+
+ dia y a hora      nombre de la prueba      succes / failure
+
 
     print("\n** Tranformation module successfully executed **\n")
 
