@@ -40,6 +40,7 @@ import unittest
 import marbles.core
 from io import StringIO
 from datetime import (date, datetime)
+
 ## Local application imports
 
 
@@ -523,7 +524,7 @@ def ingest(df):
 
     res_df = pd.DataFrame(res, columns=['Date', 'Result'])
 
-    res_df.to_csv(path + 'extract_unittest.txt', index=False)
+    res_df.to_csv(tests_dir_loc + 'extract_unittest.csv', index=False)
 
     ## Success message
     print("\n** Ingestion module successfully executed **\n")
