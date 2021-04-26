@@ -15,7 +15,7 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/tansform_unittest.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transform_unittest.csv"
 
 
 class TransformationUnitTest(CopyToTable):
@@ -37,8 +37,8 @@ class TransformationUnitTest(CopyToTable):
     table = 'dpa_unittest.transform'
 
 
-    columns = [("XXX1", "VARCHAR"),
-               ("XXX2", "VARCHAR")]
+    columns = [("Date", "VARCHAR"),
+               ("Result", "VARCHAR")]
 
 
     def rows(self):
