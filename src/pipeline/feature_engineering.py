@@ -18,6 +18,11 @@ from datetime import (date, datetime)
 
 import pickle
 
+## Testing imports
+
+import unittest
+import marbles.core
+from io import StringIO
 
 ## Third party imports
 
@@ -35,6 +40,7 @@ import pandas as pd
 pd.set_option("display.max_columns", 10)
 
 
+
 ## Local application imports
 
 from src.utils.data_dict import (
@@ -49,6 +55,7 @@ from src.utils.utils import (
 
 from src.utils.params_gen import (
     metadata_dir_loc,
+    tests_dir_loc,
     fe_metadata,
     fe_metadata_index,
     fe_metadata_csv_name,
@@ -410,6 +417,35 @@ def feature_engineering(df, fe_results_pickle_loc):
     df_meta = pd.DataFrame.from_dict(fe_metadata, orient="index").T
     df_meta.set_index(fe_metadata_index, inplace=True)
     write_csv_from_df(df_meta, metadata_dir_loc, fe_metadata_csv_name)
+
+    #### Running unit test
+    class TestFeatureEngineering(marbles.core.TestCase):
+        def test_feature_engineering(self):
+            res = not bool(fe_results_dict)
+            self.assertFalse(res, note="Your dictionary is empty")
+
+    stream = StringIO()
+    runner = unittest.TextTestRunner(stream=stream)
+    result = runner.run(unittest.makeSuite(TestFeatureEngineering))
+
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestFeatureEngineering)
+
+    with open(tests_dir_loc + 'test_feature_engineering.txt', 'w') as f:
+        unittest.TextTestRunner(stream=f, verbosity=2).run(suite)
+
+    res = []
+    with open(tests_dir_loc + "test_feature_engineering.txt") as fp:
+        lines = fp.readlines()
+        for line in lines:
+            if "FAILED" in line:
+                res.append([str(datetime.now()), "FAILED, Your dictionary is empty."])
+            if "OK" in line:
+                res.append([str(datetime.now()), "PASS"])
+
+    res_df = pd.DataFrame(res, columns=['Date', 'Result'])
+
+    res_df.to_csv(tests_dir_loc + 'feature_engineering_unittest.csv', index=False)
+
 
 
     return fe_results_dict
