@@ -11,7 +11,7 @@ from src.utils.utils import (
 
 from src.pipeline.luigi.n_model_training_test import ModelTrainingTest
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/model_training_metadata.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/models_training_metadata.csv"
 
 
 
@@ -23,7 +23,7 @@ class ModelTrainingMetadata(CopyToTable):
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
-    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/feature_engineering_metadata.csv"
+    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/models_training_metadata.csv"
 
     def requires(self):
         return ModelTrainingTest(ingest_type=self.ingest_type, bucket=self.bucket)
@@ -40,10 +40,8 @@ class ModelTrainingMetadata(CopyToTable):
 
 ## ADAPTAR al numero de columnas correctas
     columns = [("execution_time", "VARCHAR"),
-               ("shape_after_fe", "VARCHAR")]
-
-
-    #csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
+               ("no_models_trained", "VARCHAR"),
+               ("type_models_trained", "VARCHAR")]
 
 
 

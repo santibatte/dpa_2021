@@ -11,11 +11,6 @@ import pickle
 from src.pipeline.luigi.i_transform_metadata import TransformationMetadata
 
 from src.pipeline.feature_engineering import feature_engineering
-from src.utils.params_gen import (
-    transformation_pickle_loc,
-    fe_pickle_loc_imp_features,
-    fe_pickle_loc_feature_labs,
-)
 
 from src.utils.utils import (
     get_s3_resource,

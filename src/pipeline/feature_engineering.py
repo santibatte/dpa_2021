@@ -44,20 +44,14 @@ from src.utils.data_dict import (
 
 from src.utils.utils import (
     json_dump_dict,
-    load_df,
-    save_df,
     write_csv_from_df
 )
 
 from src.utils.params_gen import (
     metadata_dir_loc,
-
-    transformation_pickle_loc,
     fe_metadata,
     fe_metadata_index,
     fe_metadata_csv_name,
-
-    fe_results_pickle_loc,
 )
 
 from src.utils.params_ml import (
@@ -78,22 +72,6 @@ from src.utils.params_ml import (
 #################################
 ## Generic ancillary functions ##
 #################################
-
-
-## Loading transformation pickle as dataframe for transformation pipeline.
-def load_transformation(path):
-    """
-    Loading transformation pickle as dataframe for transformation pipeline.
-        args:
-            path (string): location where the pickle that will be loaded is.
-        returns:
-            df (dataframe): dataframe with features obtained from the transformation module.
-    """
-
-    df = load_df(path)
-
-    return df
-
 
 
 ## Identifying the original features related to the processed features
@@ -392,8 +370,6 @@ def feature_engineering(df, fe_results_pickle_loc):
     """
     Function desigend to execute all fe functions.
         args:
-            transformation_pickle_loc (string): path where the picke obtained from the transformation is.
-            fe_pickle_loc (string): location where the resulting pickle object will be stored.
         returns:
             -
     """
@@ -423,7 +399,7 @@ def feature_engineering(df, fe_results_pickle_loc):
     }
 
     #### Saving fe results
-    pickle.loads(fe_results_dict, open(fe_results_pickle_loc, "wb"))
+    pickle.dump(fe_results_dict, open(fe_results_pickle_loc, "wb"))
 
     print("\n** Feature engineering module successfully executed **\n")
 

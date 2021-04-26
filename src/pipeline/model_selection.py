@@ -1,4 +1,4 @@
-## MODULE TO EXECUTE VARIOUS MODELS AND DETERMINE THE BEST POSSIBLE ONE.
+## MODULE TO SELECT BEST TRAINED MODEL
 
 
 
@@ -11,6 +11,12 @@
 
 
 ## Standard library imports
+
+import pickle
+
+import pandas as pd
+
+from datetime import (date, datetime)
 
 
 ## Third party imports
@@ -32,83 +38,20 @@ from src.utils.utils import (
     save_df
 )
 
-from src.utils.params_gen import (
-
-    fe_pickle_loc_imp_features,
-    fe_pickle_loc_feature_labs,
-
-    models_pickle_loc,
-    X_train_pickle_loc,
-    y_train_pickle_loc,
-    X_test_pickle_loc,
-    y_test_pickle_loc,
-    test_predict_labs_pickle_loc,
-    test_predict_scores_pickle_loc,
-)
-
 from src.utils.params_ml import (
     models_dict,
     time_series_splits,
     evaluation_metric,
 )
 
+from src.utils.params_gen import (
+    metadata_dir_loc,
+    ms_metadata,
+    ms_metadata_index,
+    ms_metadata_csv_name
+)
 
-
-
-
-"------------------------------------------------------------------------------"
-#################################
-## Generic ancillary functions ##
-#################################
-
-
-## Loading transformation pickle as dataframe for transformation pipeline.
-def load_features(path):
-    """
-    Loading fe pickle as dataframe from fe pipeline.
-        args:
-            path (string): location where the pickle that will be loaded is.
-        returns:
-            -
-    """
-
-    df = load_df(path)
-
-    return df
-
-
-
-## Save best model form magic loop as pickle.
-def save_models(selected_model, path):
-    """
-    Save best model form magic loop as pickle.
-        args:
-            selected_model (dataframe): model that got best performance in magic loop.
-            path (string): location where the pickle object will be stored.
-        returns:
-            -
-    """
-
-    save_df(selected_model, path)
-
-
-
-## Selecting model from magic loop with best estimator score
-def select_best_model(models_mloop):
-    """
-    """
-
-    res = "nothing_"
-    bench = 0
-
-    for mdl in models_mloop:
-        if models_mloop[mdl]["best_estimator_score"] > bench:
-            res = mdl
-            bench = models_mloop[mdl]["best_estimator_score"]
-
-    print("\n++The model with the best performance is: {} (score: {})".format(res, round(bench, 6)))
-
-    return res
+from src.utils.utils import write_csv_from_df
 
 
 
@@ -120,56 +63,42 @@ def select_best_model(models_mloop):
 ########################
 
 
-## Run magic loop to train a selection of models with various parameters.
-def magic_loop(models_dict, df_imp_features_prc, df_labels):
+## Selecting best trained model based on estimator score
+def select_best_model(mt_results_dict):
     """
-    Run magic loop to train a selection of models with various parameters.
+    Selecting best trained model based on estimator score
 
-    :param models_dict: (dict) - models and parameters that will be trained
-    :param df_imp_features_prc: (dataframe) - engineered data features
-    :param df_labels: (dataframe) - data training labels
+    :param mt_results_dict: (dict) - dictionary with all the results form the `model_training` module
 
-    :return:
+    :return best_model: (sklearn model) - model with the best estimator score
     """
 
+    model_bench = "_no_result"
+    bench = 0
 
-    ## Splitting data in train and test
-    X_train, X_test, y_train, y_test = train_test_split(df_imp_features_prc, df_labels, test_size=0.3)
+    for mdl in mt_results_dict["trained_models"]:
+        if mt_results_dict["trained_models"][mdl]["best_estimator_score"] > bench:
+            model_bench = mdl
+            bench = mt_results_dict["trained_models"][mdl]["best_estimator_score"]
+
+    print("\n++The model with the best performance is: {} (score: {})".format(model_bench, round(bench, 6)))
+
+    best_model = mt_results_dict["trained_models"][model_bench]["best_estimator"]
 
 
-    ##
-    models_mloop = {}
-    for mdl in models_dict:
+    ## Model performance metadata
+    ms_metadata["training_score"] = round(bench, 4)
 
-        model = models_dict[mdl]["model"]
-
-        grid_search = GridSearchCV(model,
-                               models_dict[mdl]["param_grid"],
-                               cv=TimeSeriesSplit(n_splits=time_series_splits),
-                               scoring=evaluation_metric,
-                               return_train_score=True,
-                               n_jobs=-1
-                               )
-        grid_search.fit(X_train, y_train)
-
-        models_mloop[mdl] = {
-            "best_estimator": grid_search.best_estimator_,
-            "best_estimator_score": grid_search.best_score_
-        }
-
-    # sel_model = models_mloop[select_best_model(models_mloop)]["best_estimator"]
-    #
-    #
-    # return sel_model, X_train, X_test, y_train, y_test
+    return best_model
 
 
 
 ## Testing model with test data set.
-def best_model_predict_test(sel_model, X_test):
+def best_model_predict_test(best_model, X_test):
     """
     Testing model with test data set.
         args:
-            sel_model (sklearn model): best model obtained from magic loop.
+            best_model (sklearn model): best model obtained from magic loop.
             X_test (numpy array): dataset to test best model.
         returns:
             test_predict_labs (array): labels predicted by best model.
@@ -177,8 +106,8 @@ def best_model_predict_test(sel_model, X_test):
     """
 
     ## Predict test labels and probabilities with selected model.
-    test_predict_labs = sel_model.predict(X_test)
-    test_predict_scores = sel_model.predict_proba(X_test)
+    test_predict_labs = best_model.predict(X_test)
+    test_predict_scores = best_model.predict_proba(X_test)
 
     return test_predict_labs, test_predict_scores
 
@@ -187,46 +116,58 @@ def best_model_predict_test(sel_model, X_test):
 
 
 "------------------------------------------------------------------------------"
-############################
-## Modeling main function ##
-############################
+###################################
+## Model selection main function ##
+###################################
 
 
-## Function desigend to execute all fe functions.
-def modeling(fe_results_dict):
+## Function desigend to execute all ms functions.
+def model_selection(mt_results_dict, ms_results_pickle_loc):
     """
     Function desigend to execute all modeling functions.
         args:
             fe_pickle_loc (string): path where the picke obtained from the feature engineering is.
-            models_pickle_loc (string): location where the resulting pickle object (best model) will be stored.
         returns:
             -
     """
 
-    ## Loading feature engineering results
-    # df_imp_features_prc = load_features(fe_pickle_loc_imp_features)
-    # df_labels = load_features(fe_pickle_loc_feature_labs)
+    ## Storing time execution metadata
+    ms_metadata[ms_metadata_index] = str(datetime.now())
 
-    ## Implementing magic loop to select best model from `models_dict`
-    sel_model, X_train, X_test, y_train, y_test = magic_loop(models_dict, df_imp_features_prc, df_labels)
-    test_predict_labs, test_predict_scores = best_model_predict_test(sel_model, X_test)
+    ## Selecting best trained model from magic_loop
+    best_model = select_best_model(mt_results_dict)
+
+    ## Testing best model with test data
+    test_predict_labs, test_predict_scores = best_model_predict_test(best_model, mt_results_dict["training_data"])
+
 
     ## Saving modeling results
 
-    #### Best model
-    save_models(sel_model, models_pickle_loc)
+    #### Dictionary with all module results
+    ms_results_dict = {
+        "best_trained_model": best_model,
+        "model_test_predict_labels": test_predict_labs,
+        "model_test_predict_scores": test_predict_scores
+    }
 
-    #### Data used to train the model
-    save_models(X_train, X_train_pickle_loc)
-    save_models(y_train, y_train_pickle_loc)
-    save_models(X_test, X_test_pickle_loc)
-    save_models(y_test, y_test_pickle_loc)
+    #### Saving dictionary with results as pickle
+    pickle.dump(ms_results_dict, open(ms_results_pickle_loc, "wb"))
 
-    #### Results from testing the model
-    save_models(test_predict_labs, test_predict_labs_pickle_loc)
-    save_models(test_predict_scores, test_predict_scores_pickle_loc)
+    print("\n** Model selection module successfully executed **\n")
 
-    print("\n** Modeling module successfully executed **\n")
+
+    ## Saving relevant module metadata
+
+    #### Model selected metadata
+    ms_metadata["selected_model"] = str(best_model)
+
+    #### Converting metadata into dataframe and saving locally
+    df_meta = pd.DataFrame.from_dict(ms_metadata, orient="index").T
+    df_meta.set_index(ms_metadata_index, inplace=True)
+    write_csv_from_df(df_meta, metadata_dir_loc, ms_metadata_csv_name)
+
+
+    return ms_results_dict
 
 
 

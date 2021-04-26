@@ -19,6 +19,8 @@ from src.utils.params_gen import (
     today_info,
 )
 
+from src.pipeline.models_training import models_training
+
 
 
 

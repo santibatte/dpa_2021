@@ -35,12 +35,10 @@ class ModelSelectionMetadata(CopyToTable):
     table = 'dpa_metadata.model_selection'
 
 
-## ADAPTAR al numero de columnas correctas
+    ## Metadata columns saved in RDS file
     columns = [("execution_time", "VARCHAR"),
-               ("shape_after_fe", "VARCHAR")]
-
-
-    #csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
+               ("training_score", "VARCHAR"),
+               ("selected_model", "VARCHAR")]
 
 
 
