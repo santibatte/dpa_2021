@@ -27,6 +27,11 @@ import pandas as pd
 
 import numpy as np
 
+## Testing imports
+import unittest
+import marbles.core
+from io import StringIO
+from datetime import (date, datetime)
 
 ## Local application imports
 
@@ -44,7 +49,7 @@ from src.utils.utils import (
 
 from src.utils.params_gen import (
     metadata_dir_loc,
-
+    tests_dir_loc,
     ingestion_pickle_loc,
     transformation_pickle_loc,
     transformation_metadata,
@@ -372,14 +377,35 @@ def transform(df, transformation_pickle_loc):
     df_meta.set_index(transformation_metadata_index, inplace=True)
     write_csv_from_df(df_meta, metadata_dir_loc, trans_metadata_csv_name)
 
- #UNIT TEST ....
- #guardas el resultado del unit test en un DATAFRAME
- #lo conviertes a .csv ...
- #Lo guardas en local :
- #dia y a hora      nombre de la prueba      succes / failure
+    #### Running unit test with marbles
 
+    class TestTransform(marbles.core.TestCase):
+        def test_transformation(self):
+            self.assertEqual(df.shape[1], 8, note='Oops, DataFrame columns are missing!')
 
-    print("\n** Tranformation module successfully executed **\n")
+    stream = StringIO()
+    runner = unittest.TextTestRunner(stream=stream)
+    result = runner.run(unittest.makeSuite(TestTransform))
+
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestTransform)
+
+    with open(tests_dir_loc + 'test_transformation.txt', 'w') as f:
+        unittest.TextTestRunner(stream=f, verbosity=2).run(suite)
+
+    res = []
+    with open(tests_dir_loc + "test_transformation.txt") as fp:
+        lines = fp.readlines()
+        for line in lines:
+            if "FAILED" in line:
+                res.append([str(datetime.now()), "FAILED,DataFrame columns are missing"])
+            if "OK" in line:
+                res.append([str(datetime.now()), "PASS"])
+
+    res_df = pd.DataFrame(res, columns=['Date', 'Result'])
+
+    res_df.to_csv(tests_dir_loc + 'transform_unittest.csv', index=False)
+
+    print("\n** Transformation module successfully executed **\n")
 
     return df
 
