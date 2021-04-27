@@ -41,3 +41,5 @@ class ExtractUnitTest(CopyToTable):
 
         for element in reader.itertuples(index=False):
             yield element
+        if "FAILED" in reader[1][1]:
+            raise TypeError("FAILED, you have an empty dataframe")

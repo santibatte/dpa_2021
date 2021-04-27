@@ -36,8 +36,8 @@ class SaveS3UnitTest(CopyToTable):
     port = credentials['port']
     table = 'dpa_unittest.saves3'
 
-    columns = [("XXX1", "VARCHAR"),
-               ("XXX2", "VARCHAR")]
+    columns = [("Date", "VARCHAR"),
+               ("Result", "VARCHAR")]
 
 
 
@@ -48,3 +48,5 @@ class SaveS3UnitTest(CopyToTable):
 
         for element in reader.itertuples(index=False):
             yield element
+        if "FAILED" in reader[1][1]:
+            raise TypeError("FAILED, check your pickle's size")
