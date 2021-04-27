@@ -33,8 +33,8 @@ class ExtractUnitTest(CopyToTable):
     port = credentials['port']
     table = 'dpa_unittest.extract'
 
-    columns = [("XXX1", "VARCHAR"),
-               ("XXX2", "VARCHAR")]
+    columns = [("Date", "VARCHAR"),
+               ("Result", "VARCHAR")]
 
     def rows(self):
         reader = pd.read_csv(csv_local_file, header=None)

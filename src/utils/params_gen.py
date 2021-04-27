@@ -30,6 +30,7 @@ from datetime import (date, datetime)
 
 ## General
 metadata_dir_loc = "src/pipeline/luigi/luigi_tmp_files/"
+tests_dir_loc = "src/pipeline/luigi/luigi_tmp_files/"
 
 ## AWS and directories
 bucket_name = "data-product-architecture-equipo-9"
