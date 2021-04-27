@@ -41,6 +41,7 @@ from src.utils.params_ml import (
 
 from src.utils.params_gen import (
     metadata_dir_loc,
+    tests_dir_loc,
     mt_metadata,
     mt_metadata_index,
     mt_metadata_csv_name
@@ -77,6 +78,35 @@ def magic_loop(models_dict, fe_results_dict):
         test_size=0.3
     )
 
+    #### Running unit test
+    class TestTrain(marbles.core.TestCase):
+        def test_train(self):
+            rows=X_train.shape[0]>50
+            cols= X_train.shape[1]
+            self.assertTrue(rows, note="Your X_train have less than 50 rows")
+            self.assertEqual(cols,8, note="Columns are missing")
+
+
+    stream = StringIO()
+    runner = unittest.TextTestRunner(stream=stream)
+    result = runner.run(unittest.makeSuite(TestTrain))
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestTrain)
+
+    with open(tests_dir_loc + 'train_unittest.txt', 'w') as f:
+    unittest.TextTestRunner(stream=f, verbosity=2).run(suite)
+
+    res = []
+    with open(tests_dir_loc + "train_unittest.txt") as fp:
+    lines = fp.readlines()
+    for line in lines:
+        if "FAILED" in line:
+            res.append([str(datetime.now()), "FAILED, Your X_train have less than 50 rows"])
+        if "OK" in line:
+            res.append([str(datetime.now()), "PASS"])
+
+    res_df = pd.DataFrame(res, columns=['Date', 'Result'])
+
+    res_df.to_csv(tests_dir_loc + 'model_training_unittest.csv', index=False)
 
     ## Training models selected in magic loop
 
@@ -101,7 +131,6 @@ def magic_loop(models_dict, fe_results_dict):
             "best_estimator": grid_search.best_estimator_,
             "best_estimator_score": grid_search.best_score_
         }
-
 
     return models_mloop, X_train, X_test, y_train, y_test
 
