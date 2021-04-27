@@ -75,7 +75,9 @@ class APIDataIngestion(luigi.Task):
         ingesta_df_clean = ingest(pd.DataFrame(ingesta))
 
         #### Líneas de prueba para ver dimensiones de la ingesta (revisión de unittest)
-        ingesta_df_clean.shape
+        print("####################")
+        print(ingesta_df_clean.shape)
+        print("####################")
 
         ## Saving ingestion results
         pickle.dump(ingesta_df_clean, open(self.output().path, 'wb'))
