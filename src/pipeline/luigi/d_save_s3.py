@@ -133,7 +133,7 @@ class S3Task(luigi.Task):
             unittest.TextTestRunner(stream=f, verbosity=2).run(suite)
 
         res = []
-        with open(tests_dir_loc + "saveS3__unittest.txt") as fp:
+        with open(tests_dir_loc + "saveS3_unittest.txt") as fp:
             lines = fp.readlines()
             for line in lines:
                 if "FAILED" in line:

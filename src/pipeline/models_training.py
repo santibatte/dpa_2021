@@ -87,10 +87,8 @@ def magic_loop(models_dict, fe_results_dict):
     #### Running unit test
     class TestTrain(marbles.core.TestCase):
         def test_train(self):
-            rows=X_train.shape[0]>50
-            cols= X_train.shape[1]
+            rows=X_train.shape[0] > 50
             self.assertTrue(rows, note="Your X_train have less than 50 rows")
-            self.assertEqual(cols,8, note="Columns are missing")
 
 
     stream = StringIO()

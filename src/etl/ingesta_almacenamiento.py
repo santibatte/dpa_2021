@@ -501,7 +501,7 @@ def ingest(df):
     #### Running unit test
     class TestExtract(marbles.core.TestCase):
         def test_empty_df(self):
-            self.asserNotEqual(df.shape, [0, 0], note="Your dataframe is empty")
+            self.assertNotEqual(df.shape, [0, 0], note="Your dataframe is empty")
             with self.assertRaises(TypeError):
                 df.shape[0, 0]
 
