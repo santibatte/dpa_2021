@@ -35,8 +35,8 @@ class ModelTrainingTest(CopyToTable):
 
 
 
-    columns = [("XXX1", "VARCHAR"),
-               ("XXX2", "VARCHAR")]
+    columns = [("Date", "VARCHAR"),
+               ("Result", "VARCHAR")]
 
 
 
