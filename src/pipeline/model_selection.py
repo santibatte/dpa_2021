@@ -18,6 +18,11 @@ import pandas as pd
 
 from datetime import (date, datetime)
 
+## Testing imports
+
+import unittest
+import marbles.core
+from io import StringIO
 
 ## Third party imports
 
@@ -46,6 +51,7 @@ from src.utils.params_ml import (
 
 from src.utils.params_gen import (
     metadata_dir_loc,
+    tests_dir_loc,
     ms_metadata,
     ms_metadata_index,
     ms_metadata_csv_name
@@ -84,6 +90,33 @@ def select_best_model(mt_results_dict):
     print("\n++The model with the best performance is: {} (score: {})".format(model_bench, round(bench, 6)))
 
     best_model = mt_results_dict["trained_models"][model_bench]["best_estimator"]
+
+    #### Running unit test
+    class TestSelectionModel(marbles.core.TestCase):
+        def test_select_score(self):
+            score_unit_test=bench > .5
+            self.assertTrue(score_unit_test, note="Your best estimator score is less than 0.5")
+
+    stream = StringIO()
+    runner = unittest.TextTestRunner(stream=stream)
+    result = runner.run(unittest.makeSuite(TestSelectionModel))
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestSelectionModel)
+
+    with open(tests_dir_loc + 'modelselection_unittest.txt', 'w') as f:
+        unittest.TextTestRunner(stream=f, verbosity=2).run(suite)
+
+    res = []
+    with open(tests_dir_loc + "modelselection_unittest.txt") as fp:
+        lines = fp.readlines()
+    for line in lines:
+        if "FAILED" in line:
+            res.append([str(datetime.now()), "FAILED, our best estimator score is less than 0.5"])
+        if "OK" in line:
+            res.append([str(datetime.now()), "PASS"])
+
+    res_df = pd.DataFrame(res, columns=['Date', 'Result'])
+
+    res_df.to_csv(tests_dir_loc + 'model_selection_unittest.csv', index=False)
 
 
     ## Model performance metadata

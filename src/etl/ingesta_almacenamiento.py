@@ -35,6 +35,11 @@ import boto3
 
 import pandas as pd
 
+## Testing imports
+import unittest
+import marbles.core
+from io import StringIO
+from datetime import (date, datetime)
 
 ## Local application imports
 
@@ -58,7 +63,7 @@ from src.utils.data_dict import data_dict
 
 from src.utils.params_gen import (
     metadata_dir_loc,
-
+    tests_dir_loc,
     bucket_name,
 
     local_temp_ingestions,
@@ -492,6 +497,34 @@ def ingest(df):
     df_meta = pd.DataFrame.from_dict(extract_metadata, orient="index").T
     df_meta.set_index(extract_metadata_index, inplace=True)
     write_csv_from_df(df_meta, metadata_dir_loc, extract_metadata_csv_name)
+
+    #### Running unit test
+    class TestExtract(marbles.core.TestCase):
+        def test_empty_df(self):
+            self.asserNotEqual(df.shape, [0, 0], note="Your dataframe is empty")
+            with self.assertRaises(TypeError):
+                df.shape[0, 0]
+
+    stream = StringIO()
+    runner = unittest.TextTestRunner(stream=stream)
+    result = runner.run(unittest.makeSuite(TestExtract))
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestExtract)
+
+    with open(tests_dir_loc + 'extract_unittest.txt', 'w') as f:
+        unittest.TextTestRunner(stream=f, verbosity=2).run(suite)
+
+    res = []
+    with open(tests_dir_loc + "extract_unittest.txt") as fp:
+        lines = fp.readlines()
+        for line in lines:
+            if "FAILED" in line:
+                res.append([str(datetime.now()), "FAILED, Your dataframe is empty"])
+            if "OK" in line:
+                res.append([str(datetime.now()), "PASS"])
+
+    res_df = pd.DataFrame(res, columns=['Date', 'Result'])
+
+    res_df.to_csv(tests_dir_loc + 'extract_unittest.csv', index=False)
 
     ## Success message
     print("\n** Ingestion module successfully executed **\n")
