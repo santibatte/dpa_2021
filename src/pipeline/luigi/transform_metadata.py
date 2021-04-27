@@ -6,16 +6,15 @@ import luigi
 import psycopg2
 
 
-from src.pipeline.luigi.p_model_selection import ModelSelection
-
 from src.utils.utils import (
     get_postgres_credentials
 )
 
+from src.pipeline.luigi.transform import Transformation
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/model_selection_unittest.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
 
-class ModelSelectionUnitTest(CopyToTable):
+class TransformationMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
@@ -23,25 +22,27 @@ class ModelSelectionUnitTest(CopyToTable):
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
+    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
 
     def requires(self):
-        return ModelSelection(ingest_type=self.ingest_type, bucket=self.bucket)
-
+        return Transformation(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
-
 
     user = credentials['user']
     password = credentials['pass']
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_unittest.model_selection'
+    table = 'dpa_metadata.transformation'
 
-    columns = [("Date", "VARCHAR"),
-               ("Result", "VARCHAR")]
 
-               
+## ADAPTAR al numero de columnas correctas
+    columns = [("execution_date", "VARCHAR"),
+               ("number_of_transformations", "VARCHAR"),
+               ("new_columns", "VARCHAR")]
+
+
     def rows(self):
         reader = pd.read_csv(csv_local_file, header=None)
 
