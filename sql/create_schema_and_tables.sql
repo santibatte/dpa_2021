@@ -1,8 +1,9 @@
 #sql create schema and tables 
 
-DROP SCHEMA IF EXISTS dpa_metadata CASCADE;
+DROP SCHEMA IF EXISTS dpa_metadata, dpa_unittest CASCADE;
 
 CREATE SCHEMA dpa_metadata;
+CREATE SCHEMA dpa_unittest;
 
 CREATE TABLE dpa_metadata.extract (
 	extraction_time varchar DEFAULT NULL,
@@ -35,7 +36,3 @@ CREATE TABLE dpa_metadata.feature_engineering (
 	shape_after_fe varchar DEFAULT NULL
 );
 
-
- 
-
- 
