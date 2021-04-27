@@ -1,4 +1,3 @@
-
 from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
@@ -10,12 +9,11 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.pipeline.luigi.save_s3 import S3Task
+from src.pipeline.luigi.q_model_selection_test import ModelSelectionUnitTest
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/model_selection_metadata.csv"
 
-
-class SaveS3Metadata(CopyToTable):
+class ModelSelectionMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
@@ -23,10 +21,9 @@ class SaveS3Metadata(CopyToTable):
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
-    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
 
     def requires(self):
-        return S3Task(ingest_type=self.ingest_type, bucket=self.bucket)
+        return ModelSelectionUnitTest(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
@@ -35,14 +32,14 @@ class SaveS3Metadata(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_metadata.saveS3'
+    table = 'dpa_metadata.model_selection'
 
 
-    ## Postgres table layout
-    columns = [("save_time", "VARCHAR"),
-               ("s3_bucket_name", "VARCHAR"),
-               ("s3_key_name", "VARCHAR"),
-               ("df_shape", "VARCHAR")]
+    ## Metadata columns saved in RDS file
+    columns = [("execution_time", "VARCHAR"),
+               ("training_score", "VARCHAR"),
+               ("selected_model", "VARCHAR")]
+
 
 
     def rows(self):
