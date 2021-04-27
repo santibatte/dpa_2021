@@ -186,7 +186,7 @@ def model_selection(mt_results_dict, ms_results_pickle_loc):
     #### Saving dictionary with results as pickle
     pickle.dump(ms_results_dict, open(ms_results_pickle_loc, "wb"))
 
-    print("\n** Best Model scores where:  **\n", test_predict_scores)
+    print("\n** Best Model scores was:  **\n", bench)
 
     print("\n** Model selection module successfully executed **\n")
 
