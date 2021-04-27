@@ -28,6 +28,11 @@ import luigi.contrib.s3
 
 import boto3
 
+## Testing imports
+import unittest
+import marbles.core
+from io import StringIO
+
 
 ## Local application imports
 
@@ -53,6 +58,9 @@ from src.utils.params_gen import (
     save_s3_metadata,
     save_s3_metadata_index,
     save_s3_metadata_csv_name,
+
+    ## Tests
+    tests_dir_loc
 )
 
 from src.etl.ingesta_almacenamiento import (
@@ -109,6 +117,33 @@ class S3Task(luigi.Task):
         ## Location to find most recent local ingestion
         path_full = local_temp_ingestions + self.ingest_type + "/" + self.path_date + path_file
 
+        #### Running unit test
+        class TestSaveS3(marbles.core.TestCase):
+            def test_size_pkl(self):
+                size_pkl=os.path.getsize(path_full)>0
+                self.assertTrue(size_pkl, note="Your pickle's size is OKB")
+
+
+        stream = StringIO()
+        runner = unittest.TextTestRunner(stream=stream)
+        result = runner.run(unittest.makeSuite(TestSaveS3))
+        suite = unittest.TestLoader().loadTestsFromTestCase(TestSaveS3)
+
+        with open(tests_dir_loc + 'saveS3_unittest.txt', 'w') as f:
+            unittest.TextTestRunner(stream=f, verbosity=2).run(suite)
+
+        res = []
+        with open(tests_dir_loc + "saveS3__unittest.txt") as fp:
+            lines = fp.readlines()
+            for line in lines:
+                if "FAILED" in line:
+                    res.append([str(datetime.now()), "FAILED, Your pickle's size is OKB"])
+                if "OK" in line:
+                    res.append([str(datetime.now()), "PASS"])
+
+        res_df = pd.DataFrame(res, columns=['Date', 'Result'])
+
+        res_df.to_csv(tests_dir_loc + 'saveS3_unittest.csv', index=False)
 
         ## Loading most recent ingestion
         ingesta_df = pickle.load(open(path_full, "rb"))
