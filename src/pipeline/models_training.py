@@ -98,7 +98,7 @@ def magic_loop(models_dict, fe_results_dict):
     suite = unittest.TestLoader().loadTestsFromTestCase(TestTrain)
 
     with open(tests_dir_loc + 'train_unittest.txt', 'w') as f:
-    unittest.TextTestRunner(stream=f, verbosity=2).run(suite)
+        unittest.TextTestRunner(stream=f, verbosity=2).run(suite)
 
     res = []
     with open(tests_dir_loc + "train_unittest.txt") as fp:
