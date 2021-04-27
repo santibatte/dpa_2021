@@ -94,7 +94,7 @@ def select_best_model(mt_results_dict):
     #### Running unit test
     class TestSelectionModel(marbles.core.TestCase):
         def test_select_score(self):
-            score_unit_test=bench > .5
+            score_unit_test=bench > .64
             self.assertTrue(score_unit_test, note="Your best estimator score is less than 0.5")
 
     stream = StringIO()

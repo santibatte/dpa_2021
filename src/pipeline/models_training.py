@@ -80,7 +80,8 @@ def magic_loop(models_dict, fe_results_dict):
     X_train, X_test, y_train, y_test = train_test_split(
         fe_results_dict["df_imp_engineered_features"],
         fe_results_dict["data_labels"],
-        test_size=0.3
+        test_size=0.3,
+        random_state = 1989
     )
 
     #### Running unit test
