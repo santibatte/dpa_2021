@@ -16,6 +16,11 @@ import pickle
 
 from datetime import (date, datetime)
 
+## Testing imports
+
+import unittest
+import marbles.core
+from io import StringIO
 
 ## Third party imports
 
