@@ -38,8 +38,8 @@ class ModelSelectionUnitTest(CopyToTable):
     port = credentials['port']
     table = 'dpa_unittest.model_selection'
 
-    columns = [("XXX1", "VARCHAR"),
-               ("XXX2", "VARCHAR")]
+    columns = [("Date", "VARCHAR"),
+               ("Result", "VARCHAR")]
 
                
     def rows(self):
