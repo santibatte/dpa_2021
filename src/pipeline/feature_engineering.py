@@ -16,13 +16,6 @@ import sys
 
 from datetime import (date, datetime)
 
-import pickle
-
-## Testing imports
-
-import unittest
-import marbles.core
-from io import StringIO
 
 ## Third party imports
 
@@ -40,7 +33,6 @@ import pandas as pd
 pd.set_option("display.max_columns", 10)
 
 
-
 ## Local application imports
 
 from src.utils.data_dict import (
@@ -50,15 +42,21 @@ from src.utils.data_dict import (
 
 from src.utils.utils import (
     json_dump_dict,
+    load_df,
+    save_df,
     write_csv_from_df
 )
 
 from src.utils.params_gen import (
     metadata_dir_loc,
-    tests_dir_loc,
+
+    transformation_pickle_loc,
     fe_metadata,
     fe_metadata_index,
     fe_metadata_csv_name,
+
+    fe_pickle_loc_imp_features,
+    fe_pickle_loc_feature_labs,
 )
 
 from src.utils.params_ml import (
@@ -79,6 +77,37 @@ from src.utils.params_ml import (
 #################################
 ## Generic ancillary functions ##
 #################################
+
+
+## Loading transformation pickle as dataframe for transformation pipeline.
+def load_transformation(path):
+    """
+    Loading transformation pickle as dataframe for transformation pipeline.
+        args:
+            path (string): location where the pickle that will be loaded is.
+        returns:
+            df (dataframe): dataframe with features obtained from the transformation module.
+    """
+
+    df = load_df(path)
+
+    return df
+
+
+
+## Save fe data frame as pickle.
+def save_fe(df, path):
+    """
+    Save fe data frame as pickle.
+        args:
+            df (dataframe): fe resulting dataframe.
+            path (string): location where the pickle object will be stored.
+        returns:
+            -
+    """
+
+    save_df(df, path)
+
 
 
 ## Identifying the original features related to the processed features
@@ -373,10 +402,12 @@ def feature_selection(df, df_features_prc, df_labels, df_features_prc_cols, ohe_
 
 
 ## Function desigend to execute all fe functions.
-def feature_engineering(df, fe_results_pickle_loc):
+def feature_engineering(df, fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs):
     """
     Function desigend to execute all fe functions.
         args:
+            transformation_pickle_loc (string): path where the picke obtained from the transformation is.
+            fe_pickle_loc (string): location where the resulting pickle object will be stored.
         returns:
             -
     """
@@ -387,26 +418,16 @@ def feature_engineering(df, fe_results_pickle_loc):
 
     ## Executing feature engineering functions
 
-    #### Metadata: df shape prior fe metadata
+    #### Df shape prior fe metadata
     fe_metadata["dim_prior_fe"] = str(df.shape)
 
-    #### Generating features processed by specific pipeline
     df_features_prc, df_labels, ohe_dict, df_features_prc_cols = feature_generation(df)
 
-    #### Using model to evaluate which features are more important based on threshold
     df_imp_features_prc = feature_selection(df, df_features_prc, df_labels, df_features_prc_cols, ohe_dict)
 
-    #### Saving all module's results in dictionary
-    fe_results_dict = {
-        "df_imp_engineered_features": df_imp_features_prc,
-        "data_labels": df_labels,
-        "ohe_reference": ohe_dict,
-        "df_cols_features_engineered": df_features_prc_cols,
-        "features_engineered": df_features_prc
-    }
-
     #### Saving fe results
-    pickle.dump(fe_results_dict, open(fe_results_pickle_loc, "wb"))
+    save_fe(df_imp_features_prc, fe_pickle_loc_imp_features)
+    save_fe(df_labels, fe_pickle_loc_feature_labs)
 
     print("\n** Feature engineering module successfully executed **\n")
 
@@ -418,37 +439,8 @@ def feature_engineering(df, fe_results_pickle_loc):
     df_meta.set_index(fe_metadata_index, inplace=True)
     write_csv_from_df(df_meta, metadata_dir_loc, fe_metadata_csv_name)
 
-    #### Running unit test
-    class TestFeatureEngineering(marbles.core.TestCase):
-        def test_feature_engineering(self):
-            res = not bool(fe_results_dict)
-            self.assertFalse(res, note="Your dictionary is empty")
 
-    stream = StringIO()
-    runner = unittest.TextTestRunner(stream=stream)
-    result = runner.run(unittest.makeSuite(TestFeatureEngineering))
-
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestFeatureEngineering)
-
-    with open(tests_dir_loc + 'test_feature_engineering.txt', 'w') as f:
-        unittest.TextTestRunner(stream=f, verbosity=2).run(suite)
-
-    res = []
-    with open(tests_dir_loc + "test_feature_engineering.txt") as fp:
-        lines = fp.readlines()
-        for line in lines:
-            if "FAILED" in line:
-                res.append([str(datetime.now()), "FAILED, Your dictionary is empty."])
-            if "OK" in line:
-                res.append([str(datetime.now()), "PASS"])
-
-    res_df = pd.DataFrame(res, columns=['Date', 'Result'])
-
-    res_df.to_csv(tests_dir_loc + 'feature_engineering_unittest.csv', index=False)
-
-
-
-    return fe_results_dict
+    return df_imp_features_prc
 
 
 
