@@ -98,16 +98,16 @@ def magic_loop(models_dict, fe_results_dict):
     suite = unittest.TestLoader().loadTestsFromTestCase(TestTrain)
 
     with open(tests_dir_loc + 'train_unittest.txt', 'w') as f:
-    unittest.TextTestRunner(stream=f, verbosity=2).run(suite)
+        unittest.TextTestRunner(stream=f, verbosity=2).run(suite)
 
     res = []
     with open(tests_dir_loc + "train_unittest.txt") as fp:
-    lines = fp.readlines()
-    for line in lines:
-        if "FAILED" in line:
-            res.append([str(datetime.now()), "FAILED, Your X_train have less than 50 rows"])
-        if "OK" in line:
-            res.append([str(datetime.now()), "PASS"])
+        lines = fp.readlines()
+        for line in lines:
+            if "FAILED" in line:
+                res.append([str(datetime.now()), "FAILED, Your X_train have less than 50 rows"])
+            if "OK" in line:
+                res.append([str(datetime.now()), "PASS"])
 
     res_df = pd.DataFrame(res, columns=['Date', 'Result'])
 
