@@ -150,37 +150,69 @@ ssh -i 'your_pub_key' ubuntu@ec2-34-222-143-84.us-west-2.compute.amazonaws.com
 
 The pipeline process is organized into the following [Luigi](https://luigi.readthedocs.io/en/stable/) tasks ran in the Processing Instance:
 
-***Task 1.***  `APIDataIngestion`: data extraction from Chicago food inspections API with the module `extract.py` . 
+***Task 1.***  `APIDataIngestion`: data extraction from Chicago food inspections API with the module `a_extract.py` . 
 
-* For historic ingestion run `luigi --module src.pipeline.luigi.extract APIDataIngestion --ingest-type initial --local-scheduler`.
+* For historic ingestion run `luigi --module src.pipeline.luigi.a_extract APIDataIngestion --ingest-type initial --local-scheduler`.
 
-* For consecutive ingestion run `luigi --module src.pipeline.luigi.extract APIDataIngestion --ingest-type consecutive --local-scheduler`.
+* For consecutive ingestion run `luigi --module src.pipeline.luigi.a_extract APIDataIngestion --ingest-type consecutive --local-scheduler`.
 
-***Task 2.*** `ExtractMetadata`: generates the ingestion metadata with module `extract_metadata.py`.
-* Example: `luigi --module src.pipeline.luigi.extract_metadata ExtractMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+***Task 2.***  `ExtractUnitTest`: runs the unit test associated to the ingestion. The test checks that the ingestion's dataframe is not empty. 
+* Example: `luigi --module src.pipeline.luigi.b_extract_test ExtractUnitTest --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
-***Task 3.*** `S3Task`: storage of data in AWS S3 bucket with the module `save_s3.py`.
+
+***Task 3.*** `ExtractMetadata`: generates the ingestion metadata with module `c_extract_metadata.py`.
+* Example: `luigi --module src.pipeline.luigi.c_extract_metadata ExtractMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 4.*** `S3Task`: storage of data in AWS S3 bucket with the module `d_save_s3.py`.
 
 * For historic ingestion run `luigi --module src.pipeline.luigi.save_s3 S3Task --bucket data-product-architecture-equipo-9 --ingest-type initial --local-scheduler`
-* For consecutive ingestion run `luigi --module src.pipeline.luigi.save_s3 S3Task --bucket data-product-architecture-equipo-9 --ingest-type consecutive --local-scheduler`
+* For consecutive ingestion run `luigi --module src.pipeline.luigi.d_save_s3 S3Task --bucket data-product-architecture-equipo-9 --ingest-type consecutive --local-scheduler`
 
-***Task 4.*** `SaveS3Metadata`: generates the storage metadata with module `saves3_metadata.py`.
-* Example: `luigi --module src.pipeline.luigi.saves3 SaveS3Metadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+***Task 5.*** `SaveS3UnitTest`: runs the unit test associated to the storage. The test checks that the size of the storaged pickle is not 0 KB. 
+* Example: `luigi --module src.pipeline.luigi.e_saves3_test SaveS3UnitTest --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
-***Task 5.*** `Transformation`: preprocessing and transformation of data with module `transform.py`.
 
-* Example: `luigi --module src.pipeline.luigi.transform Transformation --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+***Task 6.*** `SaveS3Metadata`: generates the storage metadata with module `f_saves3_metadata.py`.
+* Example: `luigi --module src.pipeline.luigi.f_saves3_metadat SaveS3Metadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
-***Task 6.*** `TransformationMetadata`: generates the transformation metadata with module `transform_metadata.py`.
-* Example: `luigi --module src.pipeline.luigi.transform_metadata TransformationMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+***Task 7.*** `Transformation`: preprocessing and transformation of data with module `g_transform.py`.
 
-***Task 7.*** `FeatureEngineering`: perform feature engineering on data with module `feature_engineering.py`
+* Example: `luigi --module src.pipeline.luigi.g_transform Transformation --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
-* Example:`luigi --module src.pipeline.luigi.feature_engineering FeatureEngineering --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+***Task 8.***  `TransformationUnitTest`: runs the unit test associated to the transformation process. The test checks that we have the new number of columns derived from transformation process.
+* Example: `luigi --module src.pipeline.luigi.h_transform_test TransformationUnitTest --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
-***Task 8.*** `FeatureEngineering Metadata`: generates the feature engineering metadata with module `feature_engineering_metadata.py`.
+***Task 9.*** `TransformationMetadata`: generates the transformation metadata with module `i_transform_metadata.py`.
+* Example: `luigi --module src.pipeline.luigi.i_transform_metadata TransformationMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
-* Example: `luigi --module src.pipeline.luigi.feature_engineering_metadata FeatureEngineeringMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+***Task 10.*** `FeatureEngineering`: perform feature engineering on data with module `j_feature_engineering.py`
+
+* Example:`luigi --module src.pipeline.luigi.j_feature_engineering FeatureEngineering --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 11.*** `FeatureEngineeringUnitTest`: runs the unit test associated to the featuring engineering. The test checks that the dictionary with the feature engineering results is not empty.
+* Example:`luigi --module src.pipeline.luigi.k_feature_engineering_test FeatureEngineeringUnitTest --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 12.*** `FeatureEngineering Metadata`: generates the feature engineering metadata with module `l_feature_engineering_metadata.py`.
+* Example: `luigi --module src.pipeline.luigi.l_feature_engineering_metadata FeatureEngineeringMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 13.*** `ModelTraining`: performs the model training with the `m_model_training.py` module.
+* Example: `luigi --module src.pipeline.luigi.m_model_training ModelTraining --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 14.*** `ModelTrainingTest`: runs the unit test associated to the models training. The test checks that there is enough observations to train the model (more than 50 observations).
+* Example: `luigi --module src.pipeline.luigi.n_model_training_test ModelTrainingTest --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 15.*** `ModelTrainingMetadata`: generates the models training metadata with module `o_model_training_metadata.py`.
+* Example: `luigi --module src.pipeline.luigi.o_model_training_metadata ModelTrainingTest --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 16.*** `ModelSelection`: performs the model selection with the `p_model_training.py` module.
+* Example: `luigi --module src.pipeline.luigi.p_model_selection ModelSelection --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 17.*** `ModelSelectionUnitTest`: runs the unit test associated to the selection modeling. The test checks that our selected model pass the score threshold of .5.
+* Example: `luigi --module src.pipeline.luigi.q_model_selection_test ModelSelectionUnitTest --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 18.*** `ModelSelectionMetadata`: generates the model selection metadata with module `r_model_training_metadata.py`.
+* Example: `luigi --module src.pipeline.luigi.r_model_selection_metadata ModelSelectionMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
 
 #### Luigi's DAG Visualization
 
@@ -197,17 +229,17 @@ We recommend to have several terminals open to do the portfowarding:
    * Replace the address after the @ is your active process machine.
    * Replace 10.0.0.56 with the IP address of the processing machine. You will find it at the prompt of the processing machine, but written with hyphens. You must write it with dots, as in the example.
 
-**Terminal 2:** After running the instructions in **2.** of **The Pipeline** to connect to your processing machine run:
+**Terminal 2:** After running the instructions in **3.** of **The Pipeline** to connect to your processing machine run:
 
 `luigid`
 
-**Terminal 3:** After running the instructions in **2.** of **The Pipeline** to connect to your processing machine run the your wanted Task removing the `--local scheduler`.
+**Terminal 3:** After running the instructions in **3.** of **The Pipeline** to connect to your processing machine run the your wanted Task removing the `--local scheduler`.
 
 Open your local browser in `localhost:4444`. 
 
 Your DAG should look like this!
 
-![](./images/DAG_checkpoint4.png)
+![](./images/DAG_checkpoint5.png)
 
 ## Disclamer: Luigi's Idempotence
 
