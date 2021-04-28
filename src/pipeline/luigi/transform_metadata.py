@@ -1,5 +1,4 @@
 
-
 from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
@@ -11,26 +10,22 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-#Cambiar, aqui se importara de Unit test
-from src.pipeline.luigi.b_extract_test import ExtractUnitTest
+from src.pipeline.luigi.transform import Transformation
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_metadata.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
 
-class ExtractMetadata(CopyToTable):
+class TransformationMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
-    #bucket = luigi.Parameter()
+    bucket = luigi.Parameter()
 
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
-    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_metadata.csv"
-
-
+    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
 
     def requires(self):
-
-        return ExtractUnitTest(self.ingest_type)
+        return Transformation(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
@@ -39,16 +34,13 @@ class ExtractMetadata(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_metadata.extract'
+    table = 'dpa_metadata.transformation'
 
 
 ## ADAPTAR al numero de columnas correctas
-    columns = [("extraction_time", "VARCHAR"),
-               ("raw_cols_deleted", "VARCHAR"),
-               ("raw_cols_left", "VARCHAR")]
-
-
-
+    columns = [("execution_date", "VARCHAR"),
+               ("number_of_transformations", "VARCHAR"),
+               ("new_columns", "VARCHAR")]
 
 
     def rows(self):

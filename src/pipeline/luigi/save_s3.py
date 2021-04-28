@@ -36,7 +36,7 @@ from io import StringIO
 
 ## Local application imports
 
-from src.pipeline.luigi.c_extract_metadata import ExtractMetadata
+from src.pipeline.luigi.extract_metadata import ExtractMetadata
 
 from src.utils.utils import (
     get_s3_resource,
@@ -150,7 +150,7 @@ class S3Task(luigi.Task):
 
 
         ## Obtaining task metadata
-
+        
         #### Storing time execution metadata
         save_s3_metadata[save_s3_metadata_index] = str(datetime.now())
         #### Bucket where data will be saved
