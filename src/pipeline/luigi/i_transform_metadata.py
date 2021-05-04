@@ -10,7 +10,7 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.pipeline.luigi.transform import Transformation
+from src.pipeline.luigi.h_transform_test import TransformationUnitTest
 
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
 
@@ -25,7 +25,7 @@ class TransformationMetadata(CopyToTable):
     csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
 
     def requires(self):
-        return Transformation(ingest_type=self.ingest_type, bucket=self.bucket)
+        return TransformationUnitTest(ingest_type=self.ingest_type, bucket=self.bucket) ##_
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
