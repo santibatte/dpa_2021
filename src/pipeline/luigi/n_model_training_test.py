@@ -47,3 +47,4 @@ class ModelTrainingTest(CopyToTable):
             yield element
         if "FAILED" in reader[1][1]:
             raise TypeError("FAILED, your X_train have less than 50 rows")
+

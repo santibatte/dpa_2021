@@ -51,3 +51,4 @@ class FeatureEngineeringUnitTest(CopyToTable):
             yield element
         if "FAILED" in reader[1][1]:
             raise TypeError("FAILED, you have an empty dictionary")
+

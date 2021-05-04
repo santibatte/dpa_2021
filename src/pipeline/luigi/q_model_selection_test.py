@@ -42,3 +42,4 @@ class ModelSelectionUnitTest(CopyToTable):
             yield element
         if "FAILED" in reader[1][1]:
             raise TypeError("FAILED, your best score does not pass the threshold")
+

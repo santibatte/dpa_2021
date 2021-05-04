@@ -1,8 +1,4 @@
 
-
-
-
-
 from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
@@ -64,3 +60,4 @@ class FeatureEngineeringMetadata(CopyToTable):
 
         for element in reader.itertuples(index=False):
             yield element
+

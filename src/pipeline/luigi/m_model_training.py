@@ -71,3 +71,4 @@ class ModelTraining(luigi.Task):
         output_path = output_path_start + 'trained_models_' + today_info + '.pkl'
 
         return luigi.contrib.s3.S3Target(output_path, client=client)
+
