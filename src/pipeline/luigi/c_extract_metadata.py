@@ -11,7 +11,7 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-#Cambiar, aqui se importara de Unit test
+## Cambiar, aqui se importara de Unit test
 from src.pipeline.luigi.b_extract_test import ExtractUnitTest
 
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_metadata.csv"
