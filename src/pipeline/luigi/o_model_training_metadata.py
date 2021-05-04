@@ -1,4 +1,3 @@
-
 from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
@@ -10,11 +9,13 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.pipeline.luigi.transform import Transformation
+from src.pipeline.luigi.n_model_training_test import ModelTrainingTest
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/models_training_metadata.csv"
 
-class TransformationMetadata(CopyToTable):
+
+
+class ModelTrainingMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
@@ -22,10 +23,10 @@ class TransformationMetadata(CopyToTable):
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
-    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
+    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/models_training_metadata.csv"
 
     def requires(self):
-        return Transformation(ingest_type=self.ingest_type, bucket=self.bucket)
+        return ModelTrainingTest(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
@@ -34,13 +35,14 @@ class TransformationMetadata(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_metadata.transformation'
+    table = 'dpa_metadata.model_training'
 
 
 ## ADAPTAR al numero de columnas correctas
-    columns = [("execution_date", "VARCHAR"),
-               ("number_of_transformations", "VARCHAR"),
-               ("new_columns", "VARCHAR")]
+    columns = [("execution_time", "VARCHAR"),
+               ("no_models_trained", "VARCHAR"),
+               ("type_models_trained", "VARCHAR")]
+
 
 
     def rows(self):

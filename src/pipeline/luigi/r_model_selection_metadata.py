@@ -1,4 +1,3 @@
-
 from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
@@ -10,11 +9,11 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.pipeline.luigi.transform import Transformation
+from src.pipeline.luigi.q_model_selection_test import ModelSelectionUnitTest
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/model_selection_metadata.csv"
 
-class TransformationMetadata(CopyToTable):
+class ModelSelectionMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
@@ -22,10 +21,9 @@ class TransformationMetadata(CopyToTable):
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
-    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
 
     def requires(self):
-        return Transformation(ingest_type=self.ingest_type, bucket=self.bucket)
+        return ModelSelectionUnitTest(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
@@ -34,13 +32,14 @@ class TransformationMetadata(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_metadata.transformation'
+    table = 'dpa_metadata.model_selection'
 
 
-## ADAPTAR al numero de columnas correctas
-    columns = [("execution_date", "VARCHAR"),
-               ("number_of_transformations", "VARCHAR"),
-               ("new_columns", "VARCHAR")]
+    ## Metadata columns saved in RDS file
+    columns = [("execution_time", "VARCHAR"),
+               ("training_score", "VARCHAR"),
+               ("selected_model", "VARCHAR")]
+
 
 
     def rows(self):
