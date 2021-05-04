@@ -11,7 +11,8 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.pipeline.luigi.extract import APIDataIngestion
+## Cambiar, aqui se importara de Unit test
+from src.pipeline.luigi.b_extract_test import ExtractUnitTest
 
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_metadata.csv"
 
@@ -25,9 +26,11 @@ class ExtractMetadata(CopyToTable):
 
     csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_metadata.csv"
 
+
+
     def requires(self):
 
-        return APIDataIngestion(self.ingest_type)
+        return ExtractUnitTest(self.ingest_type)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
