@@ -189,3 +189,4 @@ class S3Task(luigi.Task):
         output_path = output_path_start + self.path_date + path_file
 
         return luigi.contrib.s3.S3Target(output_path, client=client)
+

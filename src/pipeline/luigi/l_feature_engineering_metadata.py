@@ -60,3 +60,4 @@ class FeatureEngineeringMetadata(CopyToTable):
 
         for element in reader.itertuples(index=False):
             yield element
+
