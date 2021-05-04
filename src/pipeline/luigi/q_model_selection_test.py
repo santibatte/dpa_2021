@@ -15,7 +15,7 @@ from src.utils.utils import (
 
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/model_selection_unittest.csv"
 
-class ModelSelectionUnitTest(CopyToTable):
+class ModelSelectionUnitTest(CopyToTable): ##
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()

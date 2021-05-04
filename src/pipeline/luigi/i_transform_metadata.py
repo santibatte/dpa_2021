@@ -10,12 +10,11 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.pipeline.luigi.save_s3 import S3Task
+from src.pipeline.luigi.h_transform_test import TransformationUnitTest
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
 
-
-class SaveS3Metadata(CopyToTable):
+class TransformationMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
@@ -23,10 +22,10 @@ class SaveS3Metadata(CopyToTable):
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
-    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
+    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
 
     def requires(self):
-        return S3Task(ingest_type=self.ingest_type, bucket=self.bucket)
+        return TransformationUnitTest(ingest_type=self.ingest_type, bucket=self.bucket) ##_
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
@@ -35,14 +34,13 @@ class SaveS3Metadata(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_metadata.saveS3'
+    table = 'dpa_metadata.transformation'
 
 
-    ## Postgres table layout
-    columns = [("save_time", "VARCHAR"),
-               ("s3_bucket_name", "VARCHAR"),
-               ("s3_key_name", "VARCHAR"),
-               ("df_shape", "VARCHAR")]
+## ADAPTAR al numero de columnas correctas
+    columns = [("execution_date", "VARCHAR"),
+               ("number_of_transformations", "VARCHAR"),
+               ("new_columns", "VARCHAR")]
 
 
     def rows(self):

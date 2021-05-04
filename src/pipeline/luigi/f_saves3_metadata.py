@@ -10,11 +10,13 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.pipeline.luigi.transform import Transformation
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
+from src.pipeline.luigi.e_saves3_test import SaveS3UnitTest ##
 
-class TransformationMetadata(CopyToTable):
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
+
+
+class SaveS3Metadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
@@ -22,10 +24,10 @@ class TransformationMetadata(CopyToTable):
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
-    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
+    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
 
     def requires(self):
-        return Transformation(ingest_type=self.ingest_type, bucket=self.bucket)
+        return SaveS3UnitTest(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
@@ -34,13 +36,14 @@ class TransformationMetadata(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_metadata.transformation'
+    table = 'dpa_metadata.saveS3'
 
 
-## ADAPTAR al numero de columnas correctas
-    columns = [("execution_date", "VARCHAR"),
-               ("number_of_transformations", "VARCHAR"),
-               ("new_columns", "VARCHAR")]
+    ## Postgres table layout
+    columns = [("save_time", "VARCHAR"),
+               ("s3_bucket_name", "VARCHAR"),
+               ("s3_key_name", "VARCHAR"),
+               ("df_shape", "VARCHAR")]
 
 
     def rows(self):
