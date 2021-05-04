@@ -36,7 +36,7 @@ from io import StringIO
 
 ## Local application imports
 
-from src.pipeline.luigi.c_extract_metadata import ExtractMetadata
+from src.pipeline.luigi.c_extract_metadata import ExtractMetadata ##
 
 from src.utils.utils import (
     get_s3_resource,
