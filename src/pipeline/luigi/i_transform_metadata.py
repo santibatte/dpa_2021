@@ -25,7 +25,7 @@ class TransformationMetadata(CopyToTable):
     csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
 
     def requires(self):
-        return TransformationUnitTest(ingest_type=self.ingest_type, bucket=self.bucket)
+        return TransformationUnitTest(ingest_type=self.ingest_type, bucket=self.bucket) ##_
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
