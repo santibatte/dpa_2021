@@ -10,7 +10,8 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.pipeline.luigi.save_s3 import S3Task
+
+from src.pipeline.luigi.e_saves3_test import SaveS3UnitTest ##
 
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
 
@@ -26,7 +27,7 @@ class SaveS3Metadata(CopyToTable):
     csv_local_file = "src/pipeline/luigi/luigi_tmp_files/saveS3_metadata.csv"
 
     def requires(self):
-        return S3Task(ingest_type=self.ingest_type, bucket=self.bucket)
+        return SaveS3UnitTest(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
@@ -50,3 +51,4 @@ class SaveS3Metadata(CopyToTable):
 
         for element in reader.itertuples(index=False):
             yield element
+
