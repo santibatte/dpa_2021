@@ -1,5 +1,6 @@
 
-from luigi.contrib.postgres import CopyToTable
+
+from luigi.contrib.postgres import CopyToTable ##
 
 import pandas as pd
 import luigi
@@ -10,22 +11,26 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.pipeline.luigi.transform import Transformation
+## Cambiar, aqui se importara de Unit test
+from src.pipeline.luigi.b_extract_test import ExtractUnitTest
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_metadata.csv"
 
-class TransformationMetadata(CopyToTable):
+class ExtractMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
-    bucket = luigi.Parameter()
+    #bucket = luigi.Parameter()
 
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
-    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/transformation_metadata.csv"
+    csv_local_file = "src/pipeline/luigi/luigi_tmp_files/extract_metadata.csv"
+
+
 
     def requires(self):
-        return Transformation(ingest_type=self.ingest_type, bucket=self.bucket)
+
+        return ExtractUnitTest(self.ingest_type)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
@@ -34,13 +39,16 @@ class TransformationMetadata(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_metadata.transformation'
+    table = 'dpa_metadata.extract'
 
 
 ## ADAPTAR al numero de columnas correctas
-    columns = [("execution_date", "VARCHAR"),
-               ("number_of_transformations", "VARCHAR"),
-               ("new_columns", "VARCHAR")]
+    columns = [("extraction_time", "VARCHAR"),
+               ("raw_cols_deleted", "VARCHAR"),
+               ("raw_cols_left", "VARCHAR")]
+
+
+
 
 
     def rows(self):
@@ -48,3 +56,4 @@ class TransformationMetadata(CopyToTable):
 
         for element in reader.itertuples(index=False):
             yield element
+

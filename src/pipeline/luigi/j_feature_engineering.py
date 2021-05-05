@@ -8,14 +8,9 @@ import pickle
 
 ## Local application imports
 
-from src.pipeline.luigi.transform_metadata import TransformationMetadata
+from src.pipeline.luigi.i_transform_metadata import TransformationMetadata
 
 from src.pipeline.feature_engineering import feature_engineering
-from src.utils.params_gen import (
-    transformation_pickle_loc,
-    fe_pickle_loc_imp_features,
-    fe_pickle_loc_feature_labs,
-)
 
 from src.utils.utils import (
     get_s3_resource,
@@ -29,8 +24,7 @@ from src.utils.params_gen import (
     metadata_dir_loc,
 
     transformation_pickle_loc,
-    fe_pickle_loc_imp_features,
-    fe_pickle_loc_feature_labs,
+    fe_results_pickle_loc,
     today_info,
 
     fe_metadata_csv_name,
@@ -52,27 +46,19 @@ class FeatureEngineering(luigi.Task):
 
     def run(self):
 
-        ## makes feature engeneering from transformed data
-
-        #Reads from local computer
-        # feature_engineering_luigi = pickle.dumps(feature_engineering(transformation_pickle_loc,\
-        #fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
-        ## Storing object in s3
         s3 = get_s3_resource()
 
-        ##  s3.get(s3_path, destination_local_path)
-        ## Read from S3 instead of local computer
         transformation_pickle_loc_s3 = 'transformation/transformation_' + today_info + '.pkl'
 
         feature_engineering_luigi = s3.get_object(Bucket=self.bucket, Key=transformation_pickle_loc_s3)
 
         df_pre_fe = pickle.loads(feature_engineering_luigi['Body'].read())
 
-        df_post_fe = feature_engineering(df_pre_fe, fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
+        df_post_fe = feature_engineering(df_pre_fe, fe_results_pickle_loc)
 
-        df_fe_pickle = pickle.dumps(df_post_fe)
+        fe_results_dict = pickle.dumps(df_post_fe)
 
-        s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=df_fe_pickle)
+        s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=fe_results_dict)
 
 
     ## Output: uploading data to s3 path
@@ -90,3 +76,4 @@ class FeatureEngineering(luigi.Task):
         output_path = output_path_start + 'feature_engineering_' +  today_info +'.pkl'
 
         return luigi.contrib.s3.S3Target(output_path, client=client)
+
