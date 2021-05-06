@@ -1,4 +1,3 @@
-
 from luigi.contrib.postgres import CopyToTable
 
 import pandas as pd
@@ -6,16 +5,15 @@ import luigi
 import psycopg2
 
 
-from src.pipeline.luigi.p_model_selection import ModelSelection
-
 from src.utils.utils import (
     get_postgres_credentials
 )
 
+from src.pipeline.luigi.q_model_selection_test import ModelSelectionUnitTest
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/model_selection_unittest.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/model_selection_metadata.csv"
 
-class ModelSelectionUnitTest(CopyToTable): ##
+class ModelSelectionMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
@@ -25,28 +23,28 @@ class ModelSelectionUnitTest(CopyToTable): ##
 
 
     def requires(self):
-        return ModelSelection(ingest_type=self.ingest_type, bucket=self.bucket)
-
+        return ModelSelectionUnitTest(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
-
 
     user = credentials['user']
     password = credentials['pass']
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_unittest.model_selection'
+    table = 'dpa_metadata.model_selection'
 
-    columns = [("Date", "VARCHAR"),
-               ("Result", "VARCHAR")]
 
-               
+    ## Metadata columns saved in RDS file
+    columns = [("execution_time", "VARCHAR"),
+               ("training_score", "VARCHAR"),
+               ("selected_model", "VARCHAR")]
+
+
+
     def rows(self):
         reader = pd.read_csv(csv_local_file, header=None)
 
         for element in reader.itertuples(index=False):
             yield element
-        if "FAILED" in reader[1][1]:
-            raise TypeError("FAILED, your best score does not pass the threshold")
 

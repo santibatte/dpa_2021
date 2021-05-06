@@ -49,3 +49,4 @@ class TransformationUnitTest(CopyToTable):
 
         if "FAILED" in reader[1][1]:
             raise TypeError("FAILED, some columns are missing")
+
