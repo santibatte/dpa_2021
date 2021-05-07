@@ -304,7 +304,7 @@ def create_reference_group(df):
     returns a df with new column zip_income_classification which can be used as a reference group in aequitas analysis
     """
 
-    zip_food_list=list(df['Zip'])
+    zip_food_list=list(df['zip'])
 
     classification_food = []
 
@@ -318,11 +318,11 @@ def create_reference_group(df):
         else:
             classification_food.append('Other')
 
-    df['Zip_income_classification'] = classification_food
+    df['zip-income-class'] = classification_food
 
 
     ## Updating data creation dictionary to new column
-    update_created_dict("Zip_income_classification", relevant=True, feature_type="categoric", model_relevant=True)
+    update_created_dict("zip-income-class", relevant=True, feature_type="categoric", model_relevant=True)
 
 
     ## Updating transformation counts

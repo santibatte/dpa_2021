@@ -67,7 +67,7 @@ data_dict = {
         "model_relevant": False
     },
     "zip": {
-        "relevant": False,
+        "relevant": True,
         "feature_type": "categoric",
         "data_type": "string",
         "model_relevant": False
