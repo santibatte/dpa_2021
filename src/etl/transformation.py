@@ -421,8 +421,8 @@ def transform(df, transformation_pickle_loc):
     df_meta.set_index(transformation_metadata_index, inplace=True)
     write_csv_from_df(df_meta, metadata_dir_loc, trans_metadata_csv_name)
 
-    #### Running unit test with marbles
 
+    ## Running unit test with marbles
     class TestTransform(marbles.core.TestCase):
         def test_transformation(self):
             self.assertEqual(df.shape[1], 8, note='Oops, DataFrame columns are missing!')
@@ -449,7 +449,10 @@ def transform(df, transformation_pickle_loc):
 
     res_df.to_csv(tests_dir_loc + 'transform_unittest.csv', index=False)
 
+
+    ## Printing flag message about execution
     print("\n** Transformation module successfully executed **\n")
+
 
     return df
 
