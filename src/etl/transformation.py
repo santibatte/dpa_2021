@@ -321,6 +321,15 @@ def create_reference_group(df):
     df['Zip_income_classification'] = classification_food
 
 
+    ## Updating data creation dictionary to new column
+    update_created_dict("Zip_income_classification", relevant=True, feature_type="categoric", model_relevant=True)
+
+
+    ## Updating transformation counts
+    global trans_count
+    trans_count += 1
+
+
     return df
 
 
@@ -384,6 +393,9 @@ def transform(df, transformation_pickle_loc):
 
     #### Adding column of serious violations (transformation)
     df = serious_viols_col(df)
+
+    #### Adding column with zip classification
+    df = create_reference_group(df)
 
     #### Reducing the number of categories in data (transformation)
     df = category_reductions(df)
