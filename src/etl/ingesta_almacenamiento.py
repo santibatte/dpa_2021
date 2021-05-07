@@ -331,7 +331,7 @@ def clean_col_names(dataframe):
     ## Definition of cleaning funcitons that will be applied to the columns' names
     fun1 = lambda x: re.sub('[^a-zA-Z0-9 \n\.]', '-', x.lower()) ## change special characters for "-"
     fun2 = lambda x: unicodedata.normalize("NFD", x).encode("ascii", "ignore").decode("utf-8") ## substitute accents for normal letters
-    fun3 = lambda x: re.sub(' ', '_', x.lower()) ## change spaces for "_"
+    fun3 = lambda x: re.sub(' ', '-', x.lower()) ## change spaces for "_"
 
     funcs = [fun1, fun2, fun3]
 
