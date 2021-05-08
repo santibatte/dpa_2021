@@ -31,6 +31,9 @@ from src.utils.params_gen import (
 )
 
 
+
+
+
 class BiasFairness(luigi.Task):
 
     #### Bucket where all ingestions will be stored in AWS S3
@@ -46,23 +49,32 @@ class BiasFairness(luigi.Task):
 
     def run(self):
 
-
+        ## Establishing connection with S3
         s3 = get_s3_resource()
 
-        #Load Best Model :
-        model_selection_pickle_loc_s3 = 'model_selection/model_selection_' + today_info + '.pkl'
 
-        model_selection_luigi = s3.get_object(Bucket=self.bucket, Key=model_selection_pickle_loc_s3)
+        ## Building aequitas dataframe based on previous models results
 
-        #Load best model we need for predict proba
-        best_model = pickle.loads(model_selection_luigi['Body'].read())
+        #### (Models training results) - building initial df with unique IDs and real test labels
+        mt_results_s3_pth = 'trained_models/trained_models_' + today_info + '.pkl'
+        mt_results_pkl = s3.get_object(Bucket=self.bucket, Key=mt_results_s3_pth)
+        mt_results = pickle.loads(mt_results_pkl['Body'].read())
+        df_aeq = mt_results["test_labels"].to_frame()
+        df_aeq.rename(columns={"label": "test_real_labels"}, inplace=True)
 
-        ## Load S3 FE data frame in order to do bias fairness
-        fe_pickle_loc_s3 = 'feature_engineering/feature_engineering_' + today_info + '.pkl'
+        #### (Model selection results) - adding labels predicted by best model
+        ms_results_s3_pth = 'model_selection/selected_model_' + today_info + '.pkl'
+        ms_results_pkl = s3.get_object(Bucket=self.bucket, Key=ms_results_s3_pth)
+        ms_results = pickle.loads(ms_results_pkl['Body'].read())
+        df_aeq["model_test_predict_labels"] = ms_results["model_test_predict_labels"]
 
-        fe_results_pkl = s3.get_object(Bucket=self.bucket, Key=fe_pickle_loc_s3)
-
-        fe_results_dict = pickle.loads(fe_results_pkl['Body'].read())
+        #### (Transformation results) - adding zip and reference group
+        tr_results_s3_pth = 'transformation/transformation_' + today_info + '.pkl'
+        tr_results_pkl = s3.get_object(Bucket=self.bucket, Key=tr_results_s3_pth)
+        tr_results = pickle.loads(tr_results_pkl['Body'].read())
+        rc = ["zip", "zip-income-class"]
+        tr_results = tr_results.loc[:, rc]
+        df_aeq = df_aeq.join(tr_results, how="inner")
 
 
         ## Do Bias_fairness and save results:
