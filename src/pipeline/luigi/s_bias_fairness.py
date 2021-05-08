@@ -22,12 +22,9 @@ from src.utils.utils import (
 from src.utils.params_gen import (
     metadata_dir_loc,
 
-    transformation_pickle_loc,
-    fe_pickle_loc_imp_features,
-    fe_pickle_loc_feature_labs,
     today_info,
 
-    fe_metadata_csv_name,
+    aq_results_pickle_loc,
 )
 
 
@@ -79,18 +76,18 @@ class BiasFairness(luigi.Task):
 
         ## Do Bias_fairness and save results:
 
-        bias_fairness =  best_model # We should delete "best_model" and call bias_fairness main function here
+        # bias_fairness =  best_model # We should delete "best_model" and call bias_fairness main function here
 
-        bias_fairness_pickle = pickle.dumps(bias_fairness)
+        pickle.dump(df_aeq, open(aq_results_pickle_loc, "wb"))
+        aq_pickle = pickle.dumps(df_aeq)
 
-
-        s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=bias_fairness_pickle)
+        s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=aq_pickle)
 
 
     ## Output: uploading data to s3 path
     def output(self):
 
-        ## Conecting to AWS using luigi
+        ## Connecting to AWS using luigi
         client = get_s3_resource_luigi()
 
         ## Define the path where the ingestion will be stored in s3
