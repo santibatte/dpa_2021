@@ -425,7 +425,7 @@ def transform(df, transformation_pickle_loc):
     ## Running unit test with marbles
     class TestTransform(marbles.core.TestCase):
         def test_transformation(self):
-            self.assertEqual(df.shape[1], 8, note='Oops, DataFrame columns are missing!')
+            self.assertEqual(df.shape[1], 10, note='Oops, DataFrame columns are missing!')
 
     stream = StringIO()
     runner = unittest.TextTestRunner(stream=stream)
