@@ -44,9 +44,12 @@ from src.utils.utils import (
     load_df
 )
 
-from src.utils.params import (
-    data_path,
-    aequitas_df_pickle_loc
+from src.utils.params_gen import (
+    metadata_dir_loc,
+    tests_dir_loc,
+    aq_metadata,
+    aq_metadata_index,
+    aq_metadata_csv_name,
 )
 
 
@@ -158,6 +161,11 @@ def bias_fairness(aequitas_df_pickle_loc):
          -
     """
 
+
+    ## Storing time execution metadata
+    aq_metadata[aq_metadata_index] = str(datetime.now())
+
+
     df_aeq = load_selected_model_results(aequitas_df_pickle_loc)
     df_aeq = prep_data(df_aeq)
     df_aeq = df_aeq.rename(columns = {'folio':'entity_id','label': 'label_value'}, inplace = False)
@@ -181,6 +189,18 @@ def bias_fairness(aequitas_df_pickle_loc):
     df = bias(df_aeq, xtab)
 
     # df=fairness(df)
+
+
+    ## Saving relevant module metadata
+
+    # #### Model selected metadata
+    # aq_metadata["selected_model"] = str(best_model)
+
+    #### Converting metadata into dataframe and saving locally
+    df_meta = pd.DataFrame.from_dict(aq_metadata, orient="index").T
+    df_meta.set_index(aq_metadata_index, inplace=True)
+    write_csv_from_df(df_meta, metadata_dir_loc, aq_metadata_csv_name)
+
 
     print("\n** Aequitas module successfully executed **\n")
 
