@@ -319,6 +319,24 @@ def path_file_fn(ingest_type):
 #############################
 
 
+## Set the unique call identifier as index
+def set_index(df):
+    """
+    Set the unique call identifier as index
+        args:
+            df (dataframe): df whose index will be asigned.
+        returns:
+            df (dataframe): df with correct index.
+    """
+
+    ## Selection the if feature based on data dict and setting it as index.
+    id_feature = [key for key in data_dict if "id_feature" in data_dict[key]][0]
+    df.set_index(id_feature, inplace=True, drop=False)
+
+    return df
+
+
+
 ## Transform columns' names to standard format
 def clean_col_names(dataframe):
     """
@@ -449,6 +467,9 @@ def initial_cleaning(data):
 
     ## Cleaning names of columns
     dfx = clean_col_names(dfx)
+
+    ## Set the inspection ID as index
+    dfx = set_index(dfx)
 
     ## Eliminating unused columns
     dfx = drop_cols(dfx)
