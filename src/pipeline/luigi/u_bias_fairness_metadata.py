@@ -11,7 +11,7 @@ from src.utils.utils import (
 
 from src.pipeline.luigi.t_bias_fairness_test import BiasFairnessUnitTest
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/bias_fairness_metadata.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/aequitas_metadata.csv"
 
 class BiasFairnessMetadata(CopyToTable):
 
