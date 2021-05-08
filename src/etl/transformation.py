@@ -60,6 +60,10 @@ from src.utils.params_gen import (
 
     regex_violations,
     serious_viols,
+
+    high_income_zip_codes,
+    medium_income_zip_codes,
+    low_income_zip_codes,
 )
 
 
@@ -293,6 +297,43 @@ def serious_viols_col(df):
 
 
 
+## Creating new column zip codes classified by income level
+def create_reference_group(df):
+    """
+    df a df with zip code
+    returns a df with new column zip_income_classification which can be used as a reference group in aequitas analysis
+    """
+
+    zip_food_list=list(df['zip'])
+
+    classification_food = []
+
+    for val in zip_food_list:
+        if val in high_income_zip_codes:
+            classification_food.append('High')
+        elif val in medium_income_zip_codes:
+            classification_food.append('Medium')
+        elif val in low_income_zip_codes:
+            classification_food.append('Low')
+        else:
+            classification_food.append('Other')
+
+    df['zip-income-class'] = classification_food
+
+
+    ## Updating data creation dictionary to new column
+    update_created_dict("zip-income-class", relevant=True, feature_type="categoric", model_relevant=True)
+
+
+    ## Updating transformation counts
+    global trans_count
+    trans_count += 1
+
+
+    return df
+
+
+
 ## Reducing the number of categories in selected columns
 def category_reductions(df):
     """
@@ -353,6 +394,9 @@ def transform(df, transformation_pickle_loc):
     #### Adding column of serious violations (transformation)
     df = serious_viols_col(df)
 
+    #### Adding column with zip classification
+    df = create_reference_group(df)
+
     #### Reducing the number of categories in data (transformation)
     df = category_reductions(df)
 
@@ -377,8 +421,8 @@ def transform(df, transformation_pickle_loc):
     df_meta.set_index(transformation_metadata_index, inplace=True)
     write_csv_from_df(df_meta, metadata_dir_loc, trans_metadata_csv_name)
 
-    #### Running unit test with marbles
 
+    ## Running unit test with marbles
     class TestTransform(marbles.core.TestCase):
         def test_transformation(self):
             self.assertEqual(df.shape[1], 8, note='Oops, DataFrame columns are missing!')
@@ -405,7 +449,10 @@ def transform(df, transformation_pickle_loc):
 
     res_df.to_csv(tests_dir_loc + 'transform_unittest.csv', index=False)
 
+
+    ## Printing flag message about execution
     print("\n** Transformation module successfully executed **\n")
+
 
     return df
 

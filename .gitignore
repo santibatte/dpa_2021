@@ -18,6 +18,7 @@ __pycache__
 data/ingestion/
 data/raw/
 *.pkl
+luigi_tmp_files/
 
 
 ## Pycharm
@@ -26,3 +27,7 @@ data/raw/
 
 ## Rob's files
 _robdir/*.csv
+
+
+## Log file
+log_file.txt
