@@ -79,9 +79,12 @@ ms_metadata = {}
 ms_metadata_index = "ing_time_exec"
 ms_metadata_csv_name = "model_selection_metadata.csv"
 
-## Model evaluation
+## Model evaluation - aequitas (bias and fairness) and predictive performance
 metrics_report_pickle_loc = "data/pickles/metrics_report.pkl"
-aequitas_df_pickle_loc = "data/pickles/aequitas_df.pkl"
+aq_results_pickle_loc = "data/pickles/aequitas.pkl"
+aq_metadata = {}
+aq_metadata_index = "ing_time_exec"
+aq_metadata_csv_name = "aequitas_metadata.csv"
 
 
 
