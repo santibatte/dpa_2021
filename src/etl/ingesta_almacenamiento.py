@@ -62,6 +62,7 @@ from src.utils.utils import (
 from src.utils.data_dict import data_dict
 
 from src.utils.params_gen import (
+    ingestion_pickle_loc,
     metadata_dir_loc,
     tests_dir_loc,
     bucket_name,
@@ -493,12 +494,17 @@ def ingest(df):
     #### Receiving extraction
     df = initial_cleaning(df)
 
+    #### Saving result as pickle
+    pickle.dump(df, open(ingestion_pickle_loc, "wb"))
+
+
     ## Converting metadata into dataframe and saving locally
     df_meta = pd.DataFrame.from_dict(extract_metadata, orient="index").T
     df_meta.set_index(extract_metadata_index, inplace=True)
     write_csv_from_df(df_meta, metadata_dir_loc, extract_metadata_csv_name)
 
-    #### Running unit test
+
+    ## Running unit test
     class TestExtract(marbles.core.TestCase):
         def test_empty_df(self):
             self.assertNotEqual(df.shape, [0, 0], note="Your dataframe is empty")
@@ -525,6 +531,7 @@ def ingest(df):
     res_df = pd.DataFrame(res, columns=['Date', 'Result'])
 
     res_df.to_csv(tests_dir_loc + 'extract_unittest.csv', index=False)
+
 
     ## Success message
     print("\n** Ingestion module successfully executed **\n")
