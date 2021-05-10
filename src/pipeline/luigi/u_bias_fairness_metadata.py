@@ -32,7 +32,7 @@ class BiasFairnessMetadata(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_metadata.model_selection'
+    table = 'dpa_metadata.bias_fariness'
 
 
     ## Metadata columns saved in RDS file

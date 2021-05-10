@@ -35,7 +35,7 @@ class BiasFairnessUnitTest(CopyToTable): ##
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_unittest.model_selection'
+    table = 'dpa_unittest.bias_fairness'
 
     columns = [("XXXX", "VARCHAR"),
                ("XXXX_2", "VARCHAR")]
