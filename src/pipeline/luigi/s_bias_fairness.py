@@ -20,13 +20,8 @@ from src.utils.utils import (
 
 
 from src.utils.params_gen import (
-    metadata_dir_loc,
-    transformation_pickle_loc,
-    #fe_pickle_loc_imp_features,
-    fe_pickle_loc_feature_labs,
-    today_info,
-    fe_metadata_csv_name,
-)
+    today_info
+    )
 
 
 class BiasFairness(luigi.Task):
