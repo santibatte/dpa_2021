@@ -43,7 +43,7 @@ class BiasFairness(luigi.Task):
         s3 = get_s3_resource()
 
         #Load Best Model :
-        model_selection_pickle_loc_s3 = 'model_selection/model_selection_' + today_info + '.pkl'
+        model_selection_pickle_loc_s3 = 'model_selection/selected_model_' + today_info + '.pkl'
 
         model_selection_luigi = s3.get_object(Bucket=self.bucket, Key=model_selection_pickle_loc_s3)
 
