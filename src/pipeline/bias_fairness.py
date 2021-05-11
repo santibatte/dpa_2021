@@ -41,30 +41,6 @@ from src.utils.utils import write_csv_from_df
 
 
 "------------------------------------------------------------------------------"
-#################################
-## Generic ancillary functions ##
-#################################
-
-
-##
-def load_selected_model_results(path):
-    """
-    ...
-        args:
-            path (string): ...
-        returns:
-            -
-    """
-
-    df = load_df(path)
-
-    return df
-
-
-
-
-
-"------------------------------------------------------------------------------"
 ##################################
 ## Aeaquitas analysis functions ##
 ##################################
@@ -161,7 +137,6 @@ def bias_fairness(df_aeq):
     aq_metadata[aq_metadata_index] = str(datetime.now())
 
 
-    df_aeq = load_selected_model_results(aequitas_df_pickle_loc)
     df_aeq = prep_data(df_aeq)
     df_aeq = df_aeq.rename(columns = {'folio':'entity_id','label': 'label_value'}, inplace = False)
 
