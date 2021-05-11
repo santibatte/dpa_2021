@@ -36,8 +36,10 @@ class BiasFairnessMetadata(CopyToTable):
 
 
     ## Metadata columns saved in RDS file
-    columns = [("XXXX", "VARCHAR"),
-               ("XXXX_2", "VARCHAR")]
+    columns = [("execution_time", "VARCHAR"),
+               ("v_group", "VARCHAR"),
+               ("FOR_p", "VARCHAR"),
+               ("FNR_p", "VARCHAR")]
 
 
 
