@@ -84,7 +84,7 @@ class BiasFairness(luigi.Task):
         }, inplace=True)
 
         #### Converting index "inspection-id" to column
-        df_aeq.reset_index(inplace=True)
+        df_aeq.reset_index(inplace=True, drop=True)
 
 
         ## Running unit test
