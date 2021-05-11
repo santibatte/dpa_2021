@@ -8,29 +8,9 @@
 #############
 ## Imports ##
 #############
-
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.preprocessing import (
-    OneHotEncoder,
-    StandardScaler
-)
 import pandas as pd
 import numpy as np
-import seaborn as sns
 import sys
-
-
-## separando en train, test
-from sklearn.model_selection import train_test_split
-## Configuración del RF
-from sklearn.model_selection import GridSearchCV
-from sklearn.ensemble import RandomForestClassifier
-import time
-from sklearn.preprocessing import StandardScaler, OneHotEncoder, KBinsDiscretizer
-from sklearn.impute import SimpleImputer
-from sklearn.compose import ColumnTransformer
-import matplotlib.pyplot as plt
 import random
 import pickle
 
@@ -39,6 +19,7 @@ from aequitas.group import Group
 from aequitas.bias import Bias
 from aequitas.fairness import Fairness
 from aequitas.plotting import Plot
+
 
 from src.utils.utils import (
     load_df
@@ -114,35 +95,36 @@ def bias(df_aeq, xtab):
          -
     """
     bias = Bias()
-    bdf = bias.get_disparity_predefined_groups(xtab,
-                                               original_df=df_aeq,
-                                        ref_groups_dict={'delegacion_inicio':'IZTAPALAPA'},
-                                        alpha=0.05, check_significance=True,
+    bdf = bias.get_disparity_predefined_groups(xtab, original_df=df_aeq,
+                                               ref_groups_dict={'zip_fake': 'High'},
+                                               alpha=0.05, check_significance=True,
                                         mask_significance=True)
-    bdf[['attribute_name', 'attribute_value'] + bias.list_disparities(bdf)].round(2)
+    disparities=bdf[['attribute_name', 'attribute_value'] + bias.list_disparities(bdf)].round(2)
 
 
 
-def fairness(df):
+def fairness(bdf):
     """
      args:
          df (dataframe): Recibe el data frame que tiene los features sobre los que queremos medir la equidad.
      returns:
          -
     """
+    fair = Fairness()
+    fdf = fair.get_group_value_fairness(bdf)
 
+    fdf[['attribute_name', 'attribute_value'] + absolute_metrics +
+    bias.list_disparities(fdf) + parity_determinations].round(2)
 
-
-
-def prep_data(dfx):
+#def prep_data(dfx):
     #Load original dataframe with features
-    df_o = pd.read_csv(data_path)
+    #df_o = pd.read_csv(data_path)
     #df_o = pd.read_csv("../../" + "data/incidentes-viales-c5.csv")
-    df_o.drop(df_o[df_o.delegacion_inicio.isnull()].index, inplace = True)
-    df_aeq=pd.merge(dfx, df_o, on='folio', how='left')
-    df_aeq=df_aeq.loc[:, ['folio','label','score','delegacion_inicio']]
+    #df_o.drop(df_o[df_o.delegacion_inicio.isnull()].index, inplace = True)
+    #df_aeq=pd.merge(dfx, df_o, on='folio', how='left')
+    #df_aeq=df_aeq.loc[:, ['folio','label','score','delegacion_inicio']]
 
-    return df_aeq
+    #return df_aeq
 
 
 
@@ -153,7 +135,7 @@ def prep_data(dfx):
 ## Aequitas analisis main function ##
 #####################################
 
-def bias_fairness(aequitas_df_pickle_loc):
+def bias_fairness(df_aeq):
     """
      args:
          df (dataframe): dataframes that will be analyzed by Aequitas according to the selected model.
@@ -170,22 +152,9 @@ def bias_fairness(aequitas_df_pickle_loc):
     df_aeq = prep_data(df_aeq)
     df_aeq = df_aeq.rename(columns = {'folio':'entity_id','label': 'label_value'}, inplace = False)
 
-    by_del = sns.countplot(x="delegacion_inicio", hue="label_value",
-                            data=df_aeq[df_aeq.delegacion_inicio.isin(['COYOACAN', 'GUSTAVO A. MADERO', 'IZTAPALAPA', 'TLAHUAC',
-           'MIGUEL HIDALGO', 'CUAUHTEMOC', 'CUAJIMALPA', 'ALVARO OBREGON',
-           'BENITO JUAREZ', 'TLALPAN', 'VENUSTIANO CARRANZA', 'IZTACALCO',
-           'XOCHIMILCO', 'MAGDALENA CONTRERAS', 'AZCAPOTZALCO', 'MILPA ALTA'])])
-    # l=plt.setp(by_del.get_xticklabels(), rotation=90)
 
-    by_del = sns.countplot(x="delegacion_inicio", hue="score",
-                            data=df_aeq[df_aeq.delegacion_inicio.isin(['COYOACAN', 'GUSTAVO A. MADERO', 'IZTAPALAPA', 'TLAHUAC',
-           'MIGUEL HIDALGO', 'CUAUHTEMOC', 'CUAJIMALPA', 'ALVARO OBREGON',
-           'BENITO JUAREZ', 'TLALPAN', 'VENUSTIANO CARRANZA', 'IZTACALCO',
-           'XOCHIMILCO', 'MAGDALENA CONTRERAS', 'AZCAPOTZALCO', 'MILPA ALTA'])])
-    # l=plt.setp(by_del.get_xticklabels(), rotation=90)
 
     xtab, conteos_grupo, metricas_absolutas = group(df_aeq)
-
     df = bias(df_aeq, xtab)
 
     # df=fairness(df)

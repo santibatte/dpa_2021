@@ -304,21 +304,21 @@ def create_reference_group(df):
     returns a df with new column zip_income_classification which can be used as a reference group in aequitas analysis
     """
 
-    zip_food_list=list(df['zip'])
+    ## Masks to filter with conditioni
+    mr1 = df["zip"].isin(list(map(str, low_income_zip_codes)))
+    mr2 = df["zip"].isin(list(map(str, medium_income_zip_codes)))
+    mr3 = df["zip"].isin(list(map(str, high_income_zip_codes)))
 
-    classification_food = []
 
-    for val in zip_food_list:
-        if val in high_income_zip_codes:
-            classification_food.append('High')
-        elif val in medium_income_zip_codes:
-            classification_food.append('Medium')
-        elif val in low_income_zip_codes:
-            classification_food.append('Low')
-        else:
-            classification_food.append('Other')
+    ## Column with classification
 
-    df['zip-income-class'] = classification_food
+    #### Creating of column with default value
+    df['zip-income-class'] = "Other"
+
+    #### Populating columns based on classification
+    df.loc[mr1, "zip-income-class"] = "Low"
+    df.loc[mr2, "zip-income-class"] = "Medium"
+    df.loc[mr3, "zip-income-class"] = "High"
 
 
     ## Updating data creation dictionary to new column
