@@ -3,6 +3,7 @@
 import luigi
 import luigi.contrib.s3
 import pickle
+import pandas as pd
 
 ## Testing imports
 import unittest
@@ -48,6 +49,7 @@ class BiasFairness(luigi.Task):
         return ModelSelectionMetadata(ingest_type=self.ingest_type, bucket=self.bucket)
 
 
+
     def run(self):
 
         ## Establishing connection with S3
@@ -61,27 +63,35 @@ class BiasFairness(luigi.Task):
         mt_results_pkl = s3.get_object(Bucket=self.bucket, Key=mt_results_s3_pth)
         mt_results = pickle.loads(mt_results_pkl['Body'].read())
         df_aeq = mt_results["test_labels"].to_frame()
-        df_aeq.rename(columns={"label": "test_real_labels"}, inplace=True)
 
         #### (Model selection results) - adding labels predicted by best model
         ms_results_s3_pth = 'model_selection/selected_model_' + today_info + '.pkl'
         ms_results_pkl = s3.get_object(Bucket=self.bucket, Key=ms_results_s3_pth)
         ms_results = pickle.loads(ms_results_pkl['Body'].read())
-        df_aeq["model_test_predict_labels"] = ms_results["model_test_predict_labels"]
+        df_aeq["score"] = ms_results["model_test_predict_labels"]
 
         #### (Transformation results) - adding zip and reference group
         tr_results_s3_pth = 'transformation/transformation_' + today_info + '.pkl'
         tr_results_pkl = s3.get_object(Bucket=self.bucket, Key=tr_results_s3_pth)
         tr_results = pickle.loads(tr_results_pkl['Body'].read())
-        rc = ["zip", "zip-income-class"]
-        tr_results = tr_results.loc[:, rc]
-        df_aeq = df_aeq.join(tr_results, how="inner")
+        df_aeq = df_aeq.join(tr_results.loc[:, ["risk"]], how="inner")
 
-        #### Running unit test
+        #### Renaming columns for aequitas analysis
+        df_aeq.rename(columns={
+            "label": "label_value",
+            "model_test_predict_labels": "score",
+            "risk": "reference_group"
+        }, inplace=True)
+
+        #### Converting index "inspection-id" to column
+        df_aeq.reset_index(inplace=True)
+
+
+        ## Running unit test
         class TestBiasFairness(marbles.core.TestCase):
             def test_df_aeq(self):
                 columns_names = df_aeq.columns.values
-                df_expected_names=['label_value', 'score','reference_group']
+                df_expected_names=['label_value', 'score', 'reference_group']
                 self.assertEqual(columns_names, df_expected_names, note='Oops, columns are missing!')
 
         stream = StringIO()
@@ -117,6 +127,7 @@ class BiasFairness(luigi.Task):
         aq_pickle = pickle.dumps(df_aeq)
 
         s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=aq_pickle)
+
 
 
     ## Output: uploading data to s3 path
