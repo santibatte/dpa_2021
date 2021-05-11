@@ -24,7 +24,7 @@ from src.utils.utils import (
     write_csv_from_df,
 )
 
-
+from src.pipeline.bias_fairness import (bias_fairness)
 from src.utils.params_gen import (
     metadata_dir_loc,
     tests_dir_loc,
@@ -114,17 +114,17 @@ class BiasFairness(luigi.Task):
 
         res_df = pd.DataFrame(res, columns=['Date', 'Result'])
 
-        res_df.to_csv(tests_dir_loc + 'feature_engineering_unittest.csv', index=False)
+        res_df.to_csv(tests_dir_loc + 'bias_fairness_unittest.csv', index=False)
 
 
 
 
         ## Do Bias_fairness and save results:
 
-        # bias_fairness =  best_model # We should delete "best_model" and call bias_fairness main function here
+        aeq_results_dict=bias_fairness(df_aeq)
 
-        pickle.dump(df_aeq, open(aq_results_pickle_loc, "wb"))
-        aq_pickle = pickle.dumps(df_aeq)
+        pickle.dump(aeq_results_dict, open(aq_results_pickle_loc, "wb"))
+        aq_pickle = pickle.dumps(aeq_results_dict)
 
         s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=aq_pickle)
 
