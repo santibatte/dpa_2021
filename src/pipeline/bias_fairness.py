@@ -13,6 +13,7 @@ import numpy as np
 import sys
 import random
 import pickle
+from datetime import (date, datetime)
 
 ## Análisis Aequitas
 from aequitas.group import Group
