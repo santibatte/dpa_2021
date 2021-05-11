@@ -18,6 +18,8 @@ DPA-ITAM, 2021.
 3. [Infrastructure requirements](https://github.com/santibatte/dpa_2021.git#infrastructure-requirements)
 4. [Installation and setup](https://github.com/santibatte/dpa_2021.git#installation-and-setup)
 5. [The Pipeline](https://github.com/santibatte/dpa_2021.git#the-pipeline)
+6. [Aequitas](https://github.com/santibatte/dpa_2021.git#Aequitas)
+
 
 ## Introduction
 
@@ -214,6 +216,9 @@ The pipeline process is organized into the following [Luigi](https://luigi.readt
 * Example: `luigi --module src.pipeline.luigi.r_model_selection_metadata ModelSelectionMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
 
+
+
+
 #### Luigi's DAG Visualization
 
 To see the Luigi Task Visualizer and do the following: 
@@ -257,3 +262,22 @@ This command deletes the table in which luigi saves the information that he has 
 * **Note**: Never delete the consecutive folder, otherwise you will have an error.
 
 Dataset Source: https://data.cityofchicago.org/Health-Human-Services/Food-Inspections/4ijn-s7e5 
+
+
+
+## Aequitas
+
+Bias and Fairness analysis.
+
+It is an assitive model as we want to help restaurants to realize if they would pass an inspection. 
+
+The reference group are the restaurants that are located in richer neighborhoods. We use the zip code of the restaurants to determine in which group they are. 
+The protected Attribute are restaurants located in poorer neighborhood.
+
+The metrics we use are those related to an assistive model: 
+-   Recall Parity
+- FN/GS Parity 
+- FOR Parity 
+- FNR Parity
+
+
