@@ -33,6 +33,8 @@ from src.utils.params_gen import (
     aq_metadata_csv_name,
 )
 
+from src.utils.utils import write_csv_from_df
+
 
 
 
@@ -99,7 +101,11 @@ def bias(df_aeq, xtab):
                                                ref_groups_dict={'zip_fake': 'High'},
                                                alpha=0.05, check_significance=True,
                                         mask_significance=True)
-    disparities=bdf[['attribute_name', 'attribute_value'] + bias.list_disparities(bdf)].round(2)
+
+    ## Storing metadata
+    aq_metadata["value_k"] = list(bdf["k"])[0]
+
+    disparities = bdf[['attribute_name', 'attribute_value'] + bias.list_disparities(bdf)].round(2)
 
 
 
@@ -115,6 +121,12 @@ def fairness(bdf):
 
     fdf[['attribute_name', 'attribute_value'] + absolute_metrics +
     bias.list_disparities(fdf) + parity_determinations].round(2)
+
+
+    ## Storing metadata
+    aq_metadata["v_group"] = str(fdf.iloc[0, "attribute_value"])
+    aq_metadata["FOR_p"] = str(fdf.iloc[0, "FOR Parity"])
+    aq_metadata["FNR_p"] = str(fdf.iloc[0, "FNR Parity"])
 
 #def prep_data(dfx):
     #Load original dataframe with features
@@ -155,9 +167,10 @@ def bias_fairness(df_aeq):
 
 
     xtab, conteos_grupo, metricas_absolutas = group(df_aeq)
+
     df = bias(df_aeq, xtab)
 
-    # df=fairness(df)
+    fairness(df)
 
 
     ## Saving relevant module metadata
