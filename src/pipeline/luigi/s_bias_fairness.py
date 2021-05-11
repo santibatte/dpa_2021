@@ -4,6 +4,11 @@ import luigi
 import luigi.contrib.s3
 import pickle
 
+## Testing imports
+import unittest
+import marbles.core
+from io import StringIO
+from datetime import (date, datetime)
 
 ## Local application imports
 
@@ -21,9 +26,8 @@ from src.utils.utils import (
 
 from src.utils.params_gen import (
     metadata_dir_loc,
-
+    tests_dir_loc,
     today_info,
-
     aq_results_pickle_loc,
 )
 
@@ -72,6 +76,37 @@ class BiasFairness(luigi.Task):
         rc = ["zip", "zip-income-class"]
         tr_results = tr_results.loc[:, rc]
         df_aeq = df_aeq.join(tr_results, how="inner")
+
+        #### Running unit test
+        class TestBiasFairness(marbles.core.TestCase):
+            def test_df_aeq(self):
+                columns_names = df_aeq.columns.values
+                df_expected_names=['label_value', 'score','reference_group']
+                self.assertEqual(columns_names, df_expected_names, note='Oops, columns are missing!')
+
+        stream = StringIO()
+        runner = unittest.TextTestRunner(stream=stream)
+        result = runner.run(unittest.makeSuite(TestBiasFairness))
+
+        suite = unittest.TestLoader().loadTestsFromTestCase(TestBiasFairness)
+
+        with open(tests_dir_loc + 'test_bias_fairness.txt', 'w') as f:
+            unittest.TextTestRunner(stream=f, verbosity=2).run(suite)
+
+        res = []
+        with open(tests_dir_loc + "test_bias_fairness.txt") as fp:
+            lines = fp.readlines()
+            for line in lines:
+                if "FAILED" in line:
+                    res.append([str(datetime.now()), "FAILED, Columns are missing."])
+                if "OK" in line:
+                    res.append([str(datetime.now()), "PASS"])
+
+        res_df = pd.DataFrame(res, columns=['Date', 'Result'])
+
+        res_df.to_csv(tests_dir_loc + 'feature_engineering_unittest.csv', index=False)
+
+
 
 
         ## Do Bias_fairness and save results:
