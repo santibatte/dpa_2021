@@ -80,7 +80,7 @@ class BiasFairness(luigi.Task):
         df_aeq.rename(columns={
             "label": "label_value",
             "model_test_predict_labels": "score",
-            "risk": "reference_group"
+            "zip-income-class": "reference_group"
         }, inplace=True)
 
         #### Converting index "inspection-id" to column
