@@ -21,59 +21,13 @@ from aequitas.fairness import Fairness
 from aequitas.plotting import Plot
 
 
-from src.utils.utils import (
-    load_df,
-    save_df
-)
-
-#from src.utils.params_gen import (
-    #y_test_pickle_loc,
-    #test_predict_scores_pickle_loc,
-    #metrics_report_pickle_loc,
-    #aequitas_df_pickle_loc,
-#)
-
-
-
-from src.utils.utils import write_csv_from_df
-
-
-
-
-
-
-
-"------------------------------------------------------------------------------"
-#################################
-## Generic ancillary functions ##
-#################################
-
-
-##
-def load_selected_model_results(path):
-    """
-    ...
-        args:
-            path (string): ...
-        returns:
-            -
-    """
-
-    df = load_df(path)
-
-    return df
-
-
-
-
-
 "------------------------------------------------------------------------------"
 ##################################
 ## Aeaquitas analysis functions ##
 ##################################
 
 
-def group(df):
+def group(df_aeq):
     """
      args:
          df (dataframe):Recibe el data frame que tiene los features sobre los que queremos medir el sesgo entre los diferentes grupos.
@@ -84,16 +38,14 @@ def group(df):
      # print("Métricas de ")
     #tables
     g = Group()
-    xtab, attrbs = g.get_crosstabs(df)
+    xtab, attrbs = g.get_crosstabs(df_aeq)
     absolute_metrics = g.list_absolute_metrics(xtab)
     conteos_grupo=xtab[[col for col in xtab.columns if col not in absolute_metrics]]
     metricas_absolutas=xtab[['attribute_name', 'attribute_value']+[col for col in xtab.columns if col in absolute_metrics]].round(2)
-
-    return xtab, conteos_grupo,metricas_absolutas
-
+    return xtab,conteos_grupo, metricas_absolutas
 
 
-def bias(df_aeq, xtab):
+def biasf(df_aeq, xtab):
     """
      args:
          df (dataframe): Recibe el data frame que tiene los features sobre los que queremos medir la disparidad
@@ -102,14 +54,22 @@ def bias(df_aeq, xtab):
     """
     bias = Bias()
     bdf = bias.get_disparity_predefined_groups(xtab, original_df=df_aeq,
-                                               ref_groups_dict={'zip_fake': 'High'},
+                                               ref_groups_dict={'reference_group': 'High'},
                                                alpha=0.05, check_significance=True,
-                                        mask_significance=True)
-    disparities=bdf[['attribute_name', 'attribute_value'] + bias.list_disparities(bdf)].round(2)
+                                               mask_significance=True)
+    disparities = bdf[['attribute_name', 'attribute_value'] + bias.list_disparities(bdf)].round(2)
+
+    majority_bdf = bias.get_disparity_major_group(xtab, original_df=df_aeq)
+    disparities_majority = majority_bdf[
+        ['attribute_name', 'attribute_value'] + bias.list_disparities(majority_bdf)].round(2)
+
+    min_bdf = bias.get_disparity_min_metric(xtab, original_df=df_aeq)
+    disparities_min = min_bdf[['attribute_name', 'attribute_value'] + bias.list_disparities(min_bdf)].round(2)
+
+    return bdf, disparities, disparities_majority, disparities_min
 
 
-
-def fairness(bdf):
+def fairnessf(bdf):
     """
      args:
          df (dataframe): Recibe el data frame que tiene los features sobre los que queremos medir la equidad.
@@ -119,20 +79,14 @@ def fairness(bdf):
     fair = Fairness()
     fdf = fair.get_group_value_fairness(bdf)
 
-    fdf[['attribute_name', 'attribute_value'] + absolute_metrics +
-    bias.list_disparities(fdf) + parity_determinations].round(2)
+    parity_determinations = fair.list_parities(fdf)
+    fairness = fdf[['attribute_name', 'attribute_value'] + absolute_metrics +
+                   bias.list_disparities(fdf) + parity_determinations].round(2)
 
-#def prep_data(dfx):
-    #Load original dataframe with features
-    #df_o = pd.read_csv(data_path)
-    #df_o = pd.read_csv("../../" + "data/incidentes-viales-c5.csv")
-    #df_o.drop(df_o[df_o.delegacion_inicio.isnull()].index, inplace = True)
-    #df_aeq=pd.merge(dfx, df_o, on='folio', how='left')
-    #df_aeq=df_aeq.loc[:, ['folio','label','score','delegacion_inicio']]
+    gaf = fair.get_group_attribute_fairness(fdf)
+    gof = fair.get_overall_fairness(fdf)
 
-    #return df_aeq
-
-
+    return fairness, gaf, gof
 
 
 
@@ -148,17 +102,26 @@ def bias_fairness(df_aeq):
      returns:
          -
     """
+    xtab, conteos_grupo, metricas_absolutas=group(df_aeq)
+    bdf, disparities, disparities_majority, disparities_min=biasf(df_aeq, xtab)
+    fairness, gaf, gof=fairnessf(bdf)
 
+    aeq_results_dict={
+        "xtab_results": xtab,
+        "conteos_grupo_results": conteos_grupo,
+        "metricas_absolutas_results": metricas_absolutas,
+        "bdf_results": bdf,
+        "disparities_results": disparities,
+        "disparities_majority_results": disparities_majority,
+        "disparities_minority_results": disparities_min,
+        "fairness_results": fairness,
+        "gaf_results": gaf,
+        "gof_results": gof,
 
-
-
-    xtab, conteos_grupo, metricas_absolutas = group(df_aeq)
-    df = bias(df_aeq, xtab)
-
-    # df=fairness(df)
+    }
 
     print("\n** Aequitas module successfully executed **\n")
-
+    return aeq_results_dict
 
 
 
