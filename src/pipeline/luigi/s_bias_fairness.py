@@ -74,7 +74,7 @@ class BiasFairness(luigi.Task):
         tr_results_s3_pth = 'transformation/transformation_' + today_info + '.pkl'
         tr_results_pkl = s3.get_object(Bucket=self.bucket, Key=tr_results_s3_pth)
         tr_results = pickle.loads(tr_results_pkl['Body'].read())
-        df_aeq = df_aeq.join(tr_results.loc[:, ["risk"]], how="inner")
+        df_aeq = df_aeq.join(tr_results.loc[:, ["zip-income-class"]], how="inner")
 
         #### Renaming columns for aequitas analysis
         df_aeq.rename(columns={
