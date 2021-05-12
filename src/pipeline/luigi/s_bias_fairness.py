@@ -86,6 +86,10 @@ class BiasFairness(luigi.Task):
         #### Converting index "inspection-id" to column
         df_aeq.reset_index(inplace=True, drop=True)
 
+        print("***********")
+        print(df_aeq.columns)
+        print("***********")
+
 
         ## Running unit test
         class TestBiasFairness(marbles.core.TestCase):
