@@ -145,12 +145,7 @@ def bias_fairness(df_aeq):
     aq_metadata[aq_metadata_index] = str(datetime.now())
 
 
-    df_aeq = prep_data(df_aeq)
-    df_aeq = df_aeq.rename(columns = {'folio':'entity_id','label': 'label_value'}, inplace = False)
-
-
-    df = bias(df_aeq, xtab)
-
+    ## Module results
     aeq_results_dict={
         "xtab_results": xtab,
         "conteos_grupo_results": conteos_grupo,
@@ -164,7 +159,6 @@ def bias_fairness(df_aeq):
         "gof_results": gof,
 
     }
-    # fairness(df)
 
 
     ## Saving relevant module metadata
