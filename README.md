@@ -230,7 +230,7 @@ The pipeline process is organized into the following [Luigi](https://luigi.readt
 ***Task 23.*** `BiasFairnessUnitTest`: generates Aequitas unit test with module `t_bias_fairness_test.py`.
 * Example: `luigi --module src.pipeline.luigi.t_bias_fairness_test BiasFairnessUnitTest --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
-***Task 24.*** `BiasFairnessUnitTest`: generates Aequitas metadata  with module `u_bias_fairness_metadata.py`.
+***Task 24.*** `BiasFairnessMetadata`: generates Aequitas metadata  with module `u_bias_fairness_metadata.py`.
 * Example: `luigi --module src.pipeline.luigi.s_bias_fairness BiasFairnessMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
 
@@ -285,16 +285,19 @@ Dataset Source: https://data.cityofchicago.org/Health-Human-Services/Food-Inspec
 
 Bias and Fairness analysis.
 
-It is an assitive model as we want to help restaurants to realize if they would pass an inspection. 
+It is an assistive model as we want to help restaurants to realize if they would pass an inspection. 
 
 The reference group are the restaurants that are located in richer neighborhoods. We use the zip code of the restaurants to determine in which group they are. 
-The protected Attribute are restaurants located in poorer neighborhood.
+The protected Attribute are restaurants located in poorer neighborhoods.
 
 The metrics we use are those related to an assistive model: 
 - Recall Parity
 - FN/GS Parity 
 - FOR Parity 
 - FNR Parity
+
+We choose these metrics as we want to make sure our model is being particularly accurate with those groups that could be discriminated
+Therefore, we need to quantify disparities among the groups. 
 
 
 
