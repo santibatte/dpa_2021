@@ -11,7 +11,7 @@ from src.utils.utils import (
 
 from src.pipeline.luigi.t_bias_fairness_test import BiasFairnessUnitTest
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/bias_fairness_metadata.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/aequitas_metadata.csv"
 
 class BiasFairnessMetadata(CopyToTable):
 
@@ -32,12 +32,15 @@ class BiasFairnessMetadata(CopyToTable):
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_metadata.bias_fariness'
+    table = 'dpa_metadata.bias_fairness'
 
 
     ## Metadata columns saved in RDS file
-    columns = [("XXXX", "VARCHAR"),
-               ("XXXX_2", "VARCHAR")]
+    columns = [("execution_time", "VARCHAR"),
+               ("value_k", "VARCHAR"),
+               ("v_group", "VARCHAR"),
+               ("FOR_p", "VARCHAR"),
+               ("FNR_p", "VARCHAR")]
 
 
 

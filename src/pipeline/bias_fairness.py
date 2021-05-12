@@ -8,31 +8,12 @@
 #############
 ## Imports ##
 #############
-
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.preprocessing import (
-    OneHotEncoder,
-    StandardScaler
-)
 import pandas as pd
 import numpy as np
-import seaborn as sns
 import sys
-
-
-## separando en train, test
-from sklearn.model_selection import train_test_split
-## Configuración del RF
-from sklearn.model_selection import GridSearchCV
-from sklearn.ensemble import RandomForestClassifier
-import time
-from sklearn.preprocessing import StandardScaler, OneHotEncoder, KBinsDiscretizer
-from sklearn.impute import SimpleImputer
-from sklearn.compose import ColumnTransformer
-import matplotlib.pyplot as plt
 import random
 import pickle
+from datetime import (date, datetime)
 
 ## Análisis Aequitas
 from aequitas.group import Group
@@ -40,38 +21,16 @@ from aequitas.bias import Bias
 from aequitas.fairness import Fairness
 from aequitas.plotting import Plot
 
-from src.utils.utils import (
-    load_df
+
+from src.utils.params_gen import (
+    metadata_dir_loc,
+    tests_dir_loc,
+    aq_metadata,
+    aq_metadata_index,
+    aq_metadata_csv_name,
 )
 
-from src.utils.params import (
-    data_path,
-    aequitas_df_pickle_loc
-)
-
-
-
-
-
-"------------------------------------------------------------------------------"
-#################################
-## Generic ancillary functions ##
-#################################
-
-
-##
-def load_selected_model_results(path):
-    """
-    ...
-        args:
-            path (string): ...
-        returns:
-            -
-    """
-
-    df = load_df(path)
-
-    return df
+from src.utils.utils import write_csv_from_df
 
 
 
@@ -83,7 +42,7 @@ def load_selected_model_results(path):
 ##################################
 
 
-def group(df):
+def group(df_aeq):
     """
      args:
          df (dataframe):Recibe el data frame que tiene los features sobre los que queremos medir el sesgo entre los diferentes grupos.
@@ -94,16 +53,15 @@ def group(df):
      # print("Métricas de ")
     #tables
     g = Group()
-    xtab, attrbs = g.get_crosstabs(df)
+    xtab, attrbs = g.get_crosstabs(df_aeq)
     absolute_metrics = g.list_absolute_metrics(xtab)
     conteos_grupo=xtab[[col for col in xtab.columns if col not in absolute_metrics]]
     metricas_absolutas=xtab[['attribute_name', 'attribute_value']+[col for col in xtab.columns if col in absolute_metrics]].round(2)
-
-    return xtab, conteos_grupo,metricas_absolutas
-
+    return xtab, conteos_grupo, metricas_absolutas, absolute_metrics
 
 
-def bias(df_aeq, xtab):
+
+def biasf(df_aeq, xtab):
     """
      args:
          df (dataframe): Recibe el data frame que tiene los features sobre los que queremos medir la disparidad
@@ -111,35 +69,52 @@ def bias(df_aeq, xtab):
          -
     """
     bias = Bias()
-    bdf = bias.get_disparity_predefined_groups(xtab,
-                                               original_df=df_aeq,
-                                        ref_groups_dict={'delegacion_inicio':'IZTAPALAPA'},
-                                        alpha=0.05, check_significance=True,
-                                        mask_significance=True)
-    bdf[['attribute_name', 'attribute_value'] + bias.list_disparities(bdf)].round(2)
+    bdf = bias.get_disparity_predefined_groups(xtab, original_df=df_aeq,
+                                               ref_groups_dict={'reference_group': 'High'},
+                                               alpha=0.05, check_significance=True,
+                                               mask_significance=True)
+
+    ## Storing metadata
+    aq_metadata["value_k"] = list(bdf["k"])[0]
+
+    disparities = bdf[['attribute_name', 'attribute_value'] + bias.list_disparities(bdf)].round(2)
+
+    majority_bdf = bias.get_disparity_major_group(xtab, original_df=df_aeq)
+    disparities_majority = majority_bdf[
+        ['attribute_name', 'attribute_value'] + bias.list_disparities(majority_bdf)].round(2)
+
+    min_bdf = bias.get_disparity_min_metric(xtab, original_df=df_aeq)
+    disparities_min = min_bdf[['attribute_name', 'attribute_value'] + bias.list_disparities(min_bdf)].round(2)
+
+    return bdf, disparities, disparities_majority, disparities_min, bias
 
 
 
-def fairness(df):
+def fairnessf(bdf, absolute_metrics, bias):
     """
      args:
          df (dataframe): Recibe el data frame que tiene los features sobre los que queremos medir la equidad.
      returns:
          -
     """
+    fair = Fairness()
+    fdf = fair.get_group_value_fairness(bdf)
+
+    parity_determinations = fair.list_parities(fdf)
+    fairness = fdf[['attribute_name', 'attribute_value'] + absolute_metrics + bias.list_disparities(fdf) + parity_determinations].round(2)
 
 
+    ## Storing metadata
+    aq_metadata["v_group"] = str(fdf.loc[0, "attribute_value"])
+    aq_metadata["FOR_p"] = str(fdf.loc[0, "FOR Parity"])
+    aq_metadata["FNR_p"] = str(fdf.loc[0, "FNR Parity"])
 
 
-def prep_data(dfx):
-    #Load original dataframe with features
-    df_o = pd.read_csv(data_path)
-    #df_o = pd.read_csv("../../" + "data/incidentes-viales-c5.csv")
-    df_o.drop(df_o[df_o.delegacion_inicio.isnull()].index, inplace = True)
-    df_aeq=pd.merge(dfx, df_o, on='folio', how='left')
-    df_aeq=df_aeq.loc[:, ['folio','label','score','delegacion_inicio']]
+    #return df_aeq
+    gaf = fair.get_group_attribute_fairness(fdf)
+    gof = fair.get_overall_fairness(fdf)
 
-    return df_aeq
+    return fairness, gaf, gof
 
 
 
@@ -150,7 +125,7 @@ def prep_data(dfx):
 ## Aequitas analisis main function ##
 #####################################
 
-def bias_fairness(aequitas_df_pickle_loc):
+def bias_fairness(df_aeq):
     """
      args:
          df (dataframe): dataframes that will be analyzed by Aequitas according to the selected model.
@@ -158,32 +133,46 @@ def bias_fairness(aequitas_df_pickle_loc):
          -
     """
 
-    df_aeq = load_selected_model_results(aequitas_df_pickle_loc)
-    df_aeq = prep_data(df_aeq)
-    df_aeq = df_aeq.rename(columns = {'folio':'entity_id','label': 'label_value'}, inplace = False)
 
-    by_del = sns.countplot(x="delegacion_inicio", hue="label_value",
-                            data=df_aeq[df_aeq.delegacion_inicio.isin(['COYOACAN', 'GUSTAVO A. MADERO', 'IZTAPALAPA', 'TLAHUAC',
-           'MIGUEL HIDALGO', 'CUAUHTEMOC', 'CUAJIMALPA', 'ALVARO OBREGON',
-           'BENITO JUAREZ', 'TLALPAN', 'VENUSTIANO CARRANZA', 'IZTACALCO',
-           'XOCHIMILCO', 'MAGDALENA CONTRERAS', 'AZCAPOTZALCO', 'MILPA ALTA'])])
-    # l=plt.setp(by_del.get_xticklabels(), rotation=90)
+    xtab, conteos_grupo, metricas_absolutas, absolute_metrics = group(df_aeq)
 
-    by_del = sns.countplot(x="delegacion_inicio", hue="score",
-                            data=df_aeq[df_aeq.delegacion_inicio.isin(['COYOACAN', 'GUSTAVO A. MADERO', 'IZTAPALAPA', 'TLAHUAC',
-           'MIGUEL HIDALGO', 'CUAUHTEMOC', 'CUAJIMALPA', 'ALVARO OBREGON',
-           'BENITO JUAREZ', 'TLALPAN', 'VENUSTIANO CARRANZA', 'IZTACALCO',
-           'XOCHIMILCO', 'MAGDALENA CONTRERAS', 'AZCAPOTZALCO', 'MILPA ALTA'])])
-    # l=plt.setp(by_del.get_xticklabels(), rotation=90)
+    bdf, disparities, disparities_majority, disparities_min, bias = biasf(df_aeq, xtab)
 
-    xtab, conteos_grupo, metricas_absolutas = group(df_aeq)
+    fairness, gaf, gof = fairnessf(bdf, absolute_metrics, bias)
 
-    df = bias(df_aeq, xtab)
 
-    # df=fairness(df)
+    ## Storing time execution metadata
+    aq_metadata[aq_metadata_index] = str(datetime.now())
+
+
+    ## Module results
+    aeq_results_dict={
+        "xtab_results": xtab,
+        "conteos_grupo_results": conteos_grupo,
+        "metricas_absolutas_results": metricas_absolutas,
+        "bdf_results": bdf,
+        "disparities_results": disparities,
+        "disparities_majority_results": disparities_majority,
+        "disparities_minority_results": disparities_min,
+        "fairness_results": fairness,
+        "gaf_results": gaf,
+        "gof_results": gof,
+
+    }
+
+
+    ## Saving relevant module metadata
+
+    #### Converting metadata into dataframe and saving locally
+    df_meta = pd.DataFrame.from_dict(aq_metadata, orient="index").T
+    df_meta.set_index(aq_metadata_index, inplace=True)
+    write_csv_from_df(df_meta, metadata_dir_loc, aq_metadata_csv_name)
+
 
     print("\n** Aequitas module successfully executed **\n")
 
+
+    return aeq_results_dict
 
 
 

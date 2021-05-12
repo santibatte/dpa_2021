@@ -35,10 +35,10 @@ class BiasFairnessUnitTest(CopyToTable): ##
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_unittest.bias_fairness'
+    table = 'dpa_unittest.fairness'
 
-    columns = [("XXXX", "VARCHAR"),
-               ("XXXX_2", "VARCHAR")]
+    columns = [("Date", "VARCHAR"),
+               ("Result", "VARCHAR")]
 
 
     def rows(self):
@@ -47,4 +47,4 @@ class BiasFairnessUnitTest(CopyToTable): ##
         for element in reader.itertuples(index=False):
             yield element
         if "FAILED" in reader[1][1]:
-            raise TypeError("FAILED, XXXXXX")
+            raise TypeError("FAILED, Columns are missing!   ")

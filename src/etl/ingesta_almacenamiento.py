@@ -62,6 +62,7 @@ from src.utils.utils import (
 from src.utils.data_dict import data_dict
 
 from src.utils.params_gen import (
+    ingestion_pickle_loc,
     metadata_dir_loc,
     tests_dir_loc,
     bucket_name,
@@ -318,6 +319,24 @@ def path_file_fn(ingest_type):
 #############################
 
 
+## Set the unique call identifier as index
+def set_index(df):
+    """
+    Set the unique call identifier as index
+        args:
+            df (dataframe): df whose index will be asigned.
+        returns:
+            df (dataframe): df with correct index.
+    """
+
+    ## Selection the if feature based on data dict and setting it as index.
+    id_feature = [key for key in data_dict if "id_feature" in data_dict[key]][0]
+    df.set_index(id_feature, inplace=True, drop=False)
+
+    return df
+
+
+
 ## Transform columns' names to standard format
 def clean_col_names(dataframe):
     """
@@ -331,7 +350,7 @@ def clean_col_names(dataframe):
     ## Definition of cleaning funcitons that will be applied to the columns' names
     fun1 = lambda x: re.sub('[^a-zA-Z0-9 \n\.]', '-', x.lower()) ## change special characters for "-"
     fun2 = lambda x: unicodedata.normalize("NFD", x).encode("ascii", "ignore").decode("utf-8") ## substitute accents for normal letters
-    fun3 = lambda x: re.sub(' ', '_', x.lower()) ## change spaces for "_"
+    fun3 = lambda x: re.sub(' ', '-', x.lower()) ## change spaces for "_"
 
     funcs = [fun1, fun2, fun3]
 
@@ -449,6 +468,9 @@ def initial_cleaning(data):
     ## Cleaning names of columns
     dfx = clean_col_names(dfx)
 
+    ## Set the inspection ID as index
+    dfx = set_index(dfx)
+
     ## Eliminating unused columns
     dfx = drop_cols(dfx)
 
@@ -493,12 +515,17 @@ def ingest(df):
     #### Receiving extraction
     df = initial_cleaning(df)
 
+    #### Saving result as pickle
+    pickle.dump(df, open(ingestion_pickle_loc, "wb"))
+
+
     ## Converting metadata into dataframe and saving locally
     df_meta = pd.DataFrame.from_dict(extract_metadata, orient="index").T
     df_meta.set_index(extract_metadata_index, inplace=True)
     write_csv_from_df(df_meta, metadata_dir_loc, extract_metadata_csv_name)
 
-    #### Running unit test
+
+    ## Running unit test
     class TestExtract(marbles.core.TestCase):
         def test_empty_df(self):
             self.assertNotEqual(df.shape, [0, 0], note="Your dataframe is empty")
@@ -525,6 +552,7 @@ def ingest(df):
     res_df = pd.DataFrame(res, columns=['Date', 'Result'])
 
     res_df.to_csv(tests_dir_loc + 'extract_unittest.csv', index=False)
+
 
     ## Success message
     print("\n** Ingestion module successfully executed **\n")
