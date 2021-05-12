@@ -260,7 +260,7 @@ Open your local browser in `localhost:4444`.
 
 Your DAG should look like this!
 
-![](./images/DAG_checkpoint5.png)
+![](./images/DAG_checkpoint6.jpg)
 
 ## Disclamer: Luigi's Idempotence
 
