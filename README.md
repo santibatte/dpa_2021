@@ -215,22 +215,13 @@ The pipeline process is organized into the following [Luigi](https://luigi.readt
 ***Task 18.*** `ModelSelectionMetadata`: generates the model selection metadata with module `r_model_training_metadata.py`.
 * Example: `luigi --module src.pipeline.luigi.r_model_selection_metadata ModelSelectionMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
-***Task 19.*** `ModelSelectionMetadata`: generates the model selection metadata with module `r_model_training_metadata.py`.
-* Example: `luigi --module src.pipeline.luigi.r_model_selection_metadata ModelSelectionMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
-
-***Task 20.*** `ModelSelectionMetadata`: generates the model selection metadata with module `r_model_training_metadata.py`.
-* Example: `luigi --module src.pipeline.luigi.r_model_selection_metadata ModelSelectionMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
-
-***Task 21.*** `ModelSelectionMetadata`: generates the model selection metadata with module `r_model_training_metadata.py`.
-* Example: `luigi --module src.pipeline.luigi.r_model_selection_metadata ModelSelectionMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
-
-***Task 22.*** `BiasFairness`: generates Aequitas analysis with module `s_bias_fairness.py`.
+***Task 19.*** `BiasFairness`: generates Aequitas analysis with module `s_bias_fairness.py`.
 * Example: `luigi --module src.pipeline.luigi.s_bias_fairness BiasFairness --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
-***Task 23.*** `BiasFairnessUnitTest`: generates Aequitas unit test with module `t_bias_fairness_test.py`.
+***Task 20.*** `BiasFairnessUnitTest`: generates Aequitas unit test with module `t_bias_fairness_test.py`.
 * Example: `luigi --module src.pipeline.luigi.t_bias_fairness_test BiasFairnessUnitTest --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
-***Task 24.*** `BiasFairnessMetadata`: generates Aequitas metadata  with module `u_bias_fairness_metadata.py`.
+***Task 21.*** `BiasFairnessMetadata`: generates Aequitas metadata  with module `u_bias_fairness_metadata.py`.
 * Example: `luigi --module src.pipeline.luigi.s_bias_fairness BiasFairnessMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
 
