@@ -86,7 +86,7 @@ def biasf(df_aeq, xtab):
     min_bdf = bias.get_disparity_min_metric(xtab, original_df=df_aeq)
     disparities_min = min_bdf[['attribute_name', 'attribute_value'] + bias.list_disparities(min_bdf)].round(2)
 
-    return bdf, disparities, disparities_majority, disparities_min
+    return bdf, disparities, disparities_majority, disparities_min, bias
 
 
 
@@ -135,8 +135,10 @@ def bias_fairness(df_aeq):
 
 
     xtab, conteos_grupo, metricas_absolutas, absolute_metrics = group(df_aeq)
-    bdf, disparities, disparities_majority, disparities_min=biasf(df_aeq, xtab)
-    fairness, gaf, gof=fairnessf(bdf, absolute_metrics)
+
+    bdf, disparities, disparities_majority, disparities_min, bias = biasf(df_aeq, xtab)
+
+    fairness, gaf, gof=fairnessf(bdf, absolute_metrics, bias)
 
 
     ## Storing time execution metadata
