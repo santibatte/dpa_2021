@@ -90,6 +90,8 @@ class BiasFairness(luigi.Task):
         print(df_aeq.columns)
         print("***********")
 
+        df_aeq.drop("label", inplace=True)
+
 
         ## Running unit test
         class TestBiasFairness(marbles.core.TestCase):
