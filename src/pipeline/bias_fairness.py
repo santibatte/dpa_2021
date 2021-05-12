@@ -57,7 +57,8 @@ def group(df_aeq):
     absolute_metrics = g.list_absolute_metrics(xtab)
     conteos_grupo=xtab[[col for col in xtab.columns if col not in absolute_metrics]]
     metricas_absolutas=xtab[['attribute_name', 'attribute_value']+[col for col in xtab.columns if col in absolute_metrics]].round(2)
-    return xtab,conteos_grupo, metricas_absolutas
+    return xtab, conteos_grupo, metricas_absolutas, absolute_metrics
+
 
 
 def biasf(df_aeq, xtab):
@@ -88,7 +89,8 @@ def biasf(df_aeq, xtab):
     return bdf, disparities, disparities_majority, disparities_min
 
 
-def fairnessf(bdf):
+
+def fairnessf(bdf, absolute_metrics):
     """
      args:
          df (dataframe): Recibe el data frame que tiene los features sobre los que queremos medir la equidad.
@@ -99,8 +101,7 @@ def fairnessf(bdf):
     fdf = fair.get_group_value_fairness(bdf)
 
     parity_determinations = fair.list_parities(fdf)
-    fairness = fdf[['attribute_name', 'attribute_value'] + absolute_metrics +
-                   bias.list_disparities(fdf) + parity_determinations].round(2)
+    fairness = fdf[['attribute_name', 'attribute_value'] + absolute_metrics + bias.list_disparities(fdf) + parity_determinations].round(2)
 
 
     ## Storing metadata
@@ -114,6 +115,8 @@ def fairnessf(bdf):
     gof = fair.get_overall_fairness(fdf)
 
     return fairness, gaf, gof
+
+
 
 
 
@@ -131,9 +134,9 @@ def bias_fairness(df_aeq):
     """
 
 
-    xtab, conteos_grupo, metricas_absolutas=group(df_aeq)
+    xtab, conteos_grupo, metricas_absolutas, absolute_metrics = group(df_aeq)
     bdf, disparities, disparities_majority, disparities_min=biasf(df_aeq, xtab)
-    fairness, gaf, gof=fairnessf(bdf)
+    fairness, gaf, gof=fairnessf(bdf, absolute_metrics)
 
 
     ## Storing time execution metadata
