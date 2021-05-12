@@ -90,7 +90,7 @@ class BiasFairness(luigi.Task):
         print(df_aeq.columns)
         print("***********")
 
-        df_aeq.drop("label_value", inplace=True, axis=1)
+        df_aeq.drop("score", inplace=True, axis=1)
 
 
         ## Running unit test
@@ -100,7 +100,7 @@ class BiasFairness(luigi.Task):
                 df_expected_names=['label_value', 'score', 'reference_group']
                 print("")
                 print("***********")
-                print(len(columns_names))
+                print(list(df_aeq.columns))
                 print(len(columns_names))
                 print("shape[1]: ", df_aeq.shape[1])
                 print(len(df_expected_names))
