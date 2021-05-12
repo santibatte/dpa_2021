@@ -215,6 +215,14 @@ The pipeline process is organized into the following [Luigi](https://luigi.readt
 ***Task 18.*** `ModelSelectionMetadata`: generates the model selection metadata with module `r_model_training_metadata.py`.
 * Example: `luigi --module src.pipeline.luigi.r_model_selection_metadata ModelSelectionMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
+***Task 19.*** `ModelSelectionMetadata`: generates the model selection metadata with module `r_model_training_metadata.py`.
+* Example: `luigi --module src.pipeline.luigi.r_model_selection_metadata ModelSelectionMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 20.*** `ModelSelectionMetadata`: generates the model selection metadata with module `r_model_training_metadata.py`.
+* Example: `luigi --module src.pipeline.luigi.r_model_selection_metadata ModelSelectionMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 21.*** `ModelSelectionMetadata`: generates the model selection metadata with module `r_model_training_metadata.py`.
+* Example: `luigi --module src.pipeline.luigi.r_model_selection_metadata ModelSelectionMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
 
 
@@ -275,9 +283,11 @@ The reference group are the restaurants that are located in richer neighborhoods
 The protected Attribute are restaurants located in poorer neighborhood.
 
 The metrics we use are those related to an assistive model: 
--   Recall Parity
+- Recall Parity
 - FN/GS Parity 
 - FOR Parity 
 - FNR Parity
+
+
 
 
