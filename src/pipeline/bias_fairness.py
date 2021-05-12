@@ -72,8 +72,6 @@ def biasf(df_aeq, xtab):
                                                ref_groups_dict={'reference_group': 'High'},
                                                alpha=0.05, check_significance=True,
                                                mask_significance=True)
-    disparities = bdf[['attribute_name', 'attribute_value'] + bias.list_disparities(bdf)].round(2)
-                                        mask_significance=True)
 
     ## Storing metadata
     aq_metadata["value_k"] = list(bdf["k"])[0]
