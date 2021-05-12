@@ -90,7 +90,7 @@ def biasf(df_aeq, xtab):
 
 
 
-def fairnessf(bdf, absolute_metrics):
+def fairnessf(bdf, absolute_metrics, bias):
     """
      args:
          df (dataframe): Recibe el data frame que tiene los features sobre los que queremos medir la equidad.
@@ -138,7 +138,7 @@ def bias_fairness(df_aeq):
 
     bdf, disparities, disparities_majority, disparities_min, bias = biasf(df_aeq, xtab)
 
-    fairness, gaf, gof=fairnessf(bdf, absolute_metrics, bias)
+    fairness, gaf, gof = fairnessf(bdf, absolute_metrics, bias)
 
 
     ## Storing time execution metadata
