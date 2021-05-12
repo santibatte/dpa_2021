@@ -90,7 +90,7 @@ class BiasFairness(luigi.Task):
         print(df_aeq.columns)
         print("***********")
 
-        df_aeq.drop("label", inplace=True)
+        df_aeq.drop("label_value", inplace=True)
 
 
         ## Running unit test
