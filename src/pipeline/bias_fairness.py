@@ -105,9 +105,9 @@ def fairnessf(bdf, absolute_metrics, bias):
 
 
     ## Storing metadata
-    aq_metadata["v_group"] = str(fdf.iloc[0, "attribute_value"])
-    aq_metadata["FOR_p"] = str(fdf.iloc[0, "FOR Parity"])
-    aq_metadata["FNR_p"] = str(fdf.iloc[0, "FNR Parity"])
+    aq_metadata["v_group"] = str(fdf.loc[0, "attribute_value"])
+    aq_metadata["FOR_p"] = str(fdf.loc[0, "FOR Parity"])
+    aq_metadata["FNR_p"] = str(fdf.loc[0, "FNR Parity"])
 
 
     #return df_aeq
