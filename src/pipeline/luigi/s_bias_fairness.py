@@ -96,7 +96,14 @@ class BiasFairness(luigi.Task):
             def test_df_aeq(self):
                 columns_names = list(df_aeq.columns)
                 df_expected_names=['label_value', 'score', 'reference_group']
-                self.assertEqual(len(columns_names), len(df_expected_names), note='Oops, columns are missing!')
+                print("")
+                print("***********")
+                print(len(columns_names))
+                print(len(columns_names))
+                print(df_aeq.shape[1])
+                print(len(df_expected_names))
+                print("***********")
+                self.assertEqual(df_aeq.shape[1], 3, note='Oops, columns are missing!')
 
         stream = StringIO()
         runner = unittest.TextTestRunner(stream=stream)
