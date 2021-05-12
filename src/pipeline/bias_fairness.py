@@ -108,13 +108,6 @@ def fairnessf(bdf):
     aq_metadata["FOR_p"] = str(fdf.iloc[0, "FOR Parity"])
     aq_metadata["FNR_p"] = str(fdf.iloc[0, "FNR Parity"])
 
-#def prep_data(dfx):
-    #Load original dataframe with features
-    #df_o = pd.read_csv(data_path)
-    #df_o = pd.read_csv("../../" + "data/incidentes-viales-c5.csv")
-    #df_o.drop(df_o[df_o.delegacion_inicio.isnull()].index, inplace = True)
-    #df_aeq=pd.merge(dfx, df_o, on='folio', how='left')
-    #df_aeq=df_aeq.loc[:, ['folio','label','score','delegacion_inicio']]
 
     #return df_aeq
     gaf = fair.get_group_attribute_fairness(fdf)
@@ -136,6 +129,8 @@ def bias_fairness(df_aeq):
      returns:
          -
     """
+
+
     xtab, conteos_grupo, metricas_absolutas=group(df_aeq)
     bdf, disparities, disparities_majority, disparities_min=biasf(df_aeq, xtab)
     fairness, gaf, gof=fairnessf(bdf)
@@ -148,9 +143,6 @@ def bias_fairness(df_aeq):
     df_aeq = prep_data(df_aeq)
     df_aeq = df_aeq.rename(columns = {'folio':'entity_id','label': 'label_value'}, inplace = False)
 
-
-
-    xtab, conteos_grupo, metricas_absolutas = group(df_aeq)
 
     df = bias(df_aeq, xtab)
 
@@ -172,9 +164,6 @@ def bias_fairness(df_aeq):
 
     ## Saving relevant module metadata
 
-    # #### Model selected metadata
-    # aq_metadata["selected_model"] = str(best_model)
-
     #### Converting metadata into dataframe and saving locally
     df_meta = pd.DataFrame.from_dict(aq_metadata, orient="index").T
     df_meta.set_index(aq_metadata_index, inplace=True)
@@ -182,6 +171,8 @@ def bias_fairness(df_aeq):
 
 
     print("\n** Aequitas module successfully executed **\n")
+
+
     return aeq_results_dict
 
 
