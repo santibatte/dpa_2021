@@ -90,7 +90,7 @@ class BiasFairness(luigi.Task):
         print(df_aeq.columns)
         print("***********")
 
-        df_aeq.drop("score", inplace=True, axis=1)
+
 
 
         ## Running unit test
@@ -105,6 +105,7 @@ class BiasFairness(luigi.Task):
                 print("shape[1]: ", df_aeq.shape[1])
                 print(len(df_expected_names))
                 print("***********")
+                df_aeq.drop("score", inplace=True, axis=1)
                 self.assertEqual(int(df_aeq.shape[1]), 3, note='Oops, columns are missing!')
 
         stream = StringIO()
