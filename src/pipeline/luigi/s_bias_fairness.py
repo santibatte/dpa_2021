@@ -94,7 +94,7 @@ class BiasFairness(luigi.Task):
         ## Running unit test
         class TestBiasFairness(marbles.core.TestCase):
             def test_df_aeq(self):
-                columns_names = df_aeq.columns.values
+                columns_names = list(df_aeq.columns)
                 df_expected_names=['label_value', 'score', 'reference_group']
                 self.assertEqual(len(columns_names), len(df_expected_names), note='Oops, columns are missing!')
 
