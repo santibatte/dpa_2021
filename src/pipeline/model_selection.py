@@ -171,7 +171,7 @@ def model_selection(mt_results_dict, ms_results_pickle_loc):
     best_model = select_best_model(mt_results_dict)
 
     ## Testing best model with test data
-    test_predict_labs, test_predict_scores = best_model_predict_test(best_model, mt_results_dict["training_data"])
+    test_predict_labs, test_predict_scores = best_model_predict_test(best_model, mt_results_dict["test_data"])
 
 
     ## Saving modeling results

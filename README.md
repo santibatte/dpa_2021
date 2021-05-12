@@ -18,6 +18,8 @@ DPA-ITAM, 2021.
 3. [Infrastructure requirements](https://github.com/santibatte/dpa_2021.git#infrastructure-requirements)
 4. [Installation and setup](https://github.com/santibatte/dpa_2021.git#installation-and-setup)
 5. [The Pipeline](https://github.com/santibatte/dpa_2021.git#the-pipeline)
+6. [Aequitas](https://github.com/santibatte/dpa_2021.git#Aequitas)
+
 
 ## Introduction
 
@@ -213,6 +215,16 @@ The pipeline process is organized into the following [Luigi](https://luigi.readt
 ***Task 18.*** `ModelSelectionMetadata`: generates the model selection metadata with module `r_model_training_metadata.py`.
 * Example: `luigi --module src.pipeline.luigi.r_model_selection_metadata ModelSelectionMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
+***Task 19.*** `BiasFairness`: generates Aequitas analysis with module `s_bias_fairness.py`.
+* Example: `luigi --module src.pipeline.luigi.s_bias_fairness BiasFairness --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 20.*** `BiasFairnessUnitTest`: generates Aequitas unit test with module `t_bias_fairness_test.py`.
+* Example: `luigi --module src.pipeline.luigi.t_bias_fairness_test BiasFairnessUnitTest --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 21.*** `BiasFairnessMetadata`: generates Aequitas metadata  with module `u_bias_fairness_metadata.py`.
+* Example: `luigi --module src.pipeline.luigi.s_bias_fairness BiasFairnessMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+
 
 #### Luigi's DAG Visualization
 
@@ -239,7 +251,7 @@ Open your local browser in `localhost:4444`.
 
 Your DAG should look like this!
 
-![](./images/DAG_checkpoint5.png)
+![](./images/DAG_checkpoint6.jpg)
 
 ## Disclamer: Luigi's Idempotence
 
@@ -257,3 +269,27 @@ This command deletes the table in which luigi saves the information that he has 
 * **Note**: Never delete the consecutive folder, otherwise you will have an error.
 
 Dataset Source: https://data.cityofchicago.org/Health-Human-Services/Food-Inspections/4ijn-s7e5 
+
+
+
+## Aequitas
+
+Bias and Fairness analysis.
+
+It is an assistive model as we want to help restaurants to realize if they would pass an inspection. 
+
+The reference group are the restaurants that are located in richer neighborhoods. We use the zip code of the restaurants to determine in which group they are. 
+The protected Attribute are restaurants located in poorer neighborhoods.
+
+The metrics we use are those related to an assistive model: 
+- Recall Parity
+- FN/GS Parity 
+- FOR Parity 
+- FNR Parity
+
+We choose these metrics as we want to make sure our model is being particularly accurate with those groups that could be discriminated
+Therefore, we need to quantify disparities among the groups. 
+
+
+
+

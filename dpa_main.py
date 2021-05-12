@@ -11,30 +11,28 @@
 
 ## Standard library imports
 
+import pickle
+
 
 ## Third party imports
+
+import pandas as pd
 
 
 ## Local application imports
 
 from src.utils.params_gen import (
     data_path_csv,
-    ingestion_pickle_loc,
     transformation_pickle_loc,
-    fe_pickle_loc_imp_features,
-    fe_pickle_loc_feature_labs,
-    fe_pickle_loc_imp_features,
-    fe_pickle_loc_feature_labs,
-    y_test_pickle_loc,
-    test_predict_scores_pickle_loc,
+    fe_results_pickle_loc,
+    mt_results_pickle_loc,
+    ms_results_pickle_loc
 )
 
 from src.etl.ingesta_almacenamiento import (
     bucket_name,
     cont_ingest_path,
     hist_ingest_path,
-
-    guardar_ingesta,
     ingest,
 )
 
@@ -42,9 +40,9 @@ from src.etl.transformation import transform
 
 from src.pipeline.feature_engineering import feature_engineering
 
-from src.pipeline.modeling import modeling
+from src.pipeline.models_training import models_training
 
-from src.pipeline.model_evaluation import model_evaluation
+from src.pipeline.model_selection import model_selection
 
 
 
@@ -64,20 +62,26 @@ def main_execution_function():
         returns:
     """
 
+    ## Creating dataframe from local data
+    df = pd.read_csv(data_path_csv)
+
     ##
-    ingest(data_path_csv, ingestion_pickle_loc)
+    df = ingest(df)
 
     ##
     # guardar_ingesta(bucket_name, cont_ingest_path)
 
     ##
-    transform(ingestion_pickle_loc, transformation_pickle_loc)
+    df = transform(df, transformation_pickle_loc)
 
     ##
-    feature_engineering(transformation_pickle_loc, fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
+    fe_results_dict = feature_engineering(df, fe_results_pickle_loc)
 
     ##
-    # modeling(fe_pickle_loc_imp_features, fe_pickle_loc_feature_labs)
+    mt_results_dict = models_training(fe_results_dict, mt_results_pickle_loc)
+
+    ##
+    ms_results_dict = model_selection(mt_results_dict, ms_results_pickle_loc)
 
     ##
     # model_evaluation(y_test_pickle_loc, test_predict_scores_pickle_loc)
