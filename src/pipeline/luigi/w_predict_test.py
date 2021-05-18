@@ -5,7 +5,7 @@ import luigi
 import psycopg2
 
 
-from src.pipeline.luigi.s_bias_fairness import BiasFairness
+from src.pipeline.luigi.v_predict import Predict
 
 from src.utils.utils import (
     get_postgres_credentials
@@ -14,7 +14,7 @@ from src.utils.utils import (
 
 csv_local_file = "src/pipeline/luigi/luigi_tmp_files/bias_fairness_unittest.csv"
 
-class BiasFairnessUnitTest(CopyToTable): ##
+class PredictUnitTest(CopyToTable): ##
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
@@ -24,7 +24,7 @@ class BiasFairnessUnitTest(CopyToTable): ##
 
 
     def requires(self):
-        return BiasFairness(ingest_type=self.ingest_type, bucket=self.bucket)
+        return Predict(ingest_type=self.ingest_type, bucket=self.bucket)
 
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
@@ -35,7 +35,7 @@ class BiasFairnessUnitTest(CopyToTable): ##
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_unittest.bias_fairness'
+    table = 'dpa_unittest.predictions'
 
     columns = [("XXXX", "VARCHAR"),
                ("XXXX_2", "VARCHAR")]

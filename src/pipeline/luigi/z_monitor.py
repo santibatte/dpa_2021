@@ -5,16 +5,15 @@ import luigi
 import psycopg2
 
 
-from src.pipeline.luigi.s_bias_fairness import BiasFairness
-
 from src.utils.utils import (
     get_postgres_credentials
 )
 
+from src.pipeline.luigi.y_store_api import StoreApi
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/bias_fairness_unittest.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/aequitas_metadata.csv"
 
-class BiasFairnessUnitTest(CopyToTable): ##
+class Monitor(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
@@ -24,21 +23,22 @@ class BiasFairnessUnitTest(CopyToTable): ##
 
 
     def requires(self):
-        return BiasFairness(ingest_type=self.ingest_type, bucket=self.bucket)
-
+        return StoreApi(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
-
 
     user = credentials['user']
     password = credentials['pass']
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_unittest.bias_fairness'
+    table = 'dpa_monitor.monitor'
 
-    columns = [("XXXX", "VARCHAR"),
+
+    ## Metadata columns saved in RDS file
+    columns = [("XXXX1", "VARCHAR"),
                ("XXXX_2", "VARCHAR")]
+
 
 
     def rows(self):
@@ -46,5 +46,3 @@ class BiasFairnessUnitTest(CopyToTable): ##
 
         for element in reader.itertuples(index=False):
             yield element
-        if "FAILED" in reader[1][1]:
-            raise TypeError("FAILED, XXXXXX")
