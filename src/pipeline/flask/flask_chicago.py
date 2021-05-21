@@ -50,7 +50,7 @@ class GoodbyeLili(Resource):
     def get(self):
         return {'Lili': "Lili disfrutamos mucho la materia gracias por todo"}
 
-@api.route('/id_establecimiento/<int:id_client>')
+@api.route('/id_establecimiento/<string:id_client>')
 class ShowPrediction(Resource):
     @api.marshal_with(model)
     def get(self,id_client):
