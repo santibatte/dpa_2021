@@ -78,6 +78,7 @@ ms_results_pickle_loc = "data/pickles/ms_results.pkl"
 ms_metadata = {}
 ms_metadata_index = "ing_time_exec"
 ms_metadata_csv_name = "model_selection_metadata.csv"
+ms_aws_key = "model_selection/"
 
 ## Model evaluation - aequitas (bias and fairness) and predictive performance
 metrics_report_pickle_loc = "data/pickles/metrics_report.pkl"

@@ -9,7 +9,8 @@ from src.utils.utils import (
 )
 
 from src.utils.params_gen import (
-    today_info
+    today_info,
+    ms_aws_key
 )
 
 from src.pipeline.luigi.u_bias_fairness_metadata import BiasFairnessMetadata
@@ -32,9 +33,18 @@ class Predict(luigi.Task):
     ## Run: selecting best trained model
     def run(self):
 
+        ## Establishing connection with S3
         s3 = get_s3_resource()
 
-### ver que necesito cargar para hacer el predict:
+        ## Loading latest model
+        objects = s3.list_objects_v2(Bucket=bucket, Prefix=ms_aws_key)['Contents']
+        obj_path = [file["Key"] for file in objects][-1]
+        response = s3.get_object(
+            Bucket=bucket,
+            Key=obj_path
+        )
+        #### Latest model stored in S3
+        sel_model = pickle.loads(response["Body"].read())["best_trained_model"]
 
         mt_pickle_loc_s3 = 'trained_models/trained_models_' + today_info + '.pkl'
 
