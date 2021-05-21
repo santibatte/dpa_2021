@@ -85,6 +85,7 @@ def json_dump_dict(dictionary):
 
 
 
+
 ## Function to create entries that will populate the data_created_dict.
 def update_created_dict(var, relevant=True, feature_type="not_specified", model_relevant=False):
     """
@@ -844,6 +845,14 @@ def heatmaps(data,choose_year,axis,yes,ylabel):
     return heat
 
 
+# connect to postgres aws through sql alchemy
+def get_db_conn_sql_alchemy(credentials_file):
+    '''get credentials for sql alchemy '''
+    creds= read_yaml_file(credentials_file)['db']
+
+    connection = 'postgresql://{}:{}@{}:{}/{}'.format(creds['user'],creds['pass'],creds['host'], creds['port'],creds['db'])
+
+    return connection
 
 
 
@@ -852,4 +861,3 @@ def heatmaps(data,choose_year,axis,yes,ylabel):
 ## END OF FILE ##
 #################
 "------------------------------------------------------------------------------"
-
