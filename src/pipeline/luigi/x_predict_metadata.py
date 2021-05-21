@@ -36,8 +36,12 @@ class PredictMetadata(CopyToTable):
 
 
     ## Metadata columns saved in RDS file
-    columns = [("XXXX1", "VARCHAR"),
-               ("XXXX_2", "VARCHAR")]
+    columns = [
+        ("execution_time", "VARCHAR"),
+        ("predict_model", "VARCHAR"),
+        ("percentage_positives", "VARCHAR"),
+        ("mean_score_positives", "VARCHAR"),
+    ]
 
 
 
