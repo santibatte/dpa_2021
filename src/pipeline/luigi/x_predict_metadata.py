@@ -11,7 +11,7 @@ from src.utils.utils import (
 
 from src.pipeline.luigi.w_predict_test import PredictUnitTest
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/aequitas_metadata.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/predict_metadata.csv"
 
 class PredictMetadata(CopyToTable):
 
