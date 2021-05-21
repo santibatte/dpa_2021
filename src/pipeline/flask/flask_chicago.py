@@ -52,14 +52,14 @@ class GoodbyeLili(Resource):
 
 @api.route('/id_establecimiento/<int:id_client>')
 class ShowPrediction(Resource):
-    @api.marshall_with(model)
+    @api.marshal_with(model)
     def get(self,id_client):
         prediction = Match.query.filter_by(id_client=id_client)
         return prediction
 
 @api.route('/prediction_date/<string:prediction_date>')
 class PredictionDate(Resource):
-    @api.marshall_with(model)
+    @api.marshal_with(model)
     def get(self,id_client):
         prediction = Match.query.filter_by(prediction_date=prediction_date)
         return prediction
