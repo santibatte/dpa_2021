@@ -26,7 +26,7 @@ class Match(db.Model):
     score_label_1= db.Column(db.Varchar)
 
     def __repr__(self):
-        return(u'<{self.__class__,__name__}: {self.id}>.format(self=self))
+        return(u'<{self.__class__,__name__}: {self.id}>'.format(self=self))
 
 #swagger model for marshalling outputs
 model = api.model('store_predictions', {
