@@ -96,7 +96,14 @@ def predict(sel_model, fe_results, pr_results_pickle_loc):
 
     ## Working with module's metadata
 
+    #### Model used to make the predicions
+    pr_metadata["predict_model"] = str(sel_model)
+
     #### Metadata: percentage of positives (1's)
+    pr_metadata["percentage_positives"] = round(dfp["model_label"].value_counts(normalize=True)[1], 2)
+
+    #### Average score for positives (1's)
+    pr_metadata["mean_score_positives"] = round(dfp["score_label_1"].mean(), 2)
 
     #### Converting metadata into dataframe and saving locally
     df_meta = pd.DataFrame.from_dict(pr_metadata, orient="index").T
