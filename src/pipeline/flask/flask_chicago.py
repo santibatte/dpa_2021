@@ -54,14 +54,14 @@ class GoodbyeLili(Resource):
 class ShowPrediction(Resource):
     @api.marshal_with(model)
     def get(self,id_client):
-        prediction = Match.query.filter_by(id_client=id_client)
+        prediction = Match.query.filter_by(id_client=id_client).all()
         return prediction
 
 @api.route('/prediction_date/<string:prediction_date>')
 class PredictionDate(Resource):
     @api.marshal_with(model)
     def get(self,id_client):
-        prediction = Match.query.filter_by(prediction_date=prediction_date)
+        prediction = Match.query.filter_by(prediction_date=prediction_date).all()
         return prediction
 
 if __name__ == '__main__':
