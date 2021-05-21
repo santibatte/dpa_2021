@@ -1,6 +1,6 @@
 #from flask_chicago import Flask
 
-import Flask
+from flask import Flask
 from flask_sqlalchemy import AQLAlchemy
 from flask_restplus import Api, Resource, fields
 
