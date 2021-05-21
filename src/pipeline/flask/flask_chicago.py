@@ -30,11 +30,11 @@ class Match(db.Model):
 
 #swagger model for marshalling outputs
 model = api.model('store_predictions', {
-    'id_client' = fields.Varchar,
-    'prediction_date' = fields.Varchar,
-    'model_label' = fields.Varchar,
-    'score_label_0' = fields.Varchar,
-    'score_label_1' = fields.Varchar
+    'id_client' : fields.Varchar,
+    'prediction_date' : fields.Varchar,
+    'model_label' : fields.Varchar,
+    'score_label_0' : fields.Varchar,
+    'score_label_1' : fields.Varchar
 })
 
 ## output
