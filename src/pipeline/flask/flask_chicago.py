@@ -23,22 +23,22 @@ class Match(db.Model):
     __table_args__ = {'schema': 'dpa_storeapi'}
     __tablename__ = 'store_predictions'
 
-    id_client = db.Column(db.Varchar, primary_key = True)
-    prediction_date = db.Column(db.Varchar)
-    model_label = db.Column(db.Varchar)
-    score_label_0= db.Column(db.Varchar)
-    score_label_1= db.Column(db.Varchar)
+    id_client = db.Column(db.String, primary_key = True)
+    prediction_date = db.Column(db.String)
+    model_label = db.Column(db.String)
+    score_label_0= db.Column(db.String)
+    score_label_1= db.Column(db.String)
 
     def __repr__(self):
         return(u'<{self.__class__,__name__}: {self.id}>'.format(self=self))
 
 #swagger model for marshalling outputs
 model = api.model('store_predictions', {
-    'id_client' : fields.Varchar,
-    'prediction_date' : fields.Varchar,
-    'model_label' : fields.Varchar,
-    'score_label_0' : fields.Varchar,
-    'score_label_1' : fields.Varchar
+    'id_client' : fields.String,
+    'prediction_date' : fields.String,
+    'model_label' : fields.String,
+    'score_label_0' : fields.String,
+    'score_label_1' : fields.String
 })
 
 ## output
