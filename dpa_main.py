@@ -45,6 +45,8 @@ from src.pipeline.models_training import models_training
 
 from src.pipeline.model_selection import model_selection
 
+from src.pipeline.predict import predict
+
 
 
 
