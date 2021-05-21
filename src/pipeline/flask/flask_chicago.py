@@ -1,7 +1,7 @@
 #from flask_chicago import Flask
 
 from flask import Flask
-from flask_sqlalchemy import AQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 from flask_restplus import Api, Resource, fields
 
 from src.utils.utils import get_db_conn_sql_alchemy
