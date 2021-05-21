@@ -41,9 +41,9 @@ class Predict(luigi.Task):
 
 
         ## Loading latest model
-        objects = s3.list_objects_v2(Bucket=bucket, Prefix=ms_aws_key)['Contents']
+        objects = s3.list_objects_v2(Bucket=self.bucket, Prefix=ms_aws_key)['Contents']
         obj_path = [file["Key"] for file in objects][-1]
-        response = s3.get_object(Bucket=bucket, Key=obj_path)
+        response = s3.get_object(Bucket=self.bucket, Key=obj_path)
 
         #### Latest model stored in S3
         sel_model = pickle.loads(response["Body"].read())["best_trained_model"]
