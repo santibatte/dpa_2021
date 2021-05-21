@@ -1,6 +1,7 @@
 #from flask_chicago import Flask
 
 from flask import Flask
+from werkzeug.utils import cached_property
 from flask_sqlalchemy import SQLAlchemy
 from flask_restplus import Api, Resource, fields
 
