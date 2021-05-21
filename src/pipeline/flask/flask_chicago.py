@@ -60,7 +60,7 @@ class ShowPrediction(Resource):
 @api.route('/prediction_date/<string:prediction_date>')
 class PredictionDate(Resource):
     @api.marshal_with(model)
-    def get(self,id_client):
+    def get(self,prediction_date):
         prediction = Match.query.filter_by(prediction_date=prediction_date).all()
         return prediction
 
