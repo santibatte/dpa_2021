@@ -26,7 +26,8 @@ from src.utils.params_gen import (
     transformation_pickle_loc,
     fe_results_pickle_loc,
     mt_results_pickle_loc,
-    ms_results_pickle_loc
+    ms_results_pickle_loc,
+    pr_results_pickle_loc,
 )
 
 from src.etl.ingesta_almacenamiento import (
@@ -84,7 +85,7 @@ def main_execution_function():
     ms_results_dict = model_selection(mt_results_dict, ms_results_pickle_loc)
 
     ##
-    # model_evaluation(y_test_pickle_loc, test_predict_scores_pickle_loc)
+    dfp = predict(ms_results_dict["best_trained_model"], fe_results_dict, pr_results_pickle_loc)
 
 
 
