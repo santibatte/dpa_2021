@@ -15,6 +15,8 @@ from src.pipeline.luigi.x_predict_metadata import PredictMetadata
 
 csv_local_file = api_monitor_local_data
 
+
+
 class StorePredictionsApi(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
