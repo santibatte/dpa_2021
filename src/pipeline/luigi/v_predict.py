@@ -32,6 +32,7 @@ class Predict(luigi.Task):
         return BiasFairnessMetadata(ingest_type=self.ingest_type, bucket=self.bucket)
 
 
+
     ## Run: selecting best trained model
     def run(self):
 
@@ -53,25 +54,15 @@ class Predict(luigi.Task):
         fe_results_pkl = s3.get_object(Bucket=self.bucket, Key=fe_results_s3_pth)
         fe_results = pickle.loads(fe_results_pkl['Body'].read())
 
-        #### Data IDs
-        data_ids = fe_results["data_labels"].index
-        data_features = fe_results["df_imp_engineered_features"]
+
+        ## Executing prediction master function
+        dfp = predict(sel_model, fe_results, pr_results_pickle_loc)
 
 
-        ## Predicting for every entry and attaching the ids info
-        dfp = pd.DataFrame.from_dict(
-            {
-                "ids": data_ids,
-                "prediction": sel_model.predict(data_features)
-            }
-        )
-        dfp.set_index("ids", inplace=True)
-
-
-        ## Saving results as pickle and storing them in s3
-        pickle.dump(dfp, open(pr_results_pickle_loc, "wb"))
+        ## Storing results in s3 as pickle
         pr_results_pickle = pickle.dumps(dfp)
         s3.put_object(Bucket=self.bucket, Key=get_key(self.output().path), Body=pr_results_pickle)
+
 
 
     ## Output: uploading data to s3 path
