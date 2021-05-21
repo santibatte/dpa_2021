@@ -9,9 +9,11 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
+from src.utils.params_gen import api_monitor_local_data
+
 from src.pipeline.luigi.x_predict_metadata import PredictMetadata
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/store_predictions_api.csv"
+csv_local_file = api_monitor_local_data
 
 class StorePredictionsApi(CopyToTable):
 
@@ -36,12 +38,13 @@ class StorePredictionsApi(CopyToTable):
 
 
     ## Metadata columns saved in RDS file
-    columns = [("id_client", "VARCHAR"),
-               ("prediction_date", "VARCHAR"),
-               ("model_label", "VARCHAR"),
-               ("score_label_0", "VARCHAR"),
-               ("score_label_1", "VARCHAR")
-               ]
+    columns = [
+        ("ids", "VARCHAR"),
+        ("prediction_date", "VARCHAR"),
+        ("model_label", "VARCHAR"),
+        ("score_label_0", "VARCHAR"),
+        ("score_label_1", "VARCHAR"),
+    ]
 
 
 
