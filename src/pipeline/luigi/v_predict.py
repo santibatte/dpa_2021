@@ -17,6 +17,8 @@ from src.utils.params_gen import (
 
 from src.pipeline.luigi.u_bias_fairness_metadata import BiasFairnessMetadata
 
+from src.pipeline.predict import predict
+
 
 
 class Predict(luigi.Task):
