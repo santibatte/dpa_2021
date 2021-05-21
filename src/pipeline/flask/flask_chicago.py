@@ -1,19 +1,22 @@
 #from flask_chicago import Flask
 
 from flask import Flask
-from werkzeug.utils import cached_property
+#from functools import cached_property
+#from werkzeug.utils import cached_property
 from flask_sqlalchemy import SQLAlchemy
 from flask_restplus import Api, Resource, fields
 
 from src.utils.utils import get_db_conn_sql_alchemy
 
 #connect to db string
-db_conn_str = get_db_conn_sql_alchemy('conf/local/credentials.yaml')
+db_conn_str = get_db_conn_sql_alchemy('../../../conf/local/credentials.yaml')
 
 # create flask aoo
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_conn_str
 api= Api(app)
+
+db=SQLAlchemy(app)
 
 #tabla
 class Match(db.Model):
