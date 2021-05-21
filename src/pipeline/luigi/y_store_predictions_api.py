@@ -5,16 +5,15 @@ import luigi
 import psycopg2
 
 
-from src.pipeline.luigi.v_predict import Predict
-
 from src.utils.utils import (
     get_postgres_credentials
 )
 
+from src.pipeline.luigi.x_predict_metadata import PredictMetadata
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/predict_unittest.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/store_predictions_api.csv"
 
-class PredictUnitTest(CopyToTable): ##
+class StorePredictionsApi(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
@@ -24,21 +23,26 @@ class PredictUnitTest(CopyToTable): ##
 
 
     def requires(self):
-        return Predict(ingest_type=self.ingest_type, bucket=self.bucket)
-
+        return PredictMetadata(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
-
 
     user = credentials['user']
     password = credentials['pass']
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_unittest.predictions'
+    table = 'dpa_storeapi.store_predictions'
 
-    columns = [("XXXX", "VARCHAR"),
-               ("XXXX_2", "VARCHAR")]
+
+    ## Metadata columns saved in RDS file
+    columns = [("id_client", "VARCHAR"),
+               ("prediction_date", "VARCHAR"),
+               ("model_label", "VARCHAR"),
+               ("score_label_0", "VARCHAR"),
+               ("score_label_1", "VARCHAR")
+               ]
+
 
 
     def rows(self):
@@ -46,5 +50,3 @@ class PredictUnitTest(CopyToTable): ##
 
         for element in reader.itertuples(index=False):
             yield element
-        if "FAILED" in reader[1][1]:
-            raise TypeError("FAILED, XXXXXX")

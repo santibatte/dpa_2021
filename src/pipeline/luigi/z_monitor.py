@@ -9,9 +9,9 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.pipeline.luigi.y_store_api import StoreApi
+from src.pipeline.luigi.y_store_api import StorePredictionsApi
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/aequitas_metadata.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/monitor.csv"
 
 class Monitor(CopyToTable):
 
@@ -23,7 +23,7 @@ class Monitor(CopyToTable):
 
 
     def requires(self):
-        return StoreApi(ingest_type=self.ingest_type, bucket=self.bucket)
+        return StorePredictionsApi(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
