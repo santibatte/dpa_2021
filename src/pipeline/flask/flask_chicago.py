@@ -60,5 +60,5 @@ class PredictionDate(Resource):
         prediction = Match.query.filter_by(prediction_date=prediction_date)
         return prediction
 
-if __name__ = '__main__':
+if __name__ == '__main__':
     app.run(debug=True)
