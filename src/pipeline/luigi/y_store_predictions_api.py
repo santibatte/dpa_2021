@@ -36,10 +36,12 @@ class StorePredictionsApi(CopyToTable):
 
 
     ## Metadata columns saved in RDS file
-    columns = [("prediction_date", "VARCHAR"),
-               ("id_client", "VARCHAR"),
-               ("prediction_score", "VARCHAR"),
-               ("model_label", "VARCHAR")]
+    columns = [("id_client", "VARCHAR"),
+               ("prediction_date", "VARCHAR"),
+               ("model_label", "VARCHAR"),
+               ("score_label_0", "VARCHAR"),
+               ("score_label_1", "VARCHAR")
+               ]
 
 
 
