@@ -66,6 +66,7 @@ fe_results_pickle_loc = "data/pickles/fe_results.pkl"
 fe_metadata = {}
 fe_metadata_index = "ing_time_exec"
 fe_metadata_csv_name = "feature_engineering_metadata.csv"
+fe_aws_key = "feature_engineering/"
 
 ## Models training
 mt_results_pickle_loc = "data/pickles/mt_results.pkl"
@@ -86,6 +87,12 @@ aq_results_pickle_loc = "data/pickles/aequitas.pkl"
 aq_metadata = {}
 aq_metadata_index = "ing_time_exec"
 aq_metadata_csv_name = "aequitas_metadata.csv"
+
+## Prediction with new data
+pr_results_pickle_loc = "data/pickles/pr_results.pkl"
+pr_metadata = {}
+pr_metadata_index = "ing_time_exec"
+pr_metadata_csv_name = "predict_metadata.csv"
 
 
 
