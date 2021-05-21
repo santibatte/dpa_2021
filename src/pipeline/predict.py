@@ -80,7 +80,10 @@ def predict(sel_model, fe_results, pr_results_pickle_loc):
     dfp = pd.DataFrame.from_dict(
         {
             "ids": data_ids,
-            "prediction": sel_model.predict(data_features)
+            "prediction_date": [str(datetime.now())[:10]]*len(data_ids),
+            "model_label": sel_model.predict(data_features),
+            "score_label_0": sel_model.predict_proba(data_features)[:, 0],
+            "score_label_1": sel_model.predict_proba(data_features)[:, 1],
         }
     )
     dfp.set_index("ids", inplace=True)
@@ -92,6 +95,8 @@ def predict(sel_model, fe_results, pr_results_pickle_loc):
 
 
     ## Working with module's metadata
+
+    #### Metadata: percentage of positives (1's)
 
     #### Converting metadata into dataframe and saving locally
     df_meta = pd.DataFrame.from_dict(pr_metadata, orient="index").T
