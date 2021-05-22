@@ -20,8 +20,16 @@
 
 
 
-## Final Task:
+## Final Task: StorePredictionsApi
 #### Local Scheduler
-luigi --module src.pipeline.luigi.y_store_predictions_api StorePredictionsApi --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler
+#luigi --module src.pipeline.luigi.y_store_predictions_api StorePredictionsApi --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler
 #### Remote Scheduler
 #luigi --module src.pipeline.luigi.y_store_predictions_api StorePredictionsApi --ingest-type consecutive --bucket data-product-architecture-equipo-9
+
+
+
+## Final Task: Monitor
+#### Local Scheduler
+luigi --module src.pipeline.luigi.z_monitor Monitor --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler
+#### Remote Scheduler
+#luigi --module src.pipeline.luigi.z_monitor Monitor --ingest-type consecutive --bucket data-product-architecture-equipo-9
