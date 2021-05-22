@@ -13,7 +13,7 @@ db_conn_str = get_db_conn_sql_alchemy('../../../conf/local/credentials.yaml')
 
 
 
-df= pd.read_sql_table(monitor, con=db_conn_str, schema=dpa_monitor)
+df= pd.read_sql_table('monitor', con=db_conn_str, schema='dpa_monitor')
 
 
 #df = pd.read_csv("data/data.csv")
