@@ -24,12 +24,12 @@ scores = px.histogram(df,
                         nbins=40,
                         title="Scores distribution",
                         marginal="rug",
-                        color="prediction",
+                        color="model_label",
                         )
 
-predictios = df.groupby('prediction').size().reset_index(name="count")
-pred = px.bar(data_frame=predictios,
-                x="prediction",
+predictions = df.groupby('model_label').size().reset_index(name="count")
+pred = px.bar(data_frame=predictions,
+                x="model_label",
                 y="count",
                 barmode="group",
                 title="Predictions distribution",

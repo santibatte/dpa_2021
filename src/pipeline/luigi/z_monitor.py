@@ -43,7 +43,7 @@ class Monitor(CopyToTable):
 
     ## Metadata columns saved in RDS file
     columns = [
-        ("ids", "VARCHAR"),
+        ("id_client", "VARCHAR"),
         ("prediction_date", "VARCHAR"),
         ("model_label", "VARCHAR"),
         ("score_label_0", "VARCHAR"),
