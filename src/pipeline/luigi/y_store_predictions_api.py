@@ -13,7 +13,7 @@ from src.utils.params_gen import api_monitor_local_data
 
 from src.pipeline.luigi.x_predict_metadata import PredictMetadata
 
-csv_local_file = api_monitor_local_data
+csv_local_file = api_store_preds_data
 
 
 
