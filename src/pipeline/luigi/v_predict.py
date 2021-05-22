@@ -13,7 +13,8 @@ from src.utils.params_gen import (
     ms_aws_key,
     fe_aws_key,
     pr_results_pickle_loc,
-    api_monitor_local_data,
+    api_store_preds_data,
+    api_monitor_data,
 )
 
 from src.pipeline.luigi.u_bias_fairness_metadata import BiasFairnessMetadata
@@ -63,7 +64,11 @@ class Predict(luigi.Task):
 
 
         ## Storing local dataframe with results for API (Exposición del modelo)
-        dfp.to_csv(api_monitor_local_data)
+        dfp.to_csv(api_store_preds_data)
+
+
+        ## Storing local dataframe with results for model monitoring (Monitoreo del modelo)
+        dfp.to_csv(api_monitor_data)
 
 
         ## Storing results in s3 as pickle
