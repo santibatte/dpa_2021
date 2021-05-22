@@ -17,7 +17,7 @@ df= pd.read_sql_table(monitor, con=db_conn_str, schema=dpa_monitor)
 
 
 #df = pd.read_csv("data/data.csv")
-df["score"] = df[['proba_0','proba_1']].max(axis=1)
+df["score"] = df[['score_label_0','score_label_1']].max(axis=1)
 
 scores = px.histogram(df,
                         x ="score",
