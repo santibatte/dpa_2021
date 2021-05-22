@@ -7,24 +7,31 @@ import plotly.express as px
 
 from dash.dependencies import Output, Input
 
+from src.utils.utils import get_db_conn_sql_alchemy
+
+db_conn_str = get_db_conn_sql_alchemy('../../../conf/local/credentials.yaml')
 
 
-df = pd.read_csv("data/data.csv")
+
+df= pd.read_sql_table(monitor, con=db_conn_str, schema=dpa_monitor)
+
+
+#df = pd.read_csv("data/data.csv")
 df["score"] = df[['proba_0','proba_1']].max(axis=1)
 
-scores = px.histogram(df, 
-                        x ="score", 
-                        nbins=40, 
-                        title="Scores distribution", 
+scores = px.histogram(df,
+                        x ="score",
+                        nbins=40,
+                        title="Scores distribution",
                         marginal="rug",
                         color="prediction",
                         )
 
 predictios = df.groupby('prediction').size().reset_index(name="count")
-pred = px.bar(data_frame=predictios, 
-                x="prediction", 
-                y="count", 
-                barmode="group", 
+pred = px.bar(data_frame=predictios,
+                x="prediction",
+                y="count",
+                barmode="group",
                 title="Predictions distribution",
                 )
 
@@ -56,7 +63,7 @@ app.layout = html.Div(
         ),
         html.Div(
             children=[
-                
+
                 html.Div(
                     children=dcc.Graph(
                         id="score-chart",
