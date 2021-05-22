@@ -94,6 +94,10 @@ pr_metadata = {}
 pr_metadata_index = "ing_time_exec"
 pr_metadata_csv_name = "predict_metadata.csv"
 
+## API
+api_store_preds_data = "src/pipeline/luigi/luigi_tmp_files/store_predictions_api.csv"
+api_monitor_data = "src/pipeline/luigi/luigi_tmp_files/store_predictions_api.csv"
+
 
 
 

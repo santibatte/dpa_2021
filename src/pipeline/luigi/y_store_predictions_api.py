@@ -9,9 +9,13 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
+from src.utils.params_gen import api_store_preds_data
+
 from src.pipeline.luigi.x_predict_metadata import PredictMetadata
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/store_predictions_api.csv"
+csv_local_file = api_store_preds_data
+
+
 
 class StorePredictionsApi(CopyToTable):
 
@@ -36,17 +40,18 @@ class StorePredictionsApi(CopyToTable):
 
 
     ## Metadata columns saved in RDS file
-    columns = [("id_client", "VARCHAR"),
-               ("prediction_date", "VARCHAR"),
-               ("model_label", "VARCHAR"),
-               ("score_label_0", "VARCHAR"),
-               ("score_label_1", "VARCHAR")
-               ]
+    columns = [
+        ("id_client", "VARCHAR"),
+        ("prediction_date", "VARCHAR"),
+        ("model_label", "VARCHAR"),
+        ("score_label_0", "VARCHAR"),
+        ("score_label_1", "VARCHAR"),
+    ]
 
 
 
     def rows(self):
-        reader = pd.read_csv(csv_local_file, header=None)
+        reader = pd.read_csv(csv_local_file, header=0)
 
         for element in reader.itertuples(index=False):
             yield element
