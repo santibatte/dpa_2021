@@ -11,7 +11,7 @@ from src.utils.utils import (
 
 from src.utils.params_gen import api_monitor_data
 
-from src.pipeline.luigi.y_store_api import StorePredictionsApi
+from src.pipeline.luigi.y_store_predictions_api import StorePredictionsApi
 
 csv_local_file = api_monitor_data
 
