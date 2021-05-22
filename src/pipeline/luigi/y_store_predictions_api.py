@@ -51,7 +51,7 @@ class StorePredictionsApi(CopyToTable):
 
 
     def rows(self):
-        reader = pd.read_csv(csv_local_file, header=None)
+        reader = pd.read_csv(csv_local_file, header=0)
 
         for element in reader.itertuples(index=False):
             yield element
