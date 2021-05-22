@@ -9,7 +9,7 @@ from src.utils.utils import (
     get_postgres_credentials
 )
 
-from src.utils.params_gen import api_monitor_local_data
+from src.utils.params_gen import api_store_preds_data
 
 from src.pipeline.luigi.x_predict_metadata import PredictMetadata
 
