@@ -91,6 +91,9 @@ def predict(sel_model, fe_results, pr_results_pickle_loc):
     class TestPredict(marbles.core.TestCase):
         #Testing for no empty inputs
         def test_inputs_pred(self):
+            sel_model = {}
+            fe_results = {}
+            pr_results_pickle_loc = {}
             a = bool(sel_model)
             b = bool(fe_results)
             c = bool(pr_results_pickle_loc)
@@ -100,6 +103,10 @@ def predict(sel_model, fe_results, pr_results_pickle_loc):
 
         #Testing to check that not all model labels have the same prediction
         def test_predictions(self):
+            dfp = pd.DataFrame()
+            dfp['model_label'] = None
+            model_label1 = ['1', '1', '1', '1', '1', '1', '1', '1', '1']
+            dfp['model_label'] = model_label1
             res =not bool(len(dfp['model_label'].unique())!=2)
             self.assertTrue(res, note="Your predictions have only one value!")
 
