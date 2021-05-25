@@ -31,9 +31,13 @@ class Predict(luigi.Task):
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
+    pipeline_mode =luigi.Parameter()
+
     ## Requires: assessing that model training metadata is stored
-    def requires(self):
-        return BiasFairnessMetadata(ingest_type=self.ingest_type, bucket=self.bucket)
+
+    if self.pipeliene_mode == 'train':
+        def requires(self):
+            return BiasFairnessMetadata(ingest_type=self.ingest_type, bucket=self.bucket)
 
 
 

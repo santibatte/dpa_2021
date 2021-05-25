@@ -27,9 +27,11 @@ class Monitor(CopyToTable):
     #### Defining the ingestion type to Luigi (`consecutive` or `initial`)
     ingest_type = luigi.Parameter()
 
+    pipeline_mode =luigi.Parameter()
+
 
     def requires(self):
-        return StorePredictionsApi(ingest_type=self.ingest_type, bucket=self.bucket)
+        return StorePredictionsApi(ingest_type=self.ingest_type, bucket=self.bucket, pipeline_mode=self.pipeline_mode)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
 
