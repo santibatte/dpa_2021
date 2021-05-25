@@ -1,5 +1,12 @@
 #from flask_chicago import Flask
 
+#import werkzeug
+#werkzeug.cached_property = werkzeug.utils.cached_property
+
+#from functools import cached_property
+from werkzeug.utils import cached_property
+
+
 from flask import Flask
 #from functools import cached_property
 #from werkzeug.utils import cached_property
