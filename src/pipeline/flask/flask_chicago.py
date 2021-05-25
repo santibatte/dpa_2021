@@ -1,15 +1,8 @@
 #from flask_chicago import Flask
 
-#import werkzeug
-#werkzeug.cached_property = werkzeug.utils.cached_property
-
-#from functools import cached_property
-from werkzeug.utils import cached_property
-
-
 from flask import Flask
 #from functools import cached_property
-#from werkzeug.utils import cached_property
+from werkzeug.utils import cached_property
 from flask_sqlalchemy import SQLAlchemy
 from flask_restplus import Api, Resource, fields
 
@@ -48,6 +41,12 @@ model = api.model('store_predictions', {
     'score_label_1' : fields.String
 })
 
+model_2 = api.model('store_predictions', {
+    'model_label' : fields.String,
+    'score_label_0' : fields.String,
+    'score_label_1' : fields.String
+})
+
 ## output
 #completar
 
@@ -59,7 +58,7 @@ class GoodbyeLili(Resource):
 
 @api.route('/id_establecimiento/<string:id_client>')
 class ShowPrediction(Resource):
-    @api.marshal_with(model)
+    @api.marshal_with(model_2)
     def get(self,id_client):
         prediction = Match.query.filter_by(id_client=id_client).all()
         return prediction
