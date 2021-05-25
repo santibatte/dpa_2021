@@ -35,7 +35,6 @@ class Match(db.Model):
 #swagger model for marshalling outputs
 model = api.model('store_predictions', {
     'id_client' : fields.String,
-    'prediction_date' : fields.String,
     'model_label' : fields.String,
     'score_label_0' : fields.String,
     'score_label_1' : fields.String
