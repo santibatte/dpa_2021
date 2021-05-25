@@ -37,8 +37,8 @@ class PredictUnitTest(CopyToTable): ##
     port = credentials['port']
     table = 'dpa_unittest.predictions'
 
-    columns = [("XXXX", "VARCHAR"),
-               ("XXXX_2", "VARCHAR")]
+    columns = [("Date", "VARCHAR"),
+               ("Result", "VARCHAR")]
 
 
     def rows(self):
@@ -47,4 +47,4 @@ class PredictUnitTest(CopyToTable): ##
         for element in reader.itertuples(index=False):
             yield element
         if "FAILED" in reader[1][1]:
-            raise TypeError("FAILED, XXXXXX")
+            raise TypeError("FAILED, Your predictions have only one value or empty inputs!")

@@ -87,6 +87,43 @@ def predict(sel_model, fe_results, pr_results_pickle_loc):
         }
     )
     dfp.set_index("ids", inplace=True)
+    #### Running unit test
+    class TestPredict(marbles.core.TestCase):
+        #Testing for no empty inputs
+        def test_inputs_pred(self):
+            a = bool(sel_model)
+            b = bool(fe_results)
+            c = bool(pr_results_pickle_loc)
+            lista = [a, b, c]
+            t_list = [True, True, True]
+            self.assertEqual(lista, t_list, note="Your inputs are empty!")
+
+        #Testing to check that not all model labels have the same prediction
+        def test_predictions(self):
+            res =not bool(len(dfp['model_label'].unique())!=2)
+            self.assertTrue(res, note="Your predictions have only one value!")
+
+    stream = StringIO()
+    runner = unittest.TextTestRunner(stream=stream)
+    result = runner.run(unittest.makeSuite(TestPredict))
+
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestPredict)
+
+    with open(tests_dir_loc + 'predict_unittest.txt', 'w') as f:
+        unittest.TextTestRunner(stream=f, verbosity=2).run(suite)
+
+    res = []
+    with open(tests_dir_loc + "predict_unittest.txt") as fp:
+        lines = fp.readlines()
+        for line in lines:
+            if "FAILED" in line:
+                res.append([str(datetime.now()), "FAILED, Your predictions have only one value or empty inputs!"])
+            if "OK" in line:
+                res.append([str(datetime.now()), "PASS"])
+
+    res_df = pd.DataFrame(res, columns=['Date', 'Result'])
+
+    res_df.to_csv(tests_dir_loc + 'predict_unittest.csv', index=False)
 
     ## Saving results as pickle and storing them in s3
     pickle.dump(dfp, open(pr_results_pickle_loc, "wb"))
