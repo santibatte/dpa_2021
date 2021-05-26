@@ -78,7 +78,7 @@ CREATE TABLE dpa_unittest.predictions (
 	Date varchar DEFAULT NULL,
 	Result varchar DEFAULT NULL
 );
-=======
+
 CREATE TABLE dpa_metadata.model_training (
 	execution_time varchar DEFAULT NULL,
 	no_models_trained varchar DEFAULT NULL,
