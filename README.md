@@ -18,7 +18,9 @@ DPA-ITAM, 2021.
 3. [Infrastructure requirements](https://github.com/santibatte/dpa_2021.git#infrastructure-requirements)
 4. [Installation and setup](https://github.com/santibatte/dpa_2021.git#installation-and-setup)
 5. [The Pipeline](https://github.com/santibatte/dpa_2021.git#the-pipeline)
-6. [Aequitas](https://github.com/santibatte/dpa_2021.git#Aequitas)
+6. [Aequitas](https://github.com/santibatte/dpa_2021.git#aequitas)
+7. [API](https://github.com/santibatte/dpa_2021.git#api)
+8. [Model Monitoring](https://github.com/santibatte/dpa_2021.git#model-monitoring)
 
 
 ## Introduction
@@ -149,6 +151,14 @@ ssh -i 'your_pub_key' ubuntu@ec2-34-222-143-84.us-west-2.compute.amazonaws.com
    * Change to repo directory: `cd dpa_2021`
    * Activate your pyenv with [Python 3.7.4](https://www.python.org/downloads/release/python-374/): `pyenv activate dpa_2021`
    * Packages can be installed by running `pip install -r requirements.txt`.
+    
+    
+4. Connect to PostgresSQL with your *password* :
+```
+psql -U dpa_team -h db_dpa2021 base-dpa-equipo9.cqzg9zyjyqov.us-west-2.rds.amazonaws.com -d db_dpa2021
+ ```
+
+5. Run the pipeline: 
 
 The pipeline process is organized into the following [Luigi](https://luigi.readthedocs.io/en/stable/) tasks ran in the Processing Instance:
 
@@ -224,6 +234,27 @@ The pipeline process is organized into the following [Luigi](https://luigi.readt
 ***Task 21.*** `BiasFairnessMetadata`: generates Aequitas metadata  with module `u_bias_fairness_metadata.py`.
 * Example: `luigi --module src.pipeline.luigi.s_bias_fairness BiasFairnessMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
 
+***Task 22.*** `Predict`: generates Prediction with module `v_predict.py`.
+* Example: `luigi --module src.pipeline.luigi.v_predict Predict --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 23.*** `PredictUnitTest`: generates Predictions unit test with module `w_predict_test.py`.
+* Example: `luigi --module src.pipeline.luigi.w_predict_test PredictUnitTest --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 24.*** `PredictMetadata`: generates Predictions metadata with module `x_predict_metadata.py`.
+* Example: `luigi --module src.pipeline.luigi.x_predict_metadata PredictMetadata --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 25.*** `StorePredictionsApi`: stores predictions through an API using Flask Swagger `y_store_predictions.py`.
+* Example: `luigi --module src.pipeline.luigi.y_store_predictions StorePredictionsApi --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+***Task 26.*** `Monitor`: model monitoring using [Dash](https://plotly.com/dash/)  with module `z_monitor.py`.
+* Example: `luigi --module src.pipeline.luigi.z_monitor Monitor --ingest-type consecutive --bucket data-product-architecture-equipo-9 --local-scheduler`
+
+
+**NOTE:** 
+
+If you have ran some tasks and want to run the pipeline, make sure to delete previous information: 
+
+*  `DROP TABLE IF EXISTS public.table_updates; `
 
 
 #### Luigi's DAG Visualization
@@ -232,7 +263,7 @@ To see the Luigi Task Visualizer and do the following:
 
 1. Create a tunnel to the Processing machine:
    * Enable an inbound rule with your IP in the Processing machine. As an example, we will use our active processing machine address **ec2-54-201-9-79.us-west-2.compute.amazonaws.com**.
-   * Enable your the key you use to accesc *Bastión* EC2 among the authorized keys in the Processing machine.
+   * Enable the key you use to access *Bastión* EC2 among the authorized keys in the Processing machine.
    
 We recommend to have several terminals open to do the portfowarding: 
 
@@ -245,13 +276,14 @@ We recommend to have several terminals open to do the portfowarding:
 
 `luigid`
 
-**Terminal 3:** After running the instructions in **3.** of **The Pipeline** to connect to your processing machine run the your wanted Task removing the `--local scheduler`.
+**Terminal 3:** After running the instructions in **3.** of **The Pipeline** to connect to your processing machine run the wanted Task removing the `--local scheduler`.
 
 Open your local browser in `localhost:4444`. 
 
 Your DAG should look like this!
 
-![](./images/DAG_checkpoint6.jpg)
+![](./images/DAG_checkpoint7.png)
+
 
 ## Disclamer: Luigi's Idempotence
 
@@ -289,6 +321,52 @@ The metrics we use are those related to an assistive model:
 
 We choose these metrics as we want to make sure our model is being particularly accurate with those groups that could be discriminated
 Therefore, we need to quantify disparities among the groups. 
+
+## API
+ We have two endpoints in the API:
+
+    Endpoint 1:
+        Input: id_client
+        Output: JSON with precition score, prediction label and prediction date.
+    Endpoint 2:
+        Input: prediction_date
+        Output: JSON with lista of each facility for that preiction_date: id_client, prediction scores and prediction labels.
+
+**Terminal 5:** Connect to Flask.
+
+`ssh -i 'id_rsa' -NL localhost:4242:localhost:5000 ubuntu@ec2-54-201-9-79.us-west-2.compute.amazonaws.com`
+
+
+To run the API:
+
+1. After running the instructions in **3.** of **The Pipeline**  set: `export PYTHONPATH=$PWD`
+
+2. Change to directory: `cd src/pipeline/flask`
+
+3. Run `export FLASK_APP=flask_chicago.py`
+
+4. Run Flask: `flask run`
+
+5. Open your local browser in `localhost:5000`. 
+
+## Model Monitoring 
+
+Our dashboard shows the scores' distribution of the selected model the last time it was validated and the labels' distribution for a given date.
+
+**Terminal 6:**  Connect to Dash.
+
+`ssh -i 'id_rsa' -NL localhost:4848:localhost:8051 ubuntu@ec2-54-201-9-79.us-west-2.compute.amazonaws.com`
+
+To run the Dashboard: 
+
+1. After running the instructions in **3.** of **The Pipeline**  set: `export PYTHONPATH=$PWD`
+
+2. Change to directory: `cd src/pipeline/dask`
+
+3. Run Dash: `python app.py` or `python app_2.py`.
+
+4. Open your local browser in `localhost:4848`
+
 
 
 
