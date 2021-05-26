@@ -5,16 +5,21 @@ import luigi
 import psycopg2
 
 
-from src.pipeline.luigi.s_bias_fairness import BiasFairness
-
 from src.utils.utils import (
     get_postgres_credentials
 )
 
+from src.utils.params_gen import api_monitor_data
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/bias_fairness_unittest.csv"
+from src.pipeline.luigi.y_store_predictions_api import StorePredictionsApi
 
-class BiasFairnessUnitTest(CopyToTable): ##
+csv_local_file = api_monitor_data
+
+
+
+
+
+class Monitor(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
@@ -24,27 +29,31 @@ class BiasFairnessUnitTest(CopyToTable): ##
 
 
     def requires(self):
-        return BiasFairness(ingest_type=self.ingest_type, bucket=self.bucket)
-
+        return StorePredictionsApi(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
-
 
     user = credentials['user']
     password = credentials['pass']
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_unittest.bias_fairness'
+    table = 'dpa_monitor.monitor'
 
-    columns = [("Date", "VARCHAR"),
-               ("Result", "VARCHAR")]
+
+    ## Metadata columns saved in RDS file
+    columns = [
+        ("id_client", "VARCHAR"),
+        ("prediction_date", "VARCHAR"),
+        ("model_label", "VARCHAR"),
+        ("score_label_0", "VARCHAR"),
+        ("score_label_1", "VARCHAR"),
+    ]
+
 
 
     def rows(self):
-        reader = pd.read_csv(csv_local_file, header=None)
+        reader = pd.read_csv(csv_local_file, header=0)
 
         for element in reader.itertuples(index=False):
             yield element
-        if "FAILED" in reader[1][1]:
-            raise TypeError("FAILED, Columns are missing")

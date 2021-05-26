@@ -38,6 +38,47 @@ CREATE TABLE dpa_metadata.feature_engineering (
 	shape_after_fe varchar DEFAULT NULL
 );
 
+
+CREATE TABLE dpa_unittest.extract (
+	Date varchar DEFAULT NULL,
+	Result varchar DEFAULT NULL
+);
+
+CREATE TABLE dpa_unittest.saves3 (
+	Date varchar DEFAULT NULL,
+	Result varchar DEFAULT NULL
+);
+
+CREATE TABLE dpa_unittest.transform (
+	Date varchar DEFAULT NULL,
+	Result varchar DEFAULT NULL
+);
+
+CREATE TABLE dpa_unittest.feature_engineering (
+	Date varchar DEFAULT NULL,
+	Result varchar DEFAULT NULL
+);
+
+CREATE TABLE dpa_unittest.model_training (
+	Date varchar DEFAULT NULL,
+	Result varchar DEFAULT NULL
+);
+
+CREATE TABLE dpa_unittest.model_selection (
+	Date varchar DEFAULT NULL,
+	Result varchar DEFAULT NULL
+);
+
+CREATE TABLE dpa_unittest.bias_fairness (
+	Date varchar DEFAULT NULL,
+	Result varchar DEFAULT NULL
+);
+
+CREATE TABLE dpa_unittest.predictions (
+	Date varchar DEFAULT NULL,
+	Result varchar DEFAULT NULL
+);
+=======
 CREATE TABLE dpa_metadata.model_training (
 	execution_time varchar DEFAULT NULL,
 	no_models_trained varchar DEFAULT NULL,
@@ -93,6 +134,3 @@ CREATE TABLE dpa_monitor.monitor (
  
 
  
-
-
-

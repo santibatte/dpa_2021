@@ -5,16 +5,15 @@ import luigi
 import psycopg2
 
 
-from src.pipeline.luigi.s_bias_fairness import BiasFairness
-
 from src.utils.utils import (
     get_postgres_credentials
 )
 
+from src.pipeline.luigi.w_predict_test import PredictUnitTest
 
-csv_local_file = "src/pipeline/luigi/luigi_tmp_files/bias_fairness_unittest.csv"
+csv_local_file = "src/pipeline/luigi/luigi_tmp_files/predict_metadata.csv"
 
-class BiasFairnessUnitTest(CopyToTable): ##
+class PredictMetadata(CopyToTable):
 
     #### Bucket where all ingestions will be stored in AWS S3
     bucket = luigi.Parameter()
@@ -24,21 +23,26 @@ class BiasFairnessUnitTest(CopyToTable): ##
 
 
     def requires(self):
-        return BiasFairness(ingest_type=self.ingest_type, bucket=self.bucket)
-
+        return PredictUnitTest(ingest_type=self.ingest_type, bucket=self.bucket)
 
     credentials = get_postgres_credentials("conf/local/credentials.yaml")
-
 
     user = credentials['user']
     password = credentials['pass']
     database = credentials['db']
     host = credentials['host']
     port = credentials['port']
-    table = 'dpa_unittest.bias_fairness'
+    table = 'dpa_metadata.predictions'
 
-    columns = [("Date", "VARCHAR"),
-               ("Result", "VARCHAR")]
+
+    ## Metadata columns saved in RDS file
+    columns = [
+        ("execution_time", "VARCHAR"),
+        ("predict_model", "VARCHAR"),
+        ("percentage_positives", "VARCHAR"),
+        ("mean_score_positives", "VARCHAR"),
+    ]
+
 
 
     def rows(self):
@@ -46,5 +50,3 @@ class BiasFairnessUnitTest(CopyToTable): ##
 
         for element in reader.itertuples(index=False):
             yield element
-        if "FAILED" in reader[1][1]:
-            raise TypeError("FAILED, Columns are missing")
