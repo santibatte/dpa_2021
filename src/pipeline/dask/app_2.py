@@ -22,7 +22,7 @@ df= pd.read_sql_table('monitor', con=db_conn_str, schema='dpa_monitor')
 
 
 df["score"] = df[['score_label_0','score_label_1']].max(axis=1)
-df["prediction_date"] = pd.to_datetime(df["prediction_date"], format="%m/%d/%Y")
+df["prediction_date"] = pd.to_datetime(df["prediction_date"], format="%Y-%m-%d")
 
 external_stylesheets = [
     {
